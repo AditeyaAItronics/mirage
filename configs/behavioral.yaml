@@ -3,5 +3,7 @@ counts:
   simple: 500            # 250 positive + 250 negative
   negation_pos: 500      # "not <positive>" -> expected negative (scored)
   negation_neg: 250      # "not <negative>" -> reported separately (ambiguous)
+  negation_dir: 500      # "X" vs "not X" pairs, positive X (scored, D27)
+  negation_dir_neg: 250  # "X" vs "not X" pairs, negative X (unscored probe)
   typo: 500              # invariance pairs
   name_swap: 250         # invariance pairs

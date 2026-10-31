@@ -217,7 +217,7 @@ curves, which don't depend on position.
 `whatyouneedtodo.md`). Code can show the bias, but can't remove it.
 
 ### D2. ✅ RESOLVED (D22): behavioral suite was small
-5× larger: 2,000 cases (2,750 rows).
+5× larger: 2,000 cases (2,750 rows); with the directional test (D27), 2,750 cases (4,250 rows).
 
 ### D3. 🟢 "Not bad" cases are not scored
 **What:** "not bad" isn't clearly positive (it's often lukewarm), so those cases are reported separately and not
@@ -233,20 +233,12 @@ sarcasm, and irrelevant additions ("…, and the popcorn was salty").
 **Possible fix:** add 1–2 templates. The suite design makes this a new generator function in `templates.py`.
 **Effort:** small per template.
 
-### D5. 🟠 NEW: the negation template rewards models that lean negative
-**What:** "not <positive>" is always expected to be negative, so a model that says "negative" more
-often passes for free. On real data:
-- **Decision tree:** fails only 10% of negation cases but 29% of simple ones.
-- **GNB:** the mirror image, 93% vs 38%.
-
-**Why it matters:** the raw negation error rate mixes negation handling with label bias.
-**Possible fix:**
-- A **directional** test, as in CheckList's DIR: pair each "not X" with its "X" sentence and count
-  how often adding "not" flips the model's *own* prediction.
-- Until then, lead with `negation_control.csv` and read negation errors next to simple-template
-  errors.
-
-**Effort:** small (the pairs share template, noun and adjective, so they can be generated together).
+### D5. ✅ RESOLVED (D27): the negation template rewarded models that lean negative
+A directional test now pairs each "X" with "not X" and asks whether the model's *own* answer
+flips. Only pairs whose affirmative the model gets right count, so label bias can't help.
+The decision tree's negation error went from 0.096 (template) to **0.183**, on only 49% testable
+pairs; for 60% of its pairs "not" doesn't move its probability at all. LR's barely changed
+(0.262 → 0.266). See `negation_direction.csv`.
 
 ### D6. 🟢 NEW: the "known words" control is strict
 **What:** a word counts as known only if the model gets *every* simple case with it right (about 12
@@ -408,7 +400,7 @@ wrong results.
 ## Suggested order if there's time
 
 All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1). Next, in order:
-1. **D5** (directional negation test): the raw negation error is confounded with label bias.
+1. ~~**D5** (directional negation test)~~: done, see D27.
 2. **G1** (multiple-comparison correction): a few lines, and needed before any "significant" claim.
 3. **C9** (degenerate DT probabilities): a pruned tree variant.
 4. **F4** and **C8** (length checks): both are analyses on columns that already exist.
@@ -424,3 +416,4 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 - **F1, a distance blind to the domain change.** Mitigated by scoring the most unusual sentence: sanity AUROC 0.646 → 0.926 (D25); the length caveat is tracked in F4.
 - **H1, never run on full data.** The classical side has run end to end, with three fixes (D26); the DistilBERT run on Kaggle is still pending.
 - **H4, stale docs.** Updated.
+- **D5, negation template rewards negative bias.** Fixed with a directional "X / not X" test scored on the model's own answers (D27).

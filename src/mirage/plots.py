@@ -30,6 +30,8 @@ TEST_ORDER = [
     "beh_simple",
     "beh_negation",
     "beh_negation_neg",
+    "beh_negation_dir",
+    "beh_negation_dir_neg",
     "beh_typo",
     "beh_name_swap",
 ]

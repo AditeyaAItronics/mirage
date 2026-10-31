@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 
 from mirage import paths
-from mirage.behavioral.suite import case_failures
+from mirage.behavioral.suite import case_failures, dir_cases
 from mirage.metrics import summarize
 from mirage.predict import load_predictions
 from mirage.stats import gap_closed_ci, mcnemar_test, paired_diff_ci, rate_ci
@@ -101,7 +101,9 @@ def error_table(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def negation_gap(preds: pd.DataFrame, tests=("sst2_neg", "beh_negation"), **ci_kw) -> pd.DataFrame:
+def negation_gap(
+    preds: pd.DataFrame, tests=("sst2_neg", "beh_negation", "beh_negation_dir"), **ci_kw
+) -> pd.DataFrame:
     """H2/H3: classical negation error minus DistilBERT's, before/after negation marking."""
     preds = canonical(preds)
     flags = {(m, v): _error_flags(g) for (m, v), g in preds.groupby(["model", "variant"])}
@@ -207,6 +209,42 @@ def negation_control(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def negation_direction(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
+    """D5 / D27: does adding "not" move each model's own answer?
+
+    flip_failure: among pairs whose affirmative sentence the model gets right, the share where the
+    negated twin keeps the same label. Free of label bias: a model that always says "negative"
+    has no applicable positive pairs instead of a perfect score.
+    no_move: share of all pairs where p_pos did not move in the expected direction at all.
+    """
+    rows = []
+    for (m, v), g in canonical(preds).groupby(["model", "variant"]):
+        dc = dir_cases(_behavioral(g))
+        for tt, d in dc.groupby("test_type"):
+            row = {
+                "model": m,
+                "variant": v,
+                "test": tt,
+                "scored": bool(d["scored"].iloc[0]),
+                "n_pairs": len(d),
+                "applicable": float(d["applicable"].mean()),
+                "mean_shift": float(d["shift"].mean()),
+            }
+            for name, f in (
+                ("flip_failure", d.loc[d["applicable"], "failed"]),
+                ("no_move", d["no_move"]),
+            ):
+                if len(f):
+                    ci = rate_ci(f.to_numpy().astype(bool), **ci_kw)
+                    row |= {
+                        name: ci["estimate"],
+                        f"{name}_lo": ci["ci_low"],
+                        f"{name}_hi": ci["ci_high"],
+                    }
+            rows.append(row)
+    return pd.DataFrame(rows)
+
+
 def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
     preds = load_predictions()
     kw = {"n_resamples": ci_resamples}
@@ -216,6 +254,7 @@ def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
         "mcnemar": mcnemar_table(preds),
         "word_errors": word_errors(preds),
         "negation_control": negation_control(preds, **kw),
+        "negation_direction": negation_direction(preds, **kw),
     }
     if (preds["model"] == REFERENCE).any():
         tables["negation_gap"] = negation_gap(preds, **kw)

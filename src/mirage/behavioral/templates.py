@@ -5,6 +5,8 @@ Row fields: text, label, test_type, kind ("MFT" or "INV"), case_id, role, scored
 and negation failures checked against the same words in the simple test (shortfalls.md D1).
 - MFT (minimum functionality): one row per case, failure = wrong label.
 - INV (invariance): two rows per case (role original / perturbed), failure = prediction changes.
+- DIR (directional): two rows per case, an affirmative sentence and its negated twin; failure =
+  adding the negation does not move the model's *own* prediction (scored in suite.py, D27).
 `label` is always the intended sentiment, so every row fits the predictions contract.
 """
 
@@ -27,6 +29,13 @@ NEGATION_TEMPLATES = [
     "This {noun} isn't {adj}.",
     "I don't think the {noun} was {adj}.",
     "The {noun} was never {adj}.",
+]
+# (affirmative, negated) twins: same frame, noun and adjective; only the negation differs.
+PAIRED_TEMPLATES = [
+    ("The {noun} was {adj}.", "The {noun} was not {adj}."),
+    ("This {noun} is {adj}.", "This {noun} isn't {adj}."),
+    ("I thought the {noun} was {adj}.", "I don't think the {noun} was {adj}."),
+    ("The {noun} was always {adj}.", "The {noun} was never {adj}."),
 ]
 NAME_TEMPLATES = ["{name} {verb} the {noun}.", "{name} said the {noun} was {adj}."]
 
@@ -75,6 +84,37 @@ def negation(n_pos: int, n_neg: int, rng: np.random.Generator) -> list[dict]:
         {**r, "kind": "MFT", "case_id": f"{r['test_type']}-{i}", "role": "single"}
         for i, r in enumerate(rows)
     ]
+
+
+def negation_dir(n_pos: int, n_neg: int, rng: np.random.Generator) -> list[dict]:
+    """Directional negation pairs (shortfalls.md D5).
+
+    The plain negation MFT expects "not <positive>" to be negative, so a model that leans negative
+    passes it for free. Here each case is "X" and "not X" and the question is whether the model's
+    own answer moves. Positive adjectives are scored; "not <negative>" pairs are an unscored
+    probe, as in D11. `label` is the intended label of each sentence.
+    """
+    rows = []
+    for test_type, adjs, n, scored, pos_label in (
+        ("negation_dir", W.POS_ADJ, n_pos, True, 1),
+        ("negation_dir_neg", W.NEG_ADJ, n_neg, False, 0),
+    ):
+        pool = list(itertools.product(PAIRED_TEMPLATES, W.NOUNS, adjs))
+        for i, ((aff, neg), noun, adj) in enumerate(_sample(rng, pool, n)):
+            for role, t, label in (("original", aff, pos_label), ("perturbed", neg, 1 - pos_label)):
+                rows.append(
+                    {
+                        "text": t.format(noun=noun, adj=adj),
+                        "label": label,
+                        "role": role,
+                        "case_id": f"{test_type}-{i}",
+                        "word": adj,
+                        "test_type": test_type,
+                        "kind": "DIR",
+                        "scored": scored,
+                    }
+                )
+    return rows
 
 
 def make_typo(word: str, rng: np.random.Generator) -> str:

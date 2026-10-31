@@ -467,3 +467,47 @@ Kaggle-made DistilBERT predictions aren't redone on a CPU.
     ones classical models get wrong.
 - **Degenerate confidence:** the unpruned decision tree outputs only 0/1 probabilities (ECE 0.34,
   low_conf AUROC exactly 0.500). GNB is near chance (SST-2 test 0.591, majority rate 0.50).
+
+## D27 — Directional negation test (fixes shortfalls.md D5)
+
+**Problem:** the negation template ("The movie was not brilliant." → negative) gives a model that
+leans "negative" a free pass. On real data the decision tree failed only 10% of negation cases
+but 29% of plain ones. GNB was the mirror image.
+
+**Decision:** a CheckList-style **DIR** test (`templates.negation_dir`). Each case is a pair of
+twins with the same frame, noun and adjective, where only the negation differs:
+"The movie was wonderful." / "The movie was not wonderful." It uses 4 paired frames:
+not / isn't / don't think / always→never.
+
+The question is whether adding "not" moves the model's *own* answer:
+- **flip_failure**: among pairs whose affirmative sentence the model gets right
+  (`applicable`), the share where the negated twin keeps the same label. A model that always says
+  "negative" gets *no* applicable pairs instead of a perfect score. A unit test pins exactly
+  this: the old test scores it 0% error, and the new one has nothing to score.
+- **no_move**: share of all pairs where p_pos didn't move in the expected direction at all.
+- **mean_shift**: average movement of p_pos toward the expected label.
+
+500 positive-adjective pairs are scored. 250 negative-adjective pairs ("bad" / "not bad") are an
+unscored probe, as in D11. The table is `negation_direction.csv`, and `beh_negation_dir` also
+appears in the error heatmap and the negation-gap table.
+
+**Result on the classical models (base):**
+
+| model | old negation error | flip_failure | applicable | no_move | mean_shift |
+|---|---|---|---|---|---|
+| logreg | 0.262 | 0.266 | 0.96 | 0.00 | 0.58 |
+| rf | 0.202 | 0.240 | 0.91 | 0.02 | 0.28 |
+| mnb | 0.486 | 0.569 | 0.82 | 0.00 | 0.32 |
+| dtree | 0.096 | **0.183** | **0.49** | **0.60** | 0.39 |
+| gnb | 0.928 | 0.955 | 0.90 | 0.83 | −0.04 |
+
+- **The decision tree's good negation score was mostly its negative lean.** Only half its pairs
+  are testable, its error nearly doubles once measured fairly, and for 60% of pairs "not" doesn't
+  change its probability at all.
+- **LR's number barely moves** (it wasn't benefiting). "not" always pushes its probability the
+  right way, but in about a quarter of pairs not far enough to flip the label.
+- With `NOT_` marking, LR's flip_failure falls to 0.010 and MNB's to 0.214.
+
+**Side effect:** the new generator draws from the suite's random stream before `typo` and
+`name_swap`, so those cases were resampled. Their rates moved within noise (e.g. LR typo
+0.478 → 0.45). The suite is now 2,750 cases (4,250 rows).

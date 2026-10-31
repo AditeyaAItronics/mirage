@@ -24,10 +24,11 @@ def build_suite(cfg: dict | None = None) -> pd.DataFrame:
     rows = (
         templates.simple(c["simple"], rng)
         + templates.negation(c["negation_pos"], c["negation_neg"], rng)
+        + templates.negation_dir(c["negation_dir"], c["negation_dir_neg"], rng)
         + templates.typo(c["typo"], rng)
         + templates.name_swap(c["name_swap"], rng)
     )
-    df = pd.DataFrame(rows)  # case_id is set by each generator; INV pairs share one
+    df = pd.DataFrame(rows)  # case_id is set by each generator; INV/DIR pairs share one
     df.insert(0, "item_id", [f"beh-{i}" for i in range(len(df))])
     return df[COLUMNS]
 
@@ -43,8 +44,39 @@ def load_suite() -> pd.DataFrame:
     return pd.read_csv(SUITE_PATH, keep_default_na=False, dtype={"label": int, "scored": bool})
 
 
+def dir_cases(preds: pd.DataFrame) -> pd.DataFrame:
+    """One row per DIR case: both predictions and probabilities side by side.
+
+    `applicable` = the model gets the affirmative sentence right; only then can negation be
+    tested. `failed` (applicable cases only) = the negated twin gets the same prediction.
+    `no_move` = p_pos did not move in the expected direction at all (uses every case).
+    """
+    d = preds[preds["kind"] == "DIR"]
+    if d.empty:
+        return pd.DataFrame(
+            columns=["test_type", "case_id", "scored", "applicable", "failed", "no_move", "shift"]
+        )
+    wide = d.pivot_table(
+        index=["test_type", "case_id", "scored"],
+        columns="role",
+        values=["pred", "p_pos", "label"],
+        aggfunc="first",
+    )
+    wide.columns = [f"{v}_{r}" for v, r in wide.columns]
+    wide = wide.reset_index()
+    wide["applicable"] = wide["pred_original"] == wide["label_original"]
+    wide["failed"] = wide["pred_perturbed"] == wide["pred_original"]
+    toward = wide["label_perturbed"] - wide["label_original"]  # +1: p_pos should rise, -1: fall
+    wide["shift"] = (wide["p_pos_perturbed"] - wide["p_pos_original"]) * toward
+    wide["no_move"] = wide["shift"] <= 0
+    return wide
+
+
 def case_failures(preds: pd.DataFrame) -> pd.DataFrame:
-    """One row per test case with a boolean `failed`. Input: one model's behavioral predictions."""
+    """One row per test case with a boolean `failed`. Input: one model's behavioral predictions.
+
+    DIR cases count only when applicable (the affirmative sentence is classified right).
+    """
     mft = preds[preds["kind"] == "MFT"]
     out = [
         mft.assign(failed=~mft["correct"].astype(bool))[
@@ -58,6 +90,10 @@ def case_failures(preds: pd.DataFrame) -> pd.DataFrame:
         ).reset_index()
         wide["failed"] = wide["original"] != wide["perturbed"]
         out.append(wide[["test_type", "case_id", "scored", "failed"]])
+    dc = dir_cases(preds)
+    if len(dc):
+        dc = dc[dc["applicable"]]
+        out.append(dc[["test_type", "case_id", "scored", "failed"]].astype({"failed": bool}))
     return pd.concat(out, ignore_index=True)
 
 
