@@ -511,3 +511,48 @@ appears in the error heatmap and the negation-gap table.
 **Side effect:** the new generator draws from the suite's random stream before `typo` and
 `name_swap`, so those cases were resampled. Their rates moved within noise (e.g. LR typo
 0.478 → 0.45). The suite is now 2,750 cases (4,250 rows).
+
+## D28 — Multiple-comparison correction (Holm) and p-values for every paired comparison (G1)
+
+**Problem:** dozens of comparisons were judged one at a time at α = 0.05 (McNemar pairs, negation
+gaps, AUROCs). By chance, about 1 in 20 true-null comparisons looks significant. H4 also had no
+direct test: distance and confidence each had their own CI, but nothing compared them on the
+same reviews.
+
+**Decision:**
+- **p-values for every paired comparison:** `bootstrap(..., null=0)` returns a two-sided p-value
+  from the bootstrap standard error. Used by `paired_diff_ci`, `gap_closed_ci` and the new
+  `paired_auroc_diff`. CIs stay percentile.
+- **Holm–Bonferroni within each family** (`stats.holm`), one family per question:
+
+| family | where | size now |
+|---|---|---|
+| McNemar model pairs | per dataset, `mcnemar.csv` → `p_holm`, `significant` | 10 per dataset |
+| H2 base gaps / H3 gap-closed | per column, `negation_gap.csv` → `*_p_holm` | needs DistilBERT |
+| H3 within each model: base − negmark error | `negmark_effect.csv` (new) → `p_holm` | 20 |
+| H4: predictor − low_conf AUROC | per predictor across models, `early_warning.csv` → `diff_p_holm`, `beats_conf` | 10 |
+
+- **New table, `negmark_effect.csv`:** H3 can now be tested before DistilBERT arrives. It
+  reports base − negmark error on the same items for sst2_neg and the directional negation test,
+  with sst2_test and IMDb as controls (marking shouldn't cost accuracy elsewhere).
+
+**Bug caught while screening:** the first version counted resamples past the null. With 1,000
+resamples that caps p at 2/1001 ≈ 0.002, and Holm over 20 tests puts the floor at **0.04**: every
+strong effect showed exactly 0.0400. In a family of 25 or more, nothing could ever be
+significant. The standard-error p-value has no floor, and a unit test now checks for one.
+
+**What the correction changes (classical models):**
+- **Negation marking works on templates, not clearly on real sentences.**
+  - Directional test: significant for every model (LR −25.7 points, MNB −39.5).
+  - Real negated sentences (sst2_neg, n = 519): significant only for GNB (−9.3).
+  - LR −2.9 points [−0.2, +5.8], raw p 0.064, Holm 0.64.
+  - The templates overstate the benefit (see shortfalls C10).
+- **Side effects:** marking costs the decision tree 2.3 points on IMDb (significant). LR's
+  +1.2 points on SST-2 test has a raw p of 0.013 but isn't significant after Holm, which is
+  exactly the kind of claim the correction exists to stop.
+- **H4:** distance is significantly *worse* than confidence for LR, MNB, RF and GNB, and no
+  better for DT. "Combined" beats confidence only for MNB base (+0.012 AUROC, Holm p 0.003).
+- **McNemar:** 35 of 40 model pairs differ significantly. LR vs MNB doesn't on any dataset.
+
+**Rejected:** Bonferroni (needlessly conservative next to Holm); Benjamini–Hochberg FDR (it
+controls a different error rate, and the report makes per-claim statements).

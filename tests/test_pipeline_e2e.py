@@ -79,5 +79,10 @@ def test_cpu_pipeline(tmp_path, monkeypatch):
     assert (root / "results" / "word_errors.csv").exists()
     direction = pd.read_csv(root / "results" / "negation_direction.csv")
     assert {"negation_dir", "negation_dir_neg"} <= set(direction["test"])
+    effect = pd.read_csv(root / "results" / "negmark_effect.csv")
+    assert {"p_value", "p_holm", "significant"} <= set(effect.columns)
+    assert (effect["p_holm"] >= effect["p_value"]).all()
+    mc = pd.read_csv(root / "results" / "mcnemar.csv")
+    assert "p_holm" in mc.columns
     assert (root / "results" / "explain" / "tree_depth4.txt").exists()
     assert (root / "figures" / "error_heatmap_base.png").exists()

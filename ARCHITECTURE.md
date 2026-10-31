@@ -122,7 +122,7 @@ Seed policy (D13): tables average DistilBERT over 3 seeds; per-item analyses use
 | Choice | Effect |
 |---|---|
 | Predictions cached as parquet (D7) | All analyses re-run in seconds; models run once |
-| Heavy libraries imported lazily (D2) | `import mirage` and the 69 tests need no torch, and the test suite finishes in about 20 s |
+| Heavy libraries imported lazily (D2) | `import mirage` and the 72 tests need no torch, and the test suite finishes in about 20 s |
 | Sparse TF-IDF end to end; RF `n_jobs=-1` | Classical training fits laptop RAM and uses all cores |
 | GNB on 300-d TruncatedSVD | Dense Gaussian NB stays tractable (a dense 67k × 100k+ matrix would not) |
 | DistilBERT: dynamic padding, fp16, `save_total_limit=1`, best epoch kept | ~20–30 min per seed on a T4; only one checkpoint on disk |

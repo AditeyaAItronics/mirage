@@ -5,6 +5,9 @@ Error predictors per classifier (target = 1 if the model is wrong):
   low_conf     - 1 - max predicted probability (Hendrycks & Gimpel, 2017)
   combined     - logistic regression on [distance, max prob], out-of-fold over 5 folds
   length       - number of words: a baseline, since per-sentence max distance grows with length
+
+H4 is a paired question, so each predictor is also compared with low_conf on the same reviews:
+`diff_vs_conf` = AUROC(predictor) - AUROC(low_conf), with a paired bootstrap CI and p-value.
 """
 
 from __future__ import annotations
@@ -17,7 +20,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import QuantileTransformer
 
 from mirage.metrics import auroc, confidence
-from mirage.stats import bootstrap
+from mirage.stats import bootstrap, paired_auroc_diff
 
 
 def oof_combined(
@@ -67,16 +70,23 @@ def compare_predictors(
     rows = []
     for name, s in scores.items():
         ci = bootstrap(lambda i, s=s: auroc(target[i], s[i]), len(target), n_resamples, seed)
-        rows.append(
-            {
-                "predictor": name,
-                "auroc": ci["estimate"],
-                "ci_low": ci["ci_low"],
-                "ci_high": ci["ci_high"],
-                "n": len(target),
-                "n_errors": int(target.sum()),
+        row = {
+            "predictor": name,
+            "auroc": ci["estimate"],
+            "ci_low": ci["ci_low"],
+            "ci_high": ci["ci_high"],
+            "n": len(target),
+            "n_errors": int(target.sum()),
+        }
+        if name != "low_conf":
+            d = paired_auroc_diff(target, s, scores["low_conf"], n_resamples, seed)
+            row |= {
+                "diff_vs_conf": d["estimate"],
+                "diff_lo": d["ci_low"],
+                "diff_hi": d["ci_high"],
+                "diff_p": d["p_value"],
             }
-        )
+        rows.append(row)
     return pd.DataFrame(rows)
 
 

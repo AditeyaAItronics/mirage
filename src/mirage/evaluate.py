@@ -16,7 +16,7 @@ from mirage import paths
 from mirage.behavioral.suite import case_failures, dir_cases
 from mirage.metrics import summarize
 from mirage.predict import load_predictions
-from mirage.stats import gap_closed_ci, mcnemar_test, paired_diff_ci, rate_ci
+from mirage.stats import gap_closed_ci, holm, mcnemar_test, paired_diff_ci, rate_ci
 
 REFERENCE = "distilbert"
 INDIST = "sst2_test"  # reported in-distribution test set; sst2_val is for choices only
@@ -132,6 +132,7 @@ def negation_gap(
                 "gap_base": gap["estimate"],
                 "gap_base_lo": gap["ci_low"],
                 "gap_base_hi": gap["ci_high"],
+                "gap_base_p": gap["p_value"],
             }
             if "negmark" in aligned and aligned["negmark"].notna().all():
                 g1 = paired_diff_ci(aligned["negmark"], aligned["ref"], **ci_kw)
@@ -140,12 +141,62 @@ def negation_gap(
                     "gap_negmark": g1["estimate"],
                     "gap_negmark_lo": g1["ci_low"],
                     "gap_negmark_hi": g1["ci_high"],
+                    "gap_negmark_p": g1["p_value"],
                     "gap_closed": closed["estimate"],
                     "gap_closed_lo": closed["ci_low"],
                     "gap_closed_hi": closed["ci_high"],
+                    "gap_closed_p": closed["p_value"],
                 }
             rows.append(row)
-    return pd.DataFrame(rows)
+    out = pd.DataFrame(rows)
+    # One family per question: H2 = every base gap, H3 = every gap-closed ratio (D28).
+    for col in ("gap_base_p", "gap_negmark_p", "gap_closed_p"):
+        if col in out:
+            out[col.replace("_p", "_p_holm")] = holm(out[col])
+    return out
+
+
+def negmark_effect(
+    preds: pd.DataFrame,
+    tests=("sst2_neg", "beh_negation_dir", "sst2_test", "imdb"),
+    **ci_kw,
+) -> pd.DataFrame:
+    """H3 within each classical model: error(base) - error(negmark) on the same items.
+
+    Needs no DistilBERT. sst2_test and imdb are controls: marking should help on negation without
+    costing accuracy elsewhere. Holm-adjusted across every (model, test) row (D28).
+    DIR cases are compared on pairs that are applicable under both variants.
+    """
+    preds = canonical(preds)
+    rows = []
+    for m, g in preds.groupby("model"):
+        if m == REFERENCE or not {"base", "negmark"} <= set(g["variant"]):
+            continue
+        fb = _error_flags(g[g["variant"] == "base"])
+        fn = _error_flags(g[g["variant"] == "negmark"])
+        for test in tests:
+            if test not in fb or test not in fn:
+                continue
+            both = pd.concat({"base": fb[test], "negmark": fn[test]}, axis=1, join="inner")
+            d = paired_diff_ci(both["base"], both["negmark"], **ci_kw)
+            rows.append(
+                {
+                    "model": m,
+                    "test": test,
+                    "n": len(both),
+                    "error_base": float(both["base"].mean()),
+                    "error_negmark": float(both["negmark"].mean()),
+                    "reduction": d["estimate"],
+                    "reduction_lo": d["ci_low"],
+                    "reduction_hi": d["ci_high"],
+                    "p_value": d["p_value"],
+                }
+            )
+    out = pd.DataFrame(rows)
+    if len(out):
+        out["p_holm"] = holm(out["p_value"])
+        out["significant"] = out["p_holm"] < 0.05
+    return out
 
 
 def mcnemar_table(preds: pd.DataFrame, datasets=SETS) -> pd.DataFrame:
@@ -160,7 +211,11 @@ def mcnemar_table(preds: pd.DataFrame, datasets=SETS) -> pd.DataFrame:
             rows.append(
                 {"dataset": ds, "model_a": a, "model_b": b, **mcnemar_test(pair[a], pair[b])}
             )
-    return pd.DataFrame(rows)
+    out = pd.DataFrame(rows)
+    if len(out):  # one family per dataset: all pairwise model comparisons on it (D28)
+        out["p_holm"] = out.groupby("dataset")["p_value"].transform(lambda p: holm(p))
+        out["significant"] = out["p_holm"] < 0.05
+    return out
 
 
 def _behavioral(g: pd.DataFrame) -> pd.DataFrame:
@@ -255,6 +310,7 @@ def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
         "word_errors": word_errors(preds),
         "negation_control": negation_control(preds, **kw),
         "negation_direction": negation_direction(preds, **kw),
+        "negmark_effect": negmark_effect(preds, **kw),
     }
     if (preds["model"] == REFERENCE).any():
         tables["negation_gap"] = negation_gap(preds, **kw)

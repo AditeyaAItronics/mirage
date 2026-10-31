@@ -64,3 +64,36 @@ def test_mcnemar_matches_statsmodels():
     assert ours["p_value"] == pytest.approx(
         mcnemar(table, exact=ours["exact"], correction=True).pvalue
     )
+
+
+def test_bootstrap_p_value_separates_real_and_null_effects():
+    rng = np.random.default_rng(0)
+    a = rng.random(400) < 0.4
+    b = rng.random(400) < 0.2
+    real = paired_diff_ci(a, b, n_resamples=500)
+    same = paired_diff_ci(a, a.copy(), n_resamples=500)
+    assert real["p_value"] < 1e-6  # no 2 / (n_resamples + 1) floor (D28)
+    assert same["p_value"] == 1.0  # all resamples sit exactly at the null
+    assert 0 < real["p_value"] <= 1
+
+
+def test_holm_matches_textbook_and_keeps_nans():
+    from mirage.stats import holm
+
+    out = holm([0.01, 0.04, 0.03, np.nan])
+    # sorted 0.01, 0.03, 0.04 -> x3, x2, x1 -> 0.03, 0.06, 0.06 (monotone)
+    assert out[:3] == pytest.approx([0.03, 0.06, 0.06])
+    assert np.isnan(out[3])
+    assert np.isnan(holm([np.nan])).all()
+
+
+def test_paired_auroc_diff_detects_the_better_score():
+    from mirage.stats import paired_auroc_diff
+
+    rng = np.random.default_rng(1)
+    y = rng.integers(0, 2, 300)
+    good = y + rng.normal(0, 0.5, 300)
+    noise = rng.normal(0, 1, 300)
+    d = paired_auroc_diff(y, good, noise, n_resamples=300)
+    assert d["estimate"] > 0.3 and d["ci_low"] > 0 and d["p_value"] < 0.01
+    assert paired_auroc_diff(y, good, good, n_resamples=100)["p_value"] == 1.0

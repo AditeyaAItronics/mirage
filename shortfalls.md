@@ -201,6 +201,17 @@ curves, which don't depend on position.
 
 **Effort:** small.
 
+### C10. 🟠 NEW (first result): negation marking helps templates, not clearly real sentences
+**What:** after Holm, `NOT_` marking cuts the directional-test error significantly for every model
+(LR −25.7 points, MNB −39.5). On real negated SST-2 sentences (n = 519) it's significant only
+for GNB. LR's gain is −2.9 points [−0.2, +5.8], Holm p 0.64.
+**Why it matters:** H3 rests on real negation. The templates are short and have a single, clear
+negation scope, which is the case `negation_mark` handles best (C7).
+**Possible fix:** check which real negated sentences change prediction under marking. Try the
+scope variants from C7. Report the template and real-sentence effects side by side, not just the
+template one.
+**Effort:** small.
+
 ---
 
 ## D. Behavioral tests
@@ -332,12 +343,12 @@ concluding.
 
 ## G. Statistics
 
-### G1. 🟠 No correction for running many tests
-**What:** dozens of comparisons (McNemar tests, gap CIs, AUROC comparisons) are made at α = 0.05. By chance,
-about 1 in 20 true-null comparisons will look significant.
-**Possible fix:** apply Holm–Bonferroni within each family of tests (one per research question). This is a few
-lines in `evaluate.py`.
-**Effort:** small.
+### G1. ✅ RESOLVED (D28): no correction for running many tests
+Every paired comparison now has a p-value, adjusted with Holm–Bonferroni within its family (McNemar
+per dataset, negation gaps, negation-marking effects, early-warning AUROC differences). H4 now has
+a direct paired test of distance against confidence. The correction already changes a conclusion:
+LR's +1.2-point gain from negation marking on SST-2 test has a raw p of 0.013 but isn't significant
+after Holm.
 
 ### G2. 🟠 Confidence intervals ignore seed variance
 **What:** the per-item analyses use DistilBERT's median seed only, so their CIs reflect item sampling, not
@@ -350,6 +361,21 @@ training randomness.
 **What:** ECE uses 15 equal-width bins. With 180 negation sentences, many bins are nearly empty.
 **Possible fix:** use equal-mass bins on small sets, or report the Brier score too.
 **Effort:** small.
+
+### G4. 🟢 NEW: p-values use a normal approximation
+**What:** bootstrap p-values come from the standard error, assuming a roughly normal bootstrap
+distribution. Counting resamples instead had a floor that Holm made useless (D28).
+**Why it matters:** fine for differences of means and AUROCs at our sample sizes. The H3
+gap-closed *ratio* can be skewed when the base gap is small.
+**Possible fix:** a BCa interval, or a permutation test for the ratio.
+**Effort:** small.
+
+### G5. 🟢 NEW: the families are a design choice
+**What:** Holm is applied per family (McNemar per dataset; one family per table elsewhere). Larger
+families make every test stricter.
+**Possible fix:** state the families in the report's methods section (they're listed in D28), and
+show raw p-values next to adjusted ones.
+**Effort:** none (wording).
 
 ---
 
@@ -401,7 +427,7 @@ wrong results.
 
 All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1). Next, in order:
 1. ~~**D5** (directional negation test)~~: done, see D27.
-2. **G1** (multiple-comparison correction): a few lines, and needed before any "significant" claim.
+2. ~~**G1** (multiple-comparison correction)~~: done, see D28.
 3. **C9** (degenerate DT probabilities): a pruned tree variant.
 4. **F4** and **C8** (length checks): both are analyses on columns that already exist.
 5. **B4**, **C7** and **B9**: cheap robustness checks for the headline results.
@@ -417,3 +443,4 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 - **H1, never run on full data.** The classical side has run end to end, with three fixes (D26); the DistilBERT run on Kaggle is still pending.
 - **H4, stale docs.** Updated.
 - **D5, negation template rewards negative bias.** Fixed with a directional "X / not X" test scored on the model's own answers (D27).
+- **G1, no multiple-comparison correction.** Fixed with Holm-adjusted p-values on every paired comparison, plus a paired AUROC test for H4 (D28).

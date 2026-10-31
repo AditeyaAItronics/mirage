@@ -209,6 +209,7 @@ def stage_warn(args) -> None:
     from mirage.data import load
     from mirage.evaluate import canonical
     from mirage.predict import load_predictions
+    from mirage.stats import holm
     from mirage.warning.distance import fit_distance, text_distance
     from mirage.warning.error_detection import compare_predictors, error_by_decile, ood_sanity
 
@@ -242,6 +243,9 @@ def stage_warn(args) -> None:
                 error_by_decile(g, 1 - conf, "low confidence").assign(model=m),
             ]
     out = pd.concat(rows, ignore_index=True).assign(ood_sanity_auroc=sanity)
+    # H4 family per predictor: "beats confidence" across every model and variant (D28)
+    out["diff_p_holm"] = out.groupby("predictor")["diff_p"].transform(lambda p: holm(p))
+    out["beats_conf"] = (out["diff_p_holm"] < 0.05) & (out["diff_vs_conf"] > 0)
     out.to_csv(paths.RESULTS / "early_warning.csv", index=False)
     pd.concat(deciles, ignore_index=True).to_csv(
         paths.RESULTS / "early_warning_deciles.csv", index=False
