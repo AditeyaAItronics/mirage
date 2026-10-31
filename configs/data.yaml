@@ -1,0 +1,7 @@
+seed: 42
+sst2_dataset: stanfordnlp/sst2
+imdb_dataset: stanfordnlp/imdb
+heldout_frac: 0.05
+imdb_sample_size: 2000
+# Matched on normalized text, so "doesn't" has already become "does n't".
+negation_words: ["not", "never", "no", "nothing", "n't"]

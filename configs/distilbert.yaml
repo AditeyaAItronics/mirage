@@ -1,0 +1,10 @@
+model_name: distilbert-base-uncased
+seeds: [13, 42, 87]
+learning_rate: 2.0e-5
+warmup_ratio: 0.06
+batch_size: 32
+eval_batch_size: 64
+epochs: 3
+max_length: 128
+imdb_max_length: 256
+fp16: true

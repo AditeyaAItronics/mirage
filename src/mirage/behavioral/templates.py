@@ -1,0 +1,118 @@
+"""CheckList-style generators. Each returns a list of row dicts for the suite.
+
+Row fields: text, label, test_type, kind ("MFT" or "INV"), case_id, role, scored.
+- MFT (minimum functionality): one row per case, failure = wrong label.
+- INV (invariance): two rows per case (role original / perturbed), failure = prediction changes.
+`label` is always the intended sentiment, so every row fits the predictions contract.
+"""
+
+from __future__ import annotations
+
+import itertools
+
+import numpy as np
+
+from mirage.behavioral import wordlists as W
+
+SIMPLE_TEMPLATES = [
+    "The {noun} was {adj}.",
+    "This {noun} is {adj}.",
+    "I thought the {noun} was {adj}.",
+    "Honestly, the {noun} is {adj}.",
+]
+NEGATION_TEMPLATES = [
+    "The {noun} was not {adj}.",
+    "This {noun} isn't {adj}.",
+    "I don't think the {noun} was {adj}.",
+    "The {noun} was never {adj}.",
+]
+NAME_TEMPLATES = ["{name} {verb} the {noun}.", "{name} said the {noun} was {adj}."]
+
+
+def _sample(rng: np.random.Generator, pool: list, k: int) -> list:
+    if k > len(pool):
+        raise ValueError(f"asked for {k} cases but only {len(pool)} unique combinations exist")
+    idx = rng.choice(len(pool), size=k, replace=False)
+    return [pool[i] for i in sorted(idx)]
+
+
+def _fill(templates, adjs, k, rng):
+    pool = list(itertools.product(templates, W.NOUNS, adjs))
+    return [t.format(noun=n, adj=a) for t, n, a in _sample(rng, pool, k)], pool
+
+
+def simple(n: int, rng: np.random.Generator) -> list[dict]:
+    rows = []
+    for label, adjs, k in ((1, W.POS_ADJ, n // 2), (0, W.NEG_ADJ, n - n // 2)):
+        texts, _ = _fill(SIMPLE_TEMPLATES, adjs, k, rng)
+        rows += [{"text": t, "label": label, "test_type": "simple"} for t in texts]
+    return [
+        {**r, "kind": "MFT", "case_id": f"simple-{i}", "role": "single", "scored": True}
+        for i, r in enumerate(rows)
+    ]
+
+
+def negation(n_pos: int, n_neg: int, rng: np.random.Generator) -> list[dict]:
+    """'not <positive>' -> negative (scored). 'not <negative>' -> labelled 1, NOT scored.
+
+    "not bad" is at best mildly positive, so negated negatives are reported separately as an
+    ambiguous probe rather than counted as failures (majordecisions.md D11).
+    """
+    pos_texts, _ = _fill(NEGATION_TEMPLATES, W.POS_ADJ, n_pos, rng)
+    neg_texts, _ = _fill(NEGATION_TEMPLATES, W.NEG_ADJ, n_neg, rng)
+    rows = [{"text": t, "label": 0, "test_type": "negation", "scored": True} for t in pos_texts]
+    rows += [
+        {"text": t, "label": 1, "test_type": "negation_neg", "scored": False} for t in neg_texts
+    ]
+    return [
+        {**r, "kind": "MFT", "case_id": f"{r['test_type']}-{i}", "role": "single"}
+        for i, r in enumerate(rows)
+    ]
+
+
+def make_typo(word: str, rng: np.random.Generator) -> str:
+    """Swap two adjacent inner characters or drop one inner character; never returns `word`."""
+    for _ in range(20):
+        if rng.random() < 0.5 and len(word) >= 4:
+            i = int(rng.integers(1, len(word) - 2))
+            out = word[:i] + word[i + 1] + word[i] + word[i + 2 :]
+        else:
+            i = int(rng.integers(1, len(word) - 1))
+            out = word[:i] + word[i + 1 :]
+        if out != word:
+            return out
+    raise ValueError(f"could not perturb {word!r}")
+
+
+def typo(n: int, rng: np.random.Generator) -> list[dict]:
+    """Invariance: a typo in the sentiment word only. Short words (<4 letters) are excluded."""
+    pool = [
+        (t, noun, adj, label)
+        for label, adjs in ((1, W.POS_ADJ), (0, W.NEG_ADJ))
+        for t, noun, adj in itertools.product(SIMPLE_TEMPLATES, W.NOUNS, adjs)
+        if len(adj) >= 4
+    ]
+    rows = []
+    for i, (t, noun, adj, label) in enumerate(_sample(rng, pool, n)):
+        typo_adj = make_typo(adj, rng)
+        for role, a in (("original", adj), ("perturbed", typo_adj)):
+            text = t.format(noun=noun, adj=a)
+            rows.append({"text": text, "label": label, "role": role, "case_id": f"typo-{i}"})
+    return [{**r, "test_type": "typo", "kind": "INV", "scored": True} for r in rows]
+
+
+def name_swap(n: int, rng: np.random.Generator) -> list[dict]:
+    """Invariance: swap an Indian name for a Western one (and back) in otherwise identical text."""
+    pool = []
+    for label, verbs, adjs in ((1, W.POS_VERBS, W.POS_ADJ), (0, W.NEG_VERBS, W.NEG_ADJ)):
+        for a, b in zip(W.NAMES_A, W.NAMES_B, strict=True):
+            for noun in W.NOUNS:
+                pool.append((NAME_TEMPLATES[0], a, b, noun, verbs, adjs, label))
+                pool.append((NAME_TEMPLATES[1], b, a, noun, verbs, adjs, label))
+    rows = []
+    for i, (t, name1, name2, noun, verbs, adjs, label) in enumerate(_sample(rng, pool, n)):
+        verb, adj = verbs[int(rng.integers(len(verbs)))], adjs[int(rng.integers(len(adjs)))]
+        for role, name in (("original", name1), ("perturbed", name2)):
+            text = t.format(name=name, verb=verb, noun=noun, adj=adj)
+            rows.append({"text": text, "label": label, "role": role, "case_id": f"name_swap-{i}"})
+    return [{**r, "test_type": "name_swap", "kind": "INV", "scored": True} for r in rows]

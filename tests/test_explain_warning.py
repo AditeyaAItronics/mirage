@@ -1,0 +1,70 @@
+import numpy as np
+import pandas as pd
+import pytest
+from scipy.spatial.distance import mahalanobis
+
+from mirage.explain.deletion import deletion_check
+from mirage.explain.overlap import jaccard, overlap_matrix, rbo, unigram_ranking
+from mirage.warning.error_detection import compare_predictors, ood_sanity, oof_combined
+from mirage.warning.gaussian import GaussianDensity
+
+
+def test_overlap_measures():
+    a, b = ["good", "bad", "great", "dull"], ["good", "bad", "awful", "fun"]
+    assert jaccard(a, b, 4) == pytest.approx(2 / 6)
+    assert rbo(a, a) > rbo(a, b) > rbo(a, ["x", "y", "z", "w"]) == 0
+    assert unigram_ranking(["not good", "good", "bad", "good"]) == ["good", "bad"]
+    assert len(overlap_matrix({"m1": a, "m2": b, "m3": a}, k=4)) == 3
+
+
+def test_deletion_detects_the_word_that_matters():
+    # toy model: P(pos) = 0.9 if "good" present else 0.5
+    def proba(texts):
+        p = np.array([0.9 if "good" in t.split() else 0.5 for t in texts])
+        return np.c_[1 - p, p]
+
+    words = [["the", "film", "was", "good"]]
+    attrs = [[0.0, 0.1, 0.0, 0.8]]
+    out = deletion_check(proba, words, attrs, ks=(1,), n_random=20)
+    row = out.iloc[0]
+    assert row["drop_top"] == pytest.approx(0.4)
+    assert row["drop_random"] < row["drop_top"]
+
+
+def test_mahalanobis_matches_scipy():
+    rng = np.random.default_rng(0)
+    X = rng.normal(size=(500, 5)) @ rng.normal(size=(5, 5))
+    g = GaussianDensity().fit(X)
+    x = rng.normal(size=(3, 5))
+    ours = g.score(x)
+    ref = [mahalanobis(v, g.means_[0], g.precision_) for v in x]
+    assert ours == pytest.approx(ref)
+
+
+def test_class_conditional_takes_min_over_classes():
+    rng = np.random.default_rng(0)
+    X = np.r_[rng.normal(-3, 1, (200, 2)), rng.normal(3, 1, (200, 2))]
+    y = np.r_[np.zeros(200), np.ones(200)].astype(int)
+    g = GaussianDensity(class_conditional=True).fit(X, y)
+    near_a, middle = g.score(np.array([[-3.0, -3.0], [0.0, 0.0]]))
+    assert near_a < middle
+
+
+def test_ood_sanity_and_error_detection():
+    rng = np.random.default_rng(0)
+    assert ood_sanity(rng.normal(0, 1, 200), rng.normal(5, 1, 200)) > 0.99
+    n = 400
+    wrong = rng.random(n) < 0.2
+    distance = rng.normal(0, 1, n) + 2 * wrong  # distance is informative
+    p_pos = np.clip(rng.uniform(0.55, 0.99, n), 0, 1)  # confidence is not
+    preds = pd.DataFrame({"p_pos": p_pos, "correct": ~wrong})
+    res = compare_predictors(preds, distance, n_resamples=100).set_index("predictor")
+    assert res.loc["distance", "auroc"] > 0.8
+    assert abs(res.loc["low_conf", "auroc"] - 0.5) < 0.12
+
+
+def test_oof_never_scores_its_training_fold():
+    rng = np.random.default_rng(0)
+    target = (rng.random(100) < 0.3).astype(int)
+    out = oof_combined(rng.normal(size=100), rng.random(100), target, folds=5, seed=0)
+    assert not np.isnan(out).any()

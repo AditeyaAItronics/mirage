@@ -1,0 +1,6 @@
+dataset,n,pos_frac,mean_tokens,median_tokens
+sst2_train,63981,0.5578,9.4,7.0
+sst2_heldout,3368,0.5579,9.5,7.0
+sst2_val,872,0.5092,19.6,19.0
+sst2_neg,180,0.3611,22.3,22.0
+imdb,2000,0.5,269.5,201.0

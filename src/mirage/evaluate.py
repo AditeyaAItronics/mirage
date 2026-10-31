@@ -1,0 +1,173 @@
+"""All result tables, computed from prediction files only.
+
+Seed policy (majordecisions.md D13): aggregate tables report DistilBERT as mean +/- std over its
+seeds; per-item analyses (gaps, McNemar, failures) use its median-accuracy seed.
+"""
+
+from __future__ import annotations
+
+import itertools
+
+import numpy as np
+import pandas as pd
+
+from mirage import paths
+from mirage.behavioral.suite import case_failures
+from mirage.metrics import summarize
+from mirage.predict import load_predictions
+from mirage.stats import gap_closed_ci, mcnemar_test, paired_diff_ci, rate_ci
+
+REFERENCE = "distilbert"
+
+
+def median_seed(preds: pd.DataFrame, model: str = REFERENCE) -> int:
+    """Seed whose sst2_val accuracy is the median across seeds (lower-middle for even counts)."""
+    val = preds[(preds["model"] == model) & (preds["dataset"] == "sst2_val")]
+    if val.empty:
+        raise ValueError(
+            "median_seed needs sst2_val predictions: pass all predictions, then filter by dataset"
+        )
+    acc = val.groupby("seed")["correct"].mean().sort_values()
+    return int(acc.index[(len(acc) - 1) // 2])
+
+
+def canonical(preds: pd.DataFrame) -> pd.DataFrame:
+    """Keep one seed per model: DistilBERT's median seed, the only seed for everything else."""
+    if (preds["model"] == REFERENCE).any():
+        keep = (preds["model"] != REFERENCE) | (preds["seed"] == median_seed(preds))
+        preds = preds[keep]
+    return preds
+
+
+def main_table(preds: pd.DataFrame, datasets=("sst2_val", "sst2_neg", "imdb")) -> pd.DataFrame:
+    rows = []
+    for (m, v, s, d), g in preds[preds["dataset"].isin(datasets)].groupby(
+        ["model", "variant", "seed", "dataset"]
+    ):
+        rows.append({"model": m, "variant": v, "seed": s, "dataset": d, **summarize(g)})
+    per_seed = pd.DataFrame(rows)
+    agg = per_seed.groupby(["model", "variant", "dataset"]).agg(
+        n_seeds=("seed", "nunique"),
+        accuracy=("accuracy", "mean"),
+        accuracy_std=("accuracy", "std"),
+        macro_f1=("macro_f1", "mean"),
+        ece=("ece", "mean"),
+    )
+    wide = agg.unstack("dataset")
+    wide.columns = [f"{metric}__{ds}" for metric, ds in wide.columns]
+    if {"accuracy__sst2_val", "accuracy__imdb"} <= set(wide.columns):
+        wide["imdb_acc_drop"] = wide["accuracy__sst2_val"] - wide["accuracy__imdb"]
+    return wide.reset_index()
+
+
+def _error_flags(preds: pd.DataFrame) -> dict[str, pd.Series]:
+    """Per-item (or per-case) failure flags for every test type of one model, indexed by id."""
+    out = {}
+    for ds in ("sst2_val", "sst2_neg", "imdb"):
+        g = preds[preds["dataset"] == ds]
+        if len(g):
+            out[ds] = (~g["correct"].astype(bool)).set_axis(g["item_id"]).rename(ds)
+    beh = preds[preds["dataset"] == "behavioral"]
+    if len(beh):
+        cf = case_failures(beh)
+        for tt, g in cf.groupby("test_type"):
+            out[f"beh_{tt}"] = g["failed"].set_axis(g["case_id"]).rename(tt)
+    return out
+
+
+def error_table(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
+    """H1: error rate per test type with CI, and relative to the model's SST-2 val error."""
+    rows = []
+    for (m, v), g in canonical(preds).groupby(["model", "variant"]):
+        flags = _error_flags(g)
+        base_err = flags["sst2_val"].mean() if "sst2_val" in flags else np.nan
+        for test, f in flags.items():
+            ci = rate_ci(f.to_numpy(), **ci_kw)
+            rows.append(
+                {
+                    "model": m,
+                    "variant": v,
+                    "test": test,
+                    "error": ci["estimate"],
+                    "ci_low": ci["ci_low"],
+                    "ci_high": ci["ci_high"],
+                    "n": ci["n"],
+                    "relative_to_val": ci["estimate"] / base_err if base_err else np.nan,
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+def negation_gap(preds: pd.DataFrame, tests=("sst2_neg", "beh_negation"), **ci_kw) -> pd.DataFrame:
+    """H2/H3: classical negation error minus DistilBERT's, before/after negation marking."""
+    preds = canonical(preds)
+    flags = {(m, v): _error_flags(g) for (m, v), g in preds.groupby(["model", "variant"])}
+    ref = flags.get((REFERENCE, "base"))
+    if ref is None:
+        raise ValueError("negation_gap needs DistilBERT predictions as the reference")
+    rows = []
+    for (m, v), f in flags.items():
+        if m == REFERENCE or v != "base":
+            continue
+        for test in tests:
+            if test not in f or test not in ref:
+                continue
+            aligned = pd.concat(
+                {
+                    "base": f[test],
+                    "ref": ref[test],
+                    "negmark": flags.get((m, "negmark"), {}).get(test),
+                },
+                axis=1,
+                join="inner",
+            )
+            row = {"model": m, "test": test, "n": len(aligned)}
+            gap = paired_diff_ci(aligned["base"], aligned["ref"], **ci_kw)
+            row |= {
+                "gap_base": gap["estimate"],
+                "gap_base_lo": gap["ci_low"],
+                "gap_base_hi": gap["ci_high"],
+            }
+            if "negmark" in aligned and aligned["negmark"].notna().all():
+                g1 = paired_diff_ci(aligned["negmark"], aligned["ref"], **ci_kw)
+                closed = gap_closed_ci(aligned["base"], aligned["negmark"], aligned["ref"], **ci_kw)
+                row |= {
+                    "gap_negmark": g1["estimate"],
+                    "gap_negmark_lo": g1["ci_low"],
+                    "gap_negmark_hi": g1["ci_high"],
+                    "gap_closed": closed["estimate"],
+                    "gap_closed_lo": closed["ci_low"],
+                    "gap_closed_hi": closed["ci_high"],
+                }
+            rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def mcnemar_table(preds: pd.DataFrame, datasets=("sst2_val", "sst2_neg", "imdb")) -> pd.DataFrame:
+    preds = canonical(preds)
+    preds = preds[preds["variant"] == "base"]
+    rows = []
+    for ds in datasets:
+        d = preds[preds["dataset"] == ds]
+        wide = d.pivot_table(index="item_id", columns="model", values="correct", aggfunc="first")
+        for a, b in itertools.combinations(sorted(wide.columns), 2):
+            pair = wide[[a, b]].dropna()
+            rows.append(
+                {"dataset": ds, "model_a": a, "model_b": b, **mcnemar_test(pair[a], pair[b])}
+            )
+    return pd.DataFrame(rows)
+
+
+def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
+    preds = load_predictions()
+    kw = {"n_resamples": ci_resamples}
+    tables = {
+        "main_table": main_table(preds),
+        "errors_by_type": error_table(preds, **kw),
+        "mcnemar": mcnemar_table(preds),
+    }
+    if (preds["model"] == REFERENCE).any():
+        tables["negation_gap"] = negation_gap(preds, **kw)
+    for name, df in tables.items():
+        df.to_csv(paths.RESULTS / f"{name}.csv", index=False)
+    return tables

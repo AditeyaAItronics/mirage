@@ -1,0 +1,19 @@
+seed: 42
+vectorizer:
+  ngram_range: [1, 2]
+  min_df: 2
+  sublinear_tf: true
+models:
+  logreg:
+    grid: {C: [0.1, 1, 10]}
+  dtree:
+    grid: {max_depth: [10, 30, null]}
+  rf:
+    n_estimators: 300
+    grid: {max_depth: [30, null]}
+  mnb:
+    grid: {alpha: [0.1, 0.5, 1.0]}
+  gnb:
+    svd_components: 300
+    grid: {}
+explain_tree_depth: 4

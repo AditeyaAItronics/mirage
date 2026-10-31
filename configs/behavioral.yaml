@@ -1,0 +1,7 @@
+seed: 42
+counts:
+  simple: 100            # 50 positive + 50 negative
+  negation_pos: 100      # "not <positive>" -> expected negative (scored)
+  negation_neg: 50       # "not <negative>" -> reported separately (ambiguous)
+  typo: 100              # invariance pairs
+  name_swap: 50          # invariance pairs
