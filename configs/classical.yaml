@@ -5,7 +5,7 @@ vectorizer:
   sublinear_tf: true
 models:
   logreg:
-    grid: {C: [0.1, 1, 10]}
+    grid: {C: [0.1, 1, 10, 30, 100]}   # 10 was the edge of the old grid on the leak-free split
   dtree:
     grid: {max_depth: [10, 30, null]}
   rf:

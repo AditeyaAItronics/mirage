@@ -56,7 +56,9 @@ def load_classifier(path: Path) -> Classifier:
     if (path / "model.joblib").exists():
         return SklearnClassifier.load(path)
     if (path / "config.json").exists():
+        from mirage.config import load_config
         from mirage.models.distilbert import DistilBertClassifier  # lazy: needs torch
 
-        return DistilBertClassifier.load(path)
+        cfg = load_config("distilbert")
+        return DistilBertClassifier.load(path, cfg["max_length"], cfg["imdb_max_length"])
     raise FileNotFoundError(f"no saved model in {path}")

@@ -91,10 +91,18 @@ def _saved_models(model_filter=None, variant_filter=None):
 
 def stage_predict(args) -> None:
     from mirage.models.base import load_classifier
-    from mirage.predict import EVAL_SETS, run_predictions
+    from mirage.predict import EVAL_SETS, predictions_path, run_predictions
 
     datasets = tuple(args.datasets) if args.datasets else EVAL_SETS
-    for _name, variant, seed, d in _saved_models(args.models, args.variants):
+    for name, variant, seed, d in _saved_models(args.models, args.variants):
+        files = [predictions_path(name, variant, seed, ds) for ds in datasets]
+        model_time = max(f.stat().st_mtime for f in d.rglob("*") if f.is_file())
+        fresh = all(f.exists() and f.stat().st_mtime >= model_time for f in files)
+        if fresh and not getattr(args, "overwrite", False):
+            # e.g. DistilBERT predictions made on the Kaggle GPU: don't redo them on a CPU.
+            # Retraining a model makes its files newer, so stale predictions are never kept.
+            print(f"skip {d.name}: predictions are newer than the model (--overwrite to redo)")
+            continue
         clf = load_classifier(d)
         for p in run_predictions(clf, variant, seed, datasets):
             print("wrote", p.name)
@@ -179,7 +187,9 @@ def _run_ig(max_items: int):
     fails = preds[(preds["seed"] == seed) & ~preds["correct"].astype(bool)]
     # Half the budget from real SST-2 sentences, half from behavioral cases. Held-out (tuning)
     # and IMDb (long reviews, slow IG) are excluded.
-    real = fails[fails["dataset"].isin(["sst2_neg", "sst2_val"])].drop_duplicates("text")
+    real = fails[fails["dataset"].isin(["sst2_neg", "sst2_val", "sst2_test"])].drop_duplicates(
+        "text"
+    )
     beh = fails[fails["dataset"] == "behavioral"].drop_duplicates("text")
     n_real = min(len(real), max_items - min(len(beh), max_items // 2))
     texts = real["text"].head(n_real).tolist() + beh["text"].head(max_items - n_real).tolist()
@@ -199,29 +209,31 @@ def stage_warn(args) -> None:
     from mirage.data import load
     from mirage.evaluate import canonical
     from mirage.predict import load_predictions
-    from mirage.warning.embed import cached_embeddings
+    from mirage.warning.distance import fit_distance, text_distance
     from mirage.warning.error_detection import compare_predictors, error_by_decile, ood_sanity
-    from mirage.warning.gaussian import GaussianDensity
 
     cfg = load_config("warning")
-    emb = {
-        name: cached_embeddings(
-            load(name), name, cfg["embedding_model"], cfg["embedding_batch_size"]
-        )
-        for name in ("sst2_train", "sst2_val", "imdb")
-    }
-    density = GaussianDensity().fit(emb["sst2_train"])
+    density = fit_distance(load("sst2_train"), cfg)
     imdb = load("imdb")
-    dist = pd.Series(density.score(emb["imdb"]), index=imdb["item_id"])
-    sanity = ood_sanity(density.score(emb["sst2_val"]), dist.to_numpy())
-    print(f"sanity: distance AUROC SST-2 val vs IMDb = {sanity:.3f}")
+    dist = text_distance(density, imdb, "imdb", cfg)
+    n_words = pd.Series(imdb["text"].str.split().str.len().to_numpy(), index=imdb["item_id"])
+    in_dist = text_distance(density, load("sst2_test"), "sst2_test", cfg)
+    sanity = ood_sanity(in_dist.to_numpy(), dist.to_numpy())
+    print(f"sanity ({cfg['distance']}, {cfg['unit']}): AUROC SST-2 test vs IMDb = {sanity:.3f}")
 
     preds = canonical(load_predictions())  # seed choice needs sst2_val rows
     preds = preds[preds["dataset"] == "imdb"]
     rows, deciles = [], []
     for (m, v), g in preds.groupby(["model", "variant"]):
         d = dist.loc[g["item_id"]].to_numpy()
-        res = compare_predictors(g, d, cfg["cv_folds"], cfg["seed"], cfg["bootstrap_resamples"])
+        res = compare_predictors(
+            g,
+            d,
+            cfg["cv_folds"],
+            cfg["seed"],
+            cfg["bootstrap_resamples"],
+            length=n_words.loc[g["item_id"]].to_numpy(),
+        )
         rows.append(res.assign(model=m, variant=v))
         if v == "base":
             conf = g["p_pos"].map(lambda p: max(p, 1 - p)).to_numpy()
@@ -280,7 +292,7 @@ def stage_figures(args) -> None:
             best = classical.groupby("model")["correct"].mean().idxmax()
             panels = {}
             for m in [best, "distilbert"]:
-                for ds in ("sst2_val", "imdb"):
+                for ds in ("sst2_test", "imdb"):
                     g = preds[(preds["model"] == m) & (preds["dataset"] == ds)]
                     if len(g):
                         panels[f"{m} - {ds}"] = reliability_bins(g["p_pos"], g["label"])
@@ -342,6 +354,7 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--models", nargs="+")
     s.add_argument("--variants", nargs="+", choices=VARIANTS)
     s.add_argument("--datasets", nargs="+")
+    s.add_argument("--overwrite", action="store_true", help="redo existing prediction files")
     s.set_defaults(fn=stage_predict)
 
     s = sub.add_parser("evaluate", help="main table, errors by type, gaps, McNemar")

@@ -1,6 +1,8 @@
 """CheckList-style generators. Each returns a list of row dicts for the suite.
 
-Row fields: text, label, test_type, kind ("MFT" or "INV"), case_id, role, scored.
+Row fields: text, label, test_type, kind ("MFT" or "INV"), case_id, role, scored, word.
+`word` is the sentiment adjective the case is built on, so failures can be broken down per word
+and negation failures checked against the same words in the simple test (shortfalls.md D1).
 - MFT (minimum functionality): one row per case, failure = wrong label.
 - INV (invariance): two rows per case (role original / perturbed), failure = prediction changes.
 `label` is always the intended sentiment, so every row fits the predictions contract.
@@ -36,16 +38,19 @@ def _sample(rng: np.random.Generator, pool: list, k: int) -> list:
     return [pool[i] for i in sorted(idx)]
 
 
-def _fill(templates, adjs, k, rng):
+def _fill(templates, adjs, k, rng) -> list[tuple[str, str]]:
+    """k distinct (text, adjective) pairs."""
     pool = list(itertools.product(templates, W.NOUNS, adjs))
-    return [t.format(noun=n, adj=a) for t, n, a in _sample(rng, pool, k)], pool
+    return [(t.format(noun=n, adj=a), a) for t, n, a in _sample(rng, pool, k)]
 
 
 def simple(n: int, rng: np.random.Generator) -> list[dict]:
     rows = []
     for label, adjs, k in ((1, W.POS_ADJ, n // 2), (0, W.NEG_ADJ, n - n // 2)):
-        texts, _ = _fill(SIMPLE_TEMPLATES, adjs, k, rng)
-        rows += [{"text": t, "label": label, "test_type": "simple"} for t in texts]
+        rows += [
+            {"text": t, "label": label, "test_type": "simple", "word": a}
+            for t, a in _fill(SIMPLE_TEMPLATES, adjs, k, rng)
+        ]
     return [
         {**r, "kind": "MFT", "case_id": f"simple-{i}", "role": "single", "scored": True}
         for i, r in enumerate(rows)
@@ -58,11 +63,13 @@ def negation(n_pos: int, n_neg: int, rng: np.random.Generator) -> list[dict]:
     "not bad" is at best mildly positive, so negated negatives are reported separately as an
     ambiguous probe rather than counted as failures (majordecisions.md D11).
     """
-    pos_texts, _ = _fill(NEGATION_TEMPLATES, W.POS_ADJ, n_pos, rng)
-    neg_texts, _ = _fill(NEGATION_TEMPLATES, W.NEG_ADJ, n_neg, rng)
-    rows = [{"text": t, "label": 0, "test_type": "negation", "scored": True} for t in pos_texts]
+    rows = [
+        {"text": t, "label": 0, "test_type": "negation", "scored": True, "word": a}
+        for t, a in _fill(NEGATION_TEMPLATES, W.POS_ADJ, n_pos, rng)
+    ]
     rows += [
-        {"text": t, "label": 1, "test_type": "negation_neg", "scored": False} for t in neg_texts
+        {"text": t, "label": 1, "test_type": "negation_neg", "scored": False, "word": a}
+        for t, a in _fill(NEGATION_TEMPLATES, W.NEG_ADJ, n_neg, rng)
     ]
     return [
         {**r, "kind": "MFT", "case_id": f"{r['test_type']}-{i}", "role": "single"}
@@ -97,7 +104,9 @@ def typo(n: int, rng: np.random.Generator) -> list[dict]:
         typo_adj = make_typo(adj, rng)
         for role, a in (("original", adj), ("perturbed", typo_adj)):
             text = t.format(noun=noun, adj=a)
-            rows.append({"text": text, "label": label, "role": role, "case_id": f"typo-{i}"})
+            rows.append(
+                {"text": text, "label": label, "role": role, "case_id": f"typo-{i}", "word": adj}
+            )
     return [{**r, "test_type": "typo", "kind": "INV", "scored": True} for r in rows]
 
 
@@ -114,5 +123,13 @@ def name_swap(n: int, rng: np.random.Generator) -> list[dict]:
         verb, adj = verbs[int(rng.integers(len(verbs)))], adjs[int(rng.integers(len(adjs)))]
         for role, name in (("original", name1), ("perturbed", name2)):
             text = t.format(name=name, verb=verb, noun=noun, adj=adj)
-            rows.append({"text": text, "label": label, "role": role, "case_id": f"name_swap-{i}"})
+            rows.append(
+                {
+                    "text": text,
+                    "label": label,
+                    "role": role,
+                    "case_id": f"name_swap-{i}",
+                    "word": adj,
+                }
+            )
     return [{**r, "test_type": "name_swap", "kind": "INV", "scored": True} for r in rows]

@@ -1,8 +1,21 @@
 import pandas as pd
 
-from mirage.data import build_splits, heldout_mask, negation_subset, split_heldout
+from mirage.data import (
+    build_splits,
+    drop_seen,
+    head_tail,
+    heldout_mask,
+    negation_subset,
+    split_heldout,
+)
 
-CFG = {"seed": 42, "heldout_frac": 0.05, "imdb_sample_size": 100}
+CFG = {
+    "seed": 42,
+    "heldout_frac": 0.05,
+    "imdb_sample_size": 100,
+    "imdb_head_words": 2,
+    "imdb_tail_words": 1,
+}
 
 
 def test_heldout_is_disjoint(sst):
@@ -41,11 +54,40 @@ def test_negation_subset_matches_normalized_text():
 
 
 def test_build_splits_ids_and_sizes(sst):
-    splits = build_splits(sst(400), sst(120, 1), sst(300, 2), CFG)
+    test = sst(120, 3).assign(text=lambda d: d["text"] + " again")  # unseen sentences
+    test = pd.concat([test, pd.DataFrame({"text": ["A great  film movie"], "label": [1]})])
+    splits = build_splits(sst(400), sst(120, 1), test, sst(300, 2), CFG)
     assert len(splits["imdb"]) == 100
     for name, df in splits.items():
         assert df["item_id"].is_unique, name
         assert set(df["label"]) <= {0, 1}
     # the negation subset keeps validation ids so items can be joined back
-    assert set(splits["sst2_neg"]["item_id"]) <= set(splits["sst2_val"]["item_id"])
+    ids = set(splits["sst2_val"]["item_id"]) | set(splits["sst2_test"]["item_id"])
+    assert set(splits["sst2_neg"]["item_id"]) <= ids
+    assert {i.split("-")[0] for i in splits["sst2_neg"]["item_id"]} == {"sst2_val", "sst2_test"}
+    # test sentences already seen in train/val are dropped (case- and space-insensitive)
+    seen = {
+        " ".join(t.lower().split())
+        for t in pd.concat(
+            [
+                splits["sst2_train"]["text"],
+                splits["sst2_heldout"]["text"],
+                splits["sst2_val"]["text"],
+            ]
+        )
+    }
+    assert not any(" ".join(t.lower().split()) in seen for t in splits["sst2_test"]["text"])
+    # every IMDb review was capped to head + tail words, and the cut is recorded
+    assert splits["imdb"]["text"].str.split().str.len().max() <= 3
+    assert splits["imdb"]["capped"].any()
     assert len(splits["sst2_neg"]) > 0
+
+
+def test_head_tail_keeps_the_ending():
+    assert head_tail("a b c d e f", 2, 1) == "a b f"
+    assert head_tail("a b c", 2, 1) == "a b c"
+
+
+def test_drop_seen_ignores_case_and_spacing():
+    df = pd.DataFrame({"text": ["Great  Film", "new one"], "label": [1, 0]})
+    assert drop_seen(df, pd.Series(["great film"]))["text"].tolist() == ["new one"]

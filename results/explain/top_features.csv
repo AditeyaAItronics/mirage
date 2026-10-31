@@ -1,0 +1,301 @@
+feature,score,direction,model,variant
+not too,10.691277750876408,positive,logreg,base
+good,9.844548726339541,positive,logreg,base
+fascinating,9.204856593506022,positive,logreg,base
+funny,9.090199909270648,positive,logreg,base
+beautiful,8.977140914711327,positive,logreg,base
+fun,8.88426031348187,positive,logreg,base
+best,8.770520300200438,positive,logreg,base
+powerful,8.451312044772198,positive,logreg,base
+entertaining,8.405021888473959,positive,logreg,base
+hilarious,8.39963570882112,positive,logreg,base
+enjoyable,8.271727118218104,positive,logreg,base
+compelling,8.092436852566228,positive,logreg,base
+never dull,7.964216232631081,positive,logreg,base
+love,7.881306399996831,positive,logreg,base
+no wrong,7.747426949023595,positive,logreg,base
+remarkable,7.4225367723433475,positive,logreg,base
+wonderful,7.393296889558981,positive,logreg,base
+never fails,7.390218921974204,positive,logreg,base
+not bad,7.3691926370844465,positive,logreg,base
+brilliant,7.345880072355089,positive,logreg,base
+terrific,7.2070380863027355,positive,logreg,base
+beautifully,7.011321230595446,positive,logreg,base
+too bad,6.980456229054279,positive,logreg,base
+moving,6.938618143709073,positive,logreg,base
+appealing,6.86471793797514,positive,logreg,base
+lacks,-11.830840771357678,negative,logreg,base
+no,-11.347058207288764,negative,logreg,base
+too,-10.893060978516553,negative,logreg,base
+bad,-10.799173496028484,negative,logreg,base
+n't,-9.995104215715422,negative,logreg,base
+not,-9.376651586896033,negative,logreg,base
+worst,-9.355172821149274,negative,logreg,base
+lacking,-9.255003643968312,negative,logreg,base
+mess,-8.488294781233733,negative,logreg,base
+less,-8.355476621184467,negative,logreg,base
+lack,-8.341023844064981,negative,logreg,base
+flat,-8.27293797920207,negative,logreg,base
+nothing,-7.9821690161135574,negative,logreg,base
+neither,-7.927362692929938,negative,logreg,base
+stupid,-7.834144264072069,negative,logreg,base
+dull,-7.72552740421793,negative,logreg,base
+depressing,-7.660080220748363,negative,logreg,base
+loses,-7.567362404771164,negative,logreg,base
+bland,-7.452435566643164,negative,logreg,base
+fails,-7.440611991049698,negative,logreg,base
+waste,-7.311383019200521,negative,logreg,base
+the worst,-7.267967910313476,negative,logreg,base
+nor,-7.227266130297479,negative,logreg,base
+tired,-7.013066310561746,negative,logreg,base
+predictable,-7.012847657524265,negative,logreg,base
+", funny",4.525145265457329,positive,mnb,base
+a solid,4.475874216450546,positive,mnb,base
+touching,4.34089878025379,positive,mnb,base
+playful,4.31157116515927,positive,mnb,base
+a powerful,4.299594974112555,positive,mnb,base
+love and,4.184819459520128,positive,mnb,base
+a sweet,4.171213807464348,positive,mnb,base
+detailed,4.157420485332011,positive,mnb,base
+mesmerizing,4.1148608709132155,positive,mnb,base
+heartwarming,4.085446985706923,positive,mnb,base
+riveting,4.070409108342382,positive,mnb,base
+elegant,4.055141636211594,positive,mnb,base
+dazzling,4.0078887513610475,positive,mnb,base
+thought-provoking,4.0078887513610475,positive,mnb,base
+refreshingly,3.991628230489269,positive,mnb,base
+evocative,3.9750989285380562,positive,mnb,base
+tender,3.9750989285380562,positive,mnb,base
+powerful and,3.9411973768623767,positive,mnb,base
+perfectly,3.9325393141192624,positive,mnb,base
+vibrant,3.9061060570511064,positive,mnb,base
+wonderfully,3.888087551548427,positive,mnb,base
+enjoyed,3.851046279868079,positive,mnb,base
+solid,3.836794257160877,positive,mnb,base
+hearts,3.831998084897384,positive,mnb,base
+uplifting,3.812579999040283,positive,mnb,base
+ugly,-4.906737376466088,negative,mnb,base
+unfunny,-4.846633452396384,negative,mnb,base
+poorly,-4.683593825151879,negative,mnb,base
+pointless,-4.525964880948296,negative,mnb,base
+tiresome,-4.463051055537727,negative,mnb,base
+unnecessary,-4.3959117527000995,negative,mnb,base
+suffers,-4.323938253075008,negative,mnb,base
+badly,-4.293632903579679,negative,mnb,base
+how bad,-4.262380360075577,negative,mnb,base
+listless,-4.262380360075577,negative,mnb,base
+inept,-4.196783077589762,negative,mnb,base
+worse,-4.179688644230463,negative,mnb,base
+amateurish,-4.162296901518593,negative,mnb,base
+virtually,-4.126578818916515,negative,mnb,base
+irritating,-4.089537547236166,negative,mnb,base
+bother,-4.07048935226547,negative,mnb,base
+"contrived ,",-4.07048935226547,negative,mnb,base
+the worst,-4.055961251702561,negative,mnb,base
+suffers from,-4.0510712664083695,negative,mnb,base
+crap,-4.0510712664083695,negative,mnb,base
+your head,-4.03126863911219,negative,mnb,base
+lousy,-4.03126863911219,negative,mnb,base
+choppy,-4.01106593179467,negative,mnb,base
+unconvincing,-3.990446644591934,negative,mnb,base
+vapid,-3.990446644591934,negative,mnb,base
+too,0.006122973093381742,importance,rf,base
+bad,0.006023304902975274,importance,rf,base
+and,0.004567297979951613,importance,rf,base
+no,0.004432408878178548,importance,rf,base
+a,0.004382042471922383,importance,rf,base
+n't,0.004107861149600558,importance,rf,base
+the,0.0037213549792544107,importance,rf,base
+not,0.0033525809333025624,importance,rf,base
+",",0.0030713765024308866,importance,rf,base
+good,0.003007754354827811,importance,rf,base
+funny,0.002798386519642598,importance,rf,base
+of,0.002633773855239007,importance,rf,base
+to,0.0025554009414816416,importance,rf,base
+.,0.002540598269942831,importance,rf,base
+worst,0.0023186486054775747,importance,rf,base
+film,0.0023141213507202616,importance,rf,base
+best,0.0022870273986663196,importance,rf,base
+or,0.0022371237287149,importance,rf,base
+dull,0.002157505561944695,importance,rf,base
+with,0.0020939974620525262,importance,rf,base
+nothing,0.0020619477063910153,importance,rf,base
+'s,0.002021574492739002,importance,rf,base
+is,0.001968571681640118,importance,rf,base
+it,0.001846485082480358,importance,rf,base
+an,0.0018358421720271493,importance,rf,base
+too,0.012008813436867157,importance,dtree,base
+bad,0.011088854855711209,importance,dtree,base
+n't,0.01097122319738941,importance,dtree,base
+and,0.009563023817952513,importance,dtree,base
+a,0.009388020541961058,importance,dtree,base
+the,0.007533511467000506,importance,dtree,base
+no,0.007392475086782784,importance,dtree,base
+",",0.005994321277293517,importance,dtree,base
+not,0.005582384727770475,importance,dtree,base
+good,0.005579770942694241,importance,dtree,base
+funny,0.0051933415139455855,importance,dtree,base
+worst,0.0050025000509958525,importance,dtree,base
+'s,0.004887530006509515,importance,dtree,base
+or,0.004642911377628049,importance,dtree,base
+like,0.00446041151147452,importance,dtree,base
+of,0.0043999796393296145,importance,dtree,base
+best,0.00434063535550019,importance,dtree,base
+film,0.00418369626102166,importance,dtree,base
+minutes,0.004144365685613098,importance,dtree,base
+dull,0.003960715780590541,importance,dtree,base
+nothing,0.0038684548448495643,importance,dtree,base
+.,0.003853811435269115,importance,dtree,base
+to,0.003841186447901523,importance,dtree,base
+flat,0.0035506770298087986,importance,dtree,base
+less,0.0034765693472377486,importance,dtree,base
+good,11.412635198616305,positive,logreg,negmark
+funny,10.483292033335703,positive,logreg,negmark
+fascinating,9.220579040454576,positive,logreg,negmark
+beautiful,8.951092751328963,positive,logreg,negmark
+best,8.90906335461778,positive,logreg,negmark
+entertaining,8.767266071575005,positive,logreg,negmark
+fun,8.71293155024702,positive,logreg,negmark
+enjoyable,8.54015686405368,positive,logreg,negmark
+powerful,8.492601745527857,positive,logreg,negmark
+compelling,8.246192069777917,positive,logreg,negmark
+hilarious,8.233316462369347,positive,logreg,negmark
+love,7.705562916890176,positive,logreg,negmark
+brilliant,7.5927985061584495,positive,logreg,negmark
+wonderful,7.487649315210039,positive,logreg,negmark
+remarkable,7.296286219295556,positive,logreg,negmark
+great,7.2593241873560235,positive,logreg,negmark
+terrific,7.227603524153895,positive,logreg,negmark
+worth,7.191253347572101,positive,logreg,negmark
+beautifully,7.033253854086514,positive,logreg,negmark
+solid,7.003145557981663,positive,logreg,negmark
+moving,6.887010811098649,positive,logreg,negmark
+clever,6.884331703438698,positive,logreg,negmark
+intriguing,6.833767526240652,positive,logreg,negmark
+well,6.811883869506078,positive,logreg,negmark
+appealing,6.80698318200904,positive,logreg,negmark
+bad,-12.85471369646116,negative,logreg,negmark
+lacks,-12.308160218352484,negative,logreg,negmark
+too,-12.040269429675428,negative,logreg,negmark
+dull,-9.747702332736495,negative,logreg,negmark
+worst,-9.388824981346072,negative,logreg,negmark
+lacking,-9.33997269951047,negative,logreg,negmark
+no,-9.081070447812177,negative,logreg,negmark
+fails,-9.027991310604252,negative,logreg,negmark
+less,-8.962971638545042,negative,logreg,negmark
+mess,-8.422487184833715,negative,logreg,negmark
+lack,-8.419100365873947,negative,logreg,negmark
+flat,-8.402536679807918,negative,logreg,negmark
+neither,-7.9967742482516035,negative,logreg,negmark
+loses,-7.892207206354639,negative,logreg,negmark
+predictable,-7.7006608280543,negative,logreg,negmark
+n't,-7.653464421596379,negative,logreg,negmark
+stupid,-7.6320130669060475,negative,logreg,negmark
+depressing,-7.582047503183034,negative,logreg,negmark
+down,-7.4465500433380525,negative,logreg,negmark
+nothing,-7.363154290902211,negative,logreg,negmark
+nor,-7.332747454981295,negative,logreg,negmark
+dumb,-7.330567730093226,negative,logreg,negmark
+bland,-7.2845399934350015,negative,logreg,negmark
+waste,-7.28026303334019,negative,logreg,negmark
+the worst,-7.273223115269646,negative,logreg,negmark
+solid,5.852335756657737,positive,mnb,negmark
+", funny",5.206168785021985,positive,mnb,negmark
+a solid,5.125723419803245,positive,mnb,negmark
+playful,4.99144380417337,positive,mnb,negmark
+a powerful,4.979395465657197,positive,mnb,negmark
+love and,4.863882578535351,positive,mnb,negmark
+a sweet,4.85018373417719,positive,mnb,negmark
+mesmerizing,4.793430917584741,positive,mnb,negmark
+detailed,4.763799119978369,positive,mnb,negmark
+"fun ,",4.748647314957767,positive,mnb,negmark
+riveting,4.748647314957767,positive,mnb,negmark
+elegant,4.7332623961182865,positive,mnb,negmark
+heartwarming,4.717637078215207,positive,mnb,negmark
+dazzling,4.685634347129033,positive,mnb,negmark
+thought-provoking,4.685634347129033,positive,mnb,negmark
+refreshingly,4.669240537353357,positive,mnb,negmark
+tender,4.652573484868144,positive,mnb,negmark
+evocative,4.652573484868144,positive,mnb,negmark
+absorbing,4.6183821201198665,positive,mnb,negmark
+powerful and,4.6183821201198665,positive,mnb,negmark
+touching,4.6183821201198665,positive,mnb,negmark
+vibrant,4.58298019306895,positive,mnb,negmark
+wonderfully,4.564797873985759,positive,mnb,negmark
+enjoyed,4.527410341914139,positive,mnb,negmark
+and moving,4.488570508597876,positive,mnb,negmark
+flat,-5.970094425274745,negative,mnb,negmark
+stupid,-5.611346941734039,negative,mnb,negmark
+unfunny,-5.515621738059886,negative,mnb,negmark
+ugly,-5.497188036371048,negative,mnb,negmark
+poorly,-5.3788234362900145,negative,mnb,negmark
+worse,-5.368297023303027,negative,mnb,negmark
+pointless,-5.220300209050146,negative,mnb,negmark
+tiresome,-5.15698792963582,negative,mnb,negmark
+unnecessary,-5.0893946385032915,negative,mnb,negmark
+suffers,-5.016899136465138,negative,mnb,negmark
+wasted,-5.001747331444536,negative,mnb,negmark
+badly,-4.986362412605056,negative,mnb,negmark
+offensive,-4.970737094701976,negative,mnb,negmark
+listless,-4.954863745545685,negative,mnb,negmark
+inept,-4.888723943041141,negative,mnb,negmark
+amateurish,-4.836080209555719,negative,mnb,negmark
+virtually,-4.817897890472528,negative,mnb,negmark
+irritating,-4.7805103584009085,negative,mnb,negmark
+how bad,-4.741670525084645,negative,mnb,negmark
+suffers from,-4.741670525084645,negative,mnb,negmark
+loses,-4.741670525084645,negative,mnb,negmark
+lousy,-4.721669858377975,negative,mnb,negmark
+your head,-4.721669858377975,negative,mnb,negmark
+choppy,-4.701260986746767,negative,mnb,negmark
+"contrived ,",-4.6804268998439245,negative,mnb,negmark
+too,0.006531574425675844,importance,rf,negmark
+bad,0.006181074510411907,importance,rf,negmark
+and,0.004386441711412032,importance,rf,negmark
+a,0.004086150840224284,importance,rf,negmark
+good,0.003728854440301714,importance,rf,negmark
+no,0.003672989023361607,importance,rf,negmark
+the,0.00363049614338586,importance,rf,negmark
+n't,0.0034930070312383875,importance,rf,negmark
+funny,0.0033591273574693843,importance,rf,negmark
+",",0.0030041981624949186,importance,rf,negmark
+of,0.0025342550751891076,importance,rf,negmark
+.,0.0025090625653026574,importance,rf,negmark
+dull,0.0024417588712259903,importance,rf,negmark
+film,0.0022984460522410466,importance,rf,negmark
+not,0.002253989955149716,importance,rf,negmark
+to,0.002216888546904859,importance,rf,negmark
+with,0.0020938704182449862,importance,rf,negmark
+best,0.0020925981967747044,importance,rf,negmark
+worst,0.001968350820253333,importance,rf,negmark
+'s,0.0019172639913703317,importance,rf,negmark
+is,0.001819894150703205,importance,rf,negmark
+fun,0.0018050757656827535,importance,rf,negmark
+nothing,0.0018041876424021758,importance,rf,negmark
+an,0.0017930598032259088,importance,rf,negmark
+flat,0.0017211913536433671,importance,rf,negmark
+too,0.01299329899383648,importance,dtree,negmark
+n't,0.011634283905468888,importance,dtree,negmark
+bad,0.011415290662418781,importance,dtree,negmark
+and,0.009296781859230541,importance,dtree,negmark
+a,0.008735491130478128,importance,dtree,negmark
+the,0.007817093992072135,importance,dtree,negmark
+no,0.007394831670956771,importance,dtree,negmark
+funny,0.005669357825422624,importance,dtree,negmark
+good,0.005284647905958078,importance,dtree,negmark
+not,0.005137586077914221,importance,dtree,negmark
+or,0.005082780591389284,importance,dtree,negmark
+'s,0.005078179340033908,importance,dtree,negmark
+",",0.005074268775354781,importance,dtree,negmark
+worst,0.004734321415519062,importance,dtree,negmark
+of,0.004608671997673,importance,dtree,negmark
+dull,0.004487170179293648,importance,dtree,negmark
+best,0.004233118022269854,importance,dtree,negmark
+like,0.003960946198157917,importance,dtree,negmark
+.,0.003868096520696107,importance,dtree,negmark
+minutes,0.003839176639437679,importance,dtree,negmark
+flat,0.0034701947036876314,importance,dtree,negmark
+film,0.003365116361786195,importance,dtree,negmark
+is,0.0033067794453404222,importance,dtree,negmark
+to,0.0032484048087837616,importance,dtree,negmark
+with,0.0032390341661112207,importance,dtree,negmark

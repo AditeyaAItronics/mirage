@@ -3,3 +3,9 @@ embedding_model: sentence-transformers/all-MiniLM-L6-v2
 embedding_batch_size: 128
 cv_folds: 5
 bootstrap_resamples: 1000
+# D25: what gets scored matters far more than the distance. Sanity AUROC (SST-2 val vs IMDb):
+# whole review 0.67-0.69 for every distance; per-sentence max 0.95. Length is reported as a
+# baseline predictor because the max over more sentences is larger by chance.
+distance: gaussian      # gaussian | class_gaussian | knn_cosine
+unit: sentence_max      # review | sentence_mean | sentence_max
+knn_k: 10

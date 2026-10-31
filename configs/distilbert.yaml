@@ -6,5 +6,5 @@ batch_size: 32
 eval_batch_size: 64
 epochs: 3
 max_length: 128
-imdb_max_length: 256
+imdb_max_length: 512   # 360 capped words fit in ~512 word pieces; longer ones keep head + tail tokens
 fp16: true

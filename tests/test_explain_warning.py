@@ -68,3 +68,46 @@ def test_oof_never_scores_its_training_fold():
     target = (rng.random(100) < 0.3).astype(int)
     out = oof_combined(rng.normal(size=100), rng.random(100), target, folds=5, seed=0)
     assert not np.isnan(out).any()
+
+
+def test_knn_distance_is_small_near_training_data():
+    from mirage.warning.knn import KnnDistance
+
+    rng = np.random.default_rng(0)
+    train = rng.normal(size=(200, 8)) + np.array([5.0] + [0.0] * 7)
+    knn = KnnDistance(k=1).fit(train)
+    near = knn.score(train[:20] + 0.01)
+    far = knn.score(-train[:20])
+    assert (near < 1e-3).all() and (far > near.max()).all()  # k=1: nearest is itself
+
+
+def test_split_sentences_keeps_owner_and_short_reviews():
+    from mirage.warning.embed import split_sentences
+
+    df = pd.DataFrame(
+        {"item_id": ["a", "b"], "text": ["Great film overall. Too long though!<br />Ok", "Meh."]}
+    )
+    s = split_sentences(df)
+    assert s[s["owner"] == "a"]["text"].tolist() == ["Great film overall.", "Too long though!"]
+    assert s[s["owner"] == "b"]["text"].tolist() == ["Meh."]  # no full sentence -> whole text
+    assert s["item_id"].is_unique
+
+
+def test_text_distance_aggregates_sentences(monkeypatch, tmp_path):
+    from mirage import paths
+    from mirage.warning import distance, embed
+
+    monkeypatch.setattr(paths, "EMBEDDINGS", tmp_path)
+    # fake encoder: "odd" sentences sit far from the training cluster
+    monkeypatch.setattr(
+        embed,
+        "encode",
+        lambda texts, *a, **k: np.array([[0.0, 1.0] if "odd" in t else [1.0, 0.0] for t in texts]),
+    )
+    cfg = {"embedding_model": "x", "embedding_batch_size": 8, "distance": "knn_cosine", "knn_k": 1}
+    scorer = distance.make_distance(cfg).fit(np.array([[1.0, 0.0], [1.0, 0.1]]))
+    df = pd.DataFrame({"item_id": ["r1", "r2"], "text": ["A fine film. An odd one here.", "Fine."]})
+    mx = distance.text_distance(scorer, df, "t", {**cfg, "unit": "sentence_max"})
+    mean = distance.text_distance(scorer, df, "t2", {**cfg, "unit": "sentence_mean"})
+    assert list(mx.index) == ["r1", "r2"]
+    assert mx["r1"] > mean["r1"] > mean["r2"]

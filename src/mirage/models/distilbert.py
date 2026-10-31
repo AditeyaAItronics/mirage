@@ -17,6 +17,14 @@ import pandas as pd
 from mirage.text import normalize
 
 
+def head_tail_ids(ids: list[int], budget: int, head_frac: float = 0.5) -> list[int]:
+    """Keep `budget` tokens: the first ~head_frac of them from the start, the rest from the end."""
+    if len(ids) <= budget:
+        return ids
+    head = int(budget * head_frac)
+    return ids[:head] + ids[len(ids) - (budget - head) :]
+
+
 def _device():
     import torch
 
@@ -26,7 +34,7 @@ def _device():
 class DistilBertClassifier:
     name = "distilbert"
 
-    def __init__(self, model, tokenizer, max_length: int = 128, long_max_length: int = 256):
+    def __init__(self, model, tokenizer, max_length: int = 128, long_max_length: int = 512):
         self.model = model.eval()
         self.tokenizer = tokenizer
         self.max_length = max_length
@@ -35,14 +43,22 @@ class DistilBertClassifier:
         self.model.to(self.device)
 
     def encode(self, texts: list[str], long_text: bool = False):
-        limit = self.long_max_length if long_text else self.max_length
-        return self.tokenizer(
-            [normalize(t) for t in texts],
-            truncation=True,
-            max_length=limit,
-            padding=True,
-            return_tensors="pt",
-        )
+        texts = [normalize(t) for t in texts]
+        if not long_text:
+            return self.tokenizer(
+                texts,
+                truncation=True,
+                max_length=self.max_length,
+                padding=True,
+                return_tensors="pt",
+            )
+        # Long reviews: keep the first and last tokens instead of cutting the ending, where the
+        # verdict often is (shortfalls.md C1).
+        ids = self.tokenizer(texts, add_special_tokens=False)["input_ids"]
+        ids = [head_tail_ids(x, self.long_max_length - 2) for x in ids]
+        tok = self.tokenizer
+        batch = [{"input_ids": [tok.cls_token_id, *x, tok.sep_token_id]} for x in ids]
+        return tok.pad(batch, padding=True, return_tensors="pt")
 
     def predict_proba(
         self, texts: list[str], long_text: bool = False, batch_size: int = 64
@@ -63,7 +79,7 @@ class DistilBertClassifier:
         self.tokenizer.save_pretrained(path)
 
     @classmethod
-    def load(cls, path: Path, max_length: int = 128, long_max_length: int = 256):
+    def load(cls, path: Path, max_length: int = 128, long_max_length: int = 512):
         from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
         model = AutoModelForSequenceClassification.from_pretrained(path)

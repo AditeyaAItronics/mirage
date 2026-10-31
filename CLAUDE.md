@@ -11,7 +11,9 @@ Read `ARCHITECTURE.md` for the design, `majordecisions.md` for why, and
 - **Raw text in, normalization inside.** Classifiers receive raw text; `mirage.text.normalize`
   (and `negation_mark` for the `negmark` variant) run inside the model pipeline. Never normalize twice.
 - **Held-out is split by sentence** (`data.heldout_mask`): never replace it with a random row split. SST-2 rows are sub-phrases, so a random split leaks (D21).
-- **Never use SST-2 test labels** (they are `-1`). The negation subset comes from validation.
+- **Never use GLUE's SST-2 test labels** (they are `-1`). The test set comes from `SetFit/sst2` (original public Stanford labels, D22).
+  `sst2_val` is for choices (DistilBERT's median seed); `sst2_test` is the reported in-distribution set. The negation subset pools both.
+- **IMDb text is capped** to head + tail words in `prepare`, so every model reads the same text (D23). Don't feed raw reviews to one model only.
 - **No stop-word removal** and **no default sklearn `token_pattern`** — they delete `not` / `n't`.
   Vectorizers use `tokenizer=str.split, token_pattern=None, lowercase=False`.
 - Heavy libraries (`torch`, `transformers`, `datasets`, `sentence-transformers`, `captum`) are imported

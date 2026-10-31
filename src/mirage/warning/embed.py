@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import numpy as np
@@ -32,3 +33,17 @@ def cached_embeddings(
     path.parent.mkdir(parents=True, exist_ok=True)
     np.savez(path, ids=ids, emb=emb)
     return emb
+
+
+_SENT_END = re.compile(r"(?<=[.!?])\s+")
+_BR = re.compile(r"<br\s*/?>", re.IGNORECASE)
+
+
+def split_sentences(df: pd.DataFrame, min_words: int = 3) -> pd.DataFrame:
+    """One row per sentence (>= min_words words), keeping its review's item_id in `owner`."""
+    rows = []
+    for item_id, text in zip(df["item_id"], df["text"], strict=True):
+        sents = [s for s in _SENT_END.split(_BR.sub(" ", text)) if len(s.split()) >= min_words]
+        for j, s in enumerate(sents or [text]):  # a review with no full sentence counts as one
+            rows.append({"item_id": f"{item_id}#{j}", "owner": item_id, "text": s})
+    return pd.DataFrame(rows)

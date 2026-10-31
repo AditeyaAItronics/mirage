@@ -1,0 +1,101 @@
+decile,error,score,model
+0,0.396,distance,dtree
+1,0.394,distance,dtree
+2,0.407,distance,dtree
+3,0.426,distance,dtree
+4,0.4,distance,dtree
+5,0.413,distance,dtree
+6,0.402,distance,dtree
+7,0.409,distance,dtree
+8,0.424,distance,dtree
+9,0.406,distance,dtree
+0,0.411,low confidence,dtree
+1,0.405,low confidence,dtree
+2,0.386,low confidence,dtree
+3,0.42,low confidence,dtree
+4,0.385,low confidence,dtree
+5,0.421,low confidence,dtree
+6,0.387,low confidence,dtree
+7,0.439,low confidence,dtree
+8,0.402,low confidence,dtree
+9,0.421,low confidence,dtree
+0,0.435,distance,gnb
+1,0.448,distance,gnb
+2,0.458,distance,gnb
+3,0.493,distance,gnb
+4,0.453,distance,gnb
+5,0.481,distance,gnb
+6,0.469,distance,gnb
+7,0.449,distance,gnb
+8,0.424,distance,gnb
+9,0.432,distance,gnb
+0,0.369,low confidence,gnb
+1,0.398,low confidence,gnb
+2,0.428,low confidence,gnb
+3,0.464,low confidence,gnb
+4,0.454,low confidence,gnb
+5,0.465,low confidence,gnb
+6,0.485,low confidence,gnb
+7,0.474,low confidence,gnb
+8,0.5,low confidence,gnb
+9,0.505,low confidence,gnb
+0,0.177,distance,logreg
+1,0.182,distance,logreg
+2,0.194,distance,logreg
+3,0.227,distance,logreg
+4,0.193,distance,logreg
+5,0.222,distance,logreg
+6,0.209,distance,logreg
+7,0.223,distance,logreg
+8,0.192,distance,logreg
+9,0.227,distance,logreg
+0,0.014,low confidence,logreg
+1,0.049,low confidence,logreg
+2,0.072,low confidence,logreg
+3,0.105,low confidence,logreg
+4,0.168,low confidence,logreg
+5,0.206,low confidence,logreg
+6,0.27,low confidence,logreg
+7,0.327,low confidence,logreg
+8,0.378,low confidence,logreg
+9,0.457,low confidence,logreg
+0,0.187,distance,mnb
+1,0.209,distance,mnb
+2,0.225,distance,mnb
+3,0.256,distance,mnb
+4,0.237,distance,mnb
+5,0.27,distance,mnb
+6,0.246,distance,mnb
+7,0.255,distance,mnb
+8,0.255,distance,mnb
+9,0.259,distance,mnb
+0,0.119,low confidence,mnb
+1,0.104,low confidence,mnb
+2,0.13,low confidence,mnb
+3,0.122,low confidence,mnb
+4,0.124,low confidence,mnb
+5,0.317,low confidence,mnb
+6,0.284,low confidence,mnb
+7,0.352,low confidence,mnb
+8,0.379,low confidence,mnb
+9,0.468,low confidence,mnb
+0,0.268,distance,rf
+1,0.274,distance,rf
+2,0.284,distance,rf
+3,0.301,distance,rf
+4,0.288,distance,rf
+5,0.32,distance,rf
+6,0.295,distance,rf
+7,0.306,distance,rf
+8,0.313,distance,rf
+9,0.32,distance,rf
+0,0.049,low confidence,rf
+1,0.112,low confidence,rf
+2,0.147,low confidence,rf
+3,0.214,low confidence,rf
+4,0.32,low confidence,rf
+5,0.35,low confidence,rf
+6,0.398,low confidence,rf
+7,0.444,low confidence,rf
+8,0.437,low confidence,rf
+9,0.498,low confidence,rf

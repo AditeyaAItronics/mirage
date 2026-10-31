@@ -23,10 +23,10 @@ python -m venv .venv
 ## Reproduce
 
 ```bash
-python -m mirage prepare                                  # download SST-2 + IMDb, build splits
+python -m mirage prepare                                  # download SST-2 (+ public test labels) + IMDb, build splits
 python -m mirage train-classical --variants base negmark  # 5 models x 2 variants
 # DistilBERT: run notebooks/kaggle_distilbert.ipynb on a free T4 GPU,
-# then unzip distilbert_models.zip into artifacts/models/
+# then unzip distilbert_outputs.zip into the repo root (models + DistilBERT predictions)
 python -m mirage all                                      # suite -> predict -> evaluate -> explain -> warn -> figures
 ```
 

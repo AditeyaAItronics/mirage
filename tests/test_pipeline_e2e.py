@@ -44,8 +44,15 @@ def test_cpu_pipeline(tmp_path, monkeypatch):
     splits = build_splits(
         synthetic_sst(500),
         synthetic_sst(150, 1),
+        synthetic_sst(150, 3).assign(text=lambda d: d["text"] + " again"),  # unseen
         synthetic_sst(200, 2),
-        {"seed": 42, "heldout_frac": 0.1, "imdb_sample_size": 100},
+        {
+            "seed": 42,
+            "heldout_frac": 0.1,
+            "imdb_sample_size": 100,
+            "imdb_head_words": 3,
+            "imdb_tail_words": 1,
+        },
     )
     for name, df in splits.items():
         df.to_parquet(data / f"{name}.parquet", index=False)
@@ -64,8 +71,11 @@ def test_cpu_pipeline(tmp_path, monkeypatch):
     _run("figures", env=env)
 
     preds = list((root / "results" / "predictions").glob("*.parquet"))
-    assert len(preds) == 5 * 2 * 5  # models x variants x eval sets
+    assert len(preds) == 5 * 2 * 6  # models x variants x eval sets
     errors = pd.read_csv(root / "results" / "errors_by_type.csv")
-    assert {"sst2_val", "sst2_neg", "beh_negation", "beh_typo"} <= set(errors["test"])
+    assert {"sst2_test", "sst2_neg", "beh_negation", "beh_typo"} <= set(errors["test"])
+    control = pd.read_csv(root / "results" / "negation_control.csv")
+    assert {"neg_error_all", "neg_error_known_words"} <= set(control.columns)
+    assert (root / "results" / "word_errors.csv").exists()
     assert (root / "results" / "explain" / "tree_depth4.txt").exists()
     assert (root / "figures" / "error_heatmap_base.png").exists()

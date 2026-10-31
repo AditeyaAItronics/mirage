@@ -20,23 +20,30 @@ After you change code locally: `git add -A && git commit -m "..." && git push`.
 - Settings panel: **Accelerator = GPU T4 x1**, **Internet = On**.
 - `REPO_URL` is already set to the GitHub repo.
 
-### 3. Start the DistilBERT smoke test, then the real run (2 min of clicking, ~1.5 h of waiting)
+### 3. Start the DistilBERT smoke test, then the real run (2 min of clicking, ~1–2 h of waiting)
 - First run with `SMOKE_TEST = True` (≈ 2 min) to catch setup problems cheaply.
 - Then `SMOKE_TEST = False`, *Save Version → Save & Run All (Commit)*. A committed run keeps going
-  after you close the tab. Free quota is about 30 GPU-hours a week; 3 seeds use about 1.5 h.
-- When it finishes: Output tab → download `distilbert_models.zip` → unzip it into
-  `artifacts/models/` here. You should get three folders, `distilbert__base__seed13/42/87`.
+  after you close the tab. Free quota is about 30 GPU-hours a week; 3 seeds of training plus GPU predictions use about 1–2 h.
+- When it finishes: Output tab → download `distilbert_outputs.zip` → unzip it into the **repo root**
+  (`C:\claude\Mirage`). You should get `artifacts/models/distilbert__base__seed13/42/87` and
+  `results/predictions/distilbert__*.parquet`. The notebook makes DistilBERT's predictions on the
+  GPU, because 10,000 IMDb reviews at 512 tokens × 3 seeds is slow on a laptop. The local `predict`
+  stage skips models whose predictions are newer than the model files, so it won't redo them.
+- **Use a run started after commit "Scale up evaluation…"** (Nov 2026). Older runs used the leaky
+  held-out split and the 256-token IMDb cut.
 
 *Why you're faster:* Claude can't log in to Kaggle, accept its terms, or verify a phone. A committed
 Kaggle run needs nobody watching it.
 
-### 4. Run the data download and classical training locally (start it, then walk away)
+### 4. Data download and classical training: ✅ already done on this laptop (Nov 2026)
+`prepare`, `train-classical --variants base negmark` and the whole classical pipeline (`all`) have run;
+see `majordecisions.md` D26 for the first results. Re-run them only if you change data or model configs:
 ```bash
 .venv/Scripts/python -m mirage prepare
 .venv/Scripts/python -m mirage train-classical --variants base negmark
 ```
-- `prepare` downloads SST-2 and IMDb (~100 MB) and prints `results/data_stats.csv`.
-  **Write down the size of `sst2_neg`.** The proposal says "size measured in week 1", and the report needs it.
+- `prepare` downloads SST-2 (with public test labels) and IMDb (~100 MB) and prints `results/data_stats.csv`.
+  Current sizes: train 63,971 / held-out 3,378 / val 872 / **test 1,820** / **negation 519** / IMDb 10,000.
 - `train-classical` takes minutes for most models. **The random forest is the slow one.** If RAM or
   time becomes a problem, see "Decisions" below.
 
@@ -46,12 +53,12 @@ Kaggle run needs nobody watching it.
 
 ### 5. Fix three statements in the proposal before you submit or present it
 These are factual corrections, and they are your academic call:
-1. "Real negation subset = SST-2 **test** sentences" → it must be the **validation** set (test labels are hidden). The code already does this.
+1. "Real negation subset = SST-2 **test** sentences" → it is now validation **plus** the public SST-2 test sentences (519 in total). GLUE hides test labels, so the test labels come from the original Stanford release via `SetFit/sst2` (D22). Say so.
 2. Negation tests: say that *"not + negative adjective"* cases are reported separately and not scored (no clean expected label).
-3. Behavioral test count: **400 cases = 550 rows** (invariance tests use pairs). The proposal's per-type numbers still hold.
+3. Behavioral test count: now **2,000 cases = 2,750 rows** (5× the proposal; invariance tests use pairs). IMDb sample: **10,000** reviews, each capped to its first 220 + last 140 words for every model (D23).
 
 ### 6. Decide on the random forest if it is too heavy
-Full-depth trees × 300 on ~64k rows can take a few GB of RAM. Options, in order of preference:
+It trained fine here (about 4 min per fit), but saves at **822 MB** per variant. If disk or RAM is tight:
 - Keep the grid, but train it alone overnight: `python -m mirage train-classical --models rf --variants base negmark`
 - Drop `null` from `configs/classical.yaml → rf.grid.max_depth` (keep `[30]`), and say so in the report.
 - Reduce `n_estimators` to 100.
@@ -60,7 +67,7 @@ Full-depth trees × 300 on ~64k rows can take a few GB of RAM. Options, in order
 `src/mirage/behavioral/wordlists.py`. You know your audience. Check that every adjective is clearly
 positive or negative *in a movie review*, and that the names are a fair cross-section (the
 name-swap test uses Indian vs Western names). Then run `python -m mirage build-suite` and skim
-`results/behavioral_suite.csv`. Reading 550 short lines is faster for you than explaining which
+`results/behavioral_suite.csv`. Skimming the 2,750 short lines (or `results/word_errors.csv`) is faster for you than explaining which
 ones feel unnatural.
 
 ---

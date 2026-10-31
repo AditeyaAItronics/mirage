@@ -24,6 +24,7 @@ SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#62
 MODEL_ORDER = ["logreg", "dtree", "rf", "mnb", "gnb", "distilbert"]
 TEST_ORDER = [
     "sst2_val",
+    "sst2_test",
     "sst2_neg",
     "imdb",
     "beh_simple",

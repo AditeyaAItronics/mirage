@@ -13,7 +13,7 @@ import pandas as pd
 from mirage import paths
 
 REQUIRED = ("item_id", "text", "label", "p_pos", "pred", "correct")
-EVAL_SETS = ("sst2_heldout", "sst2_val", "sst2_neg", "behavioral", "imdb")
+EVAL_SETS = ("sst2_heldout", "sst2_val", "sst2_test", "sst2_neg", "behavioral", "imdb")
 LONG_TEXT_SETS = frozenset({"imdb"})
 
 

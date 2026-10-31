@@ -14,7 +14,7 @@ from mirage.behavioral import templates
 from mirage.config import load_config
 
 SUITE_PATH = paths.RESULTS / "behavioral_suite.csv"
-COLUMNS = ["item_id", "text", "label", "test_type", "kind", "case_id", "role", "scored"]
+COLUMNS = ["item_id", "text", "label", "test_type", "kind", "case_id", "role", "scored", "word"]
 
 
 def build_suite(cfg: dict | None = None) -> pd.DataFrame:

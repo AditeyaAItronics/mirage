@@ -321,3 +321,149 @@ over 20 seeds.
 **Consequence:** expect held-out accuracy to drop a little compared with the old split. That's the
 honest number. Any DistilBERT run made before this change (the Kaggle smoke test) used the old
 split; the full run must use this commit or later.
+
+## D22 — Scaled up the evaluation; SST-2 test sentences added from the public Stanford labels
+
+**Problem:** several results rested on small samples (shortfalls.md B2, B3, B5, D2, F3). The worst
+was the 180-sentence negation subset: about ±7 points per model, too wide to test H3 (does
+negation marking close the gap?). Validation was also both the set used for choices
+(DistilBERT's median seed) and the reported test set.
+
+**Decision:**
+- **SST-2 test set added** from `SetFit/sst2`, which carries the original public Stanford labels
+  that GLUE hides. Screened before use:
+  - Its validation sentences match ours with **100%** label agreement (823 of 872 matched text
+    exactly; the rest differ only in encoding).
+  - Its test split is balanced: 912 negative, 909 positive.
+  - One sentence also appears in training and is dropped by `drop_seen`, leaving 1,820.
+- `sst2_val` is now for **choices only**: DistilBERT's median seed and picking the best classical
+  model for the reliability figure. `sst2_test` is the **reported** in-distribution set
+  (`evaluate.INDIST`).
+- **Negation subset pools validation and test:** 180 → **519** sentences (36% positive). The
+  margin of error per model falls from about ±7 to about ±4 points.
+- **IMDb sample:** 2,000 → **10,000** reviews (config only), so H4 has about 5× more errors.
+- **Behavioral suite:** 5× larger, from 400 to **2,000 cases** (2,750 rows). Every generator
+  still samples distinct combinations; the largest request (500 of 1,200) is well inside the pool.
+
+**Rejected:** writing new negated sentences by hand (slow, and our own bias, see D1 in
+shortfalls). Pulling negated sentences from SST-2 training was also rejected: models are trained on
+them.
+
+## D23 — IMDb text is capped to head + tail words for every model; DistilBERT reads up to 512 tokens (C1)
+
+**Problem:** DistilBERT read only the first 256 tokens of each IMDb review, while the TF-IDF models
+read the whole review. Reviews often give the verdict at the end, so the IMDb comparison mixed
+"shortcut failure" with "DistilBERT saw less text".
+
+**Decision:**
+- **One rule for everyone:** `prepare` caps each IMDb review to its first 220 and last 140 words
+  (`head_tail`, configured in `data.yaml`). All models read that same text. `n_words` and
+  `capped` record what was cut. On the real 10,000-review sample, **15.9%** of reviews are capped
+  (median length 173 words).
+- **DistilBERT's IMDb limit goes from 256 to 512 tokens.** 360 words fit in about 512 word pieces.
+  For the rare review that still doesn't fit, `encode` keeps the first and last tokens
+  (`head_tail_ids`) instead of cutting the ending. Screened with a 905-token review: the batch
+  keeps `[CLS] start …` and `… the ending was awful [SEP]`.
+- **Prediction moved to the Kaggle GPU:** 10,000 reviews at 512 tokens × 3 seeds is slow on a
+  laptop CPU. The notebook now runs `build-suite` and `predict --models distilbert` and zips the
+  models and predictions together. Locally, `predict` skips any model whose prediction files are
+  newer than its model files (`--overwrite` forces a redo). Retraining makes the model newer, so
+  stale predictions are never kept.
+
+**Rejected:**
+- A separate truncated IMDb control set: one more set to explain, when making the text identical
+  answers the question directly.
+- A sliding window over the whole review: several forward passes per review, and its
+  probabilities aren't comparable with a single pass.
+
+## D24 — Behavioral control for template artefacts (D1)
+
+**Problem:** we wrote the templates and word lists ourselves. A model could fail "The movie was not
+brilliant." because it misreads *brilliant* or the template itself, not because of negation.
+
+**Decision:** every behavioral row now carries `word` (the sentiment adjective it's built on).
+`evaluate` writes two new tables:
+- `word_errors.csv`: failure rate per model × test × word, so one odd adjective can't drive a
+  result, and the word lists can be audited.
+- `negation_control.csv`: negation error on **all** positive adjectives, and on **known words**
+  only (adjectives the model gets right in *every* simple-template case). If the error stays high
+  on known words, the failure is about negation. If it vanishes, it was about the words or the
+  templates.
+
+The human review of the word lists stays on the user's list (`whatyouneedtodo.md`). Code can make
+the bias visible, but can't remove it.
+
+## D25 — Early-warning distance is scored per sentence (max), with review length as a baseline (F1)
+
+**Problem:** the smoke test's sanity check, which asks whether distance tells SST-2 validation
+from IMDb, gave AUROC **0.646**. If distance can't detect a change of domain that obvious, H4's
+"distance vs confidence" comparison is set up to fail, and a negative result would reflect the
+method, not the hypothesis.
+
+**Experiment** (full 64k-phrase SST-2 training embeddings, 2,000 IMDb reviews split into 24,052
+sentences, MiniLM). Sanity AUROC, SST-2 val vs IMDb:
+
+| distance | whole review | sentence mean | **sentence max** |
+|---|---|---|---|
+| Gaussian (Mahalanobis, Ledoit-Wolf) | 0.668 | 0.714 | **0.950** |
+| Gaussian on L2-normalised embeddings | 0.668 | 0.714 | 0.950 |
+| class-conditional Gaussian | 0.668 | 0.713 | 0.950 |
+| kNN cosine, k=10 | 0.688 | 0.718 | 0.953 |
+
+**What it shows:**
+- **Fitting on the full training set didn't help** (0.646 → 0.668).
+- **The choice of distance doesn't matter** (a spread of 0.02). MiniLM already outputs unit-norm
+  vectors, so L2 normalisation changes nothing.
+- **What matters is what gets embedded.** Mean-pooling a 200-word review averages away its
+  unusual parts, leaving a generic "movie talk" vector near SST-2's centre. Scoring each sentence
+  and taking the review's **most unusual sentence** separates the domains (0.95).
+
+**Decision:** `configs/warning.yaml` sets `distance: gaussian` (the method the proposal names;
+kNN is no better) and `unit: sentence_max`. Both are switchable, and `warning/distance.py` and
+`warning/knn.py` implement the alternatives.
+
+**Caveat, built into the analysis:** the maximum over more sentences is larger by chance, so
+sentence-max distance partly measures **length**. `compare_predictors` now also reports
+**length** (word count) as an error predictor. H4 only counts as supported if distance beats
+both confidence *and* length. The sanity check compares single SST-2 sentences with
+multi-sentence reviews, so part of its 0.95 is also length. It shows the detector *can* see the
+domain, not that it sees nothing else.
+
+## D26 — First full end-to-end run on real data (H1); three fixes from screening it
+
+**What ran:** `prepare` → `train-classical --variants base negmark` (5 models × 2 variants, about
+15 min; the RF is the slow one at about 4 min per fit) → `all` (predict on all 6 evaluation sets,
+evaluate, explain without IG, warn, figures). No crashes. DistilBERT is the only piece not yet run
+at full scale; it needs the Kaggle run.
+
+**Fix 1: LR's C grid was too narrow.** On the leak-free split, LR chose C=10, the edge of the grid
+{0.1, 1, 10}. The grid is now {0.1, 1, 10, 30, 100}, and 10 is an interior optimum
+(held-out 0.842 vs 0.837 at C=30).
+
+**Fix 2: the "combined" early-warning score lost to confidence alone for MNB.**
+- Diagnosis: **50.6%** of MNB's IMDb probabilities are exactly 1.0 in float64, and 78.6% are
+  above 1 − 10⁻⁶. Clipping at 10⁻⁹ before log-odds merged thousands of distinct values, and the
+  standardised linear fit let a pure-noise feature outweigh confidence. With random noise as the
+  "distance", combined scored 0.637 against 0.688 for confidence alone.
+- Fix: clip at 10⁻¹⁵ and rank-transform both features (`QuantileTransformer`, normal output)
+  before the logistic combiner. With noise it now scores 0.676, within one CI half-width. With
+  the real distance MNB scores 0.700 vs 0.688, and every model's combined score is at least its
+  confidence score.
+
+**Fix 3: `predict` skips models whose predictions are newer than the model files** (D23), so
+Kaggle-made DistilBERT predictions aren't redone on a CPU.
+
+**First results, classical models only (to be confirmed once DistilBERT is in):**
+- **SST-2 test accuracy:** LR 0.835, MNB 0.834, RF 0.754, DT 0.661, GNB 0.591.
+- **IMDb drop** (test − IMDb): 2–9 points.
+- **Negation marking helps on real negated sentences:** LR 0.773 → 0.802, MNB 0.761 → 0.784.
+  On templates the effect is much larger: LR's templated negation error falls from 0.262 to 0.008.
+- **H4 (classical): distance does not flag errors.** With the new detector:
+  - Sanity check (SST-2 test vs IMDb): AUROC **0.926**.
+  - IMDb error-detection AUROC for distance: 0.49–0.53 for every model.
+  - Low confidence: 0.67–0.77 for LR, MNB and RF.
+  - Length: 0.50–0.54.
+  - The detector clearly sees the domain change, but *within* IMDb, unusual reviews aren't the
+    ones classical models get wrong.
+- **Degenerate confidence:** the unpruned decision tree outputs only 0/1 probabilities (ECE 0.34,
+  low_conf AUROC exactly 0.500). GNB is near chance (SST-2 test 0.591, majority rate 0.50).
