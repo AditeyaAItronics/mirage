@@ -6,6 +6,7 @@ Every dataset is stored as a parquet file with columns: item_id, text, label (+ 
 
 from __future__ import annotations
 
+import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
@@ -32,10 +33,68 @@ def _download_imdb(name: str) -> pd.DataFrame:
     return load_dataset(name, split="test").to_pandas()[["text", "label"]]
 
 
+def _contained(short: str, long: str) -> bool:
+    """`short` occurs in `long` on token boundaries (both already whitespace-canonical)."""
+    return f" {short} " in f" {long} "
+
+
+def _candidates(tokens: list[str], postings: dict[str, set[int]]) -> set[int]:
+    """Texts that contain every token of `tokens` (smallest posting list first)."""
+    lists = sorted((postings.get(t, set()) for t in set(tokens)), key=len)
+    if not lists:
+        return set()
+    out = set(lists[0])
+    for p in lists[1:]:
+        out &= p
+    return out
+
+
+def heldout_mask(texts: list[str], frac: float, seed: int) -> np.ndarray:
+    """Leak-free held-out rows for SST-2's phrase-level training set (majordecisions.md D21).
+
+    SST-2 train has one row per parse-tree phrase, so a random row split puts most held-out
+    phrases inside a training sentence. Instead: find the *roots* (phrases contained in no other
+    phrase, i.e. sentences), shuffle them, and hold out the first k. A phrase is held out only if
+    *every* root that contains it is held out, so no held-out phrase occurs in any training phrase.
+    k is the smallest number of roots giving at least `frac` of the rows.
+    """
+    canon = [" ".join(t.split()) for t in texts]
+    uniq = list(dict.fromkeys(canon))
+    toks = [u.split() for u in uniq]
+    postings: dict[str, set[int]] = {}
+    for i, ts in enumerate(toks):
+        for t in set(ts):
+            postings.setdefault(t, set()).add(i)
+
+    def is_root(i: int) -> bool:
+        return not any(
+            len(uniq[j]) > len(uniq[i]) and _contained(uniq[i], uniq[j])
+            for j in _candidates(toks[i], postings)
+        )
+
+    roots = [i for i in range(len(uniq)) if toks[i] and is_root(i)]
+    rank = dict(zip(roots, np.random.default_rng(seed).permutation(len(roots)), strict=True))
+    root_postings = {t: p & rank.keys() for t, p in postings.items()}
+
+    # Latest-ranked root containing each phrase: it is held out iff that rank < k.
+    last = np.full(len(uniq), len(roots), dtype=np.int64)  # no root (empty text) -> always train
+    for i, ts in enumerate(toks):
+        if not ts:
+            continue
+        ranks = [rank[j] for j in _candidates(ts, root_postings) if _contained(uniq[i], uniq[j])]
+        last[i] = max(ranks)
+
+    pos = {u: i for i, u in enumerate(uniq)}
+    row_last = last[[pos[c] for c in canon]]
+    n_heldout = max(int(np.ceil(frac * len(canon))), 1)
+    k = min(int(np.sort(row_last)[n_heldout - 1]) + 1, len(roots))
+    return row_last < k
+
+
 def split_heldout(train: pd.DataFrame, frac: float, seed: int) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Stratified held-out split used for all tuning and DistilBERT checkpoint selection."""
-    tr, ho = train_test_split(train, test_size=frac, stratify=train["label"], random_state=seed)
-    return tr.reset_index(drop=True), ho.reset_index(drop=True)
+    """Sentence-grouped held-out split used for all tuning and DistilBERT checkpoint selection."""
+    mask = heldout_mask(train["text"].tolist(), frac, seed)
+    return train[~mask].reset_index(drop=True), train[mask].reset_index(drop=True)
 
 
 def negation_subset(val: pd.DataFrame) -> pd.DataFrame:

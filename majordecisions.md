@@ -286,3 +286,38 @@ its best input, as it should be. LR was unchanged (0.698 → 0.699).
 **Also changed:** the IG sample now takes half its budget from real SST-2 failures and half from
 behavioral failures. It never draws from the held-out tuning split. Previously the 100-item cap
 could fill up with behavioral items because files are read in alphabetical order.
+
+## D21 — Held-out split groups phrases by their sentence (fixes shortfalls.md B1)
+
+**Problem found:** SST-2's training set has one row per parse-tree *phrase*, so a sentence and all
+its sub-phrases are separate rows. The old split (`train_test_split` on rows) left the parent
+sentence in training for most held-out phrases. On the real data, **89.6%** of held-out phrases
+appeared verbatim inside a training phrase. Held-out accuracy was inflated, and since it drives
+every classical grid search and DistilBERT's best-epoch choice, model selection favoured
+memorization: deeper trees, weaker regularization, later epochs.
+
+**Decision:** `data.heldout_mask` finds the *roots* (phrases contained in no other phrase, on token
+boundaries), shuffles them with the data seed, and holds out the first *k*. A phrase is held out
+only if **every** root containing it is held out. Common phrases such as "the film" therefore stay
+in training, and by construction no held-out phrase occurs inside any training phrase. *k* is the
+smallest number of roots that reaches 5% of rows. Containment is found with a token posting-list
+index (intersect the posting lists of a phrase's tokens, then substring-check the few candidates),
+which takes about 2 s on 67k phrases.
+
+**Alternatives rejected:**
+- Holding out only full sentences: the held-out set would be all long text, unlike training.
+- Recovering the original SST trees from the PTB files: needs another download, and SST-2's
+  phrase strings don't map one-to-one onto them.
+- `GroupShuffleSplit` with one group per phrase's *first* containing root: a phrase inside two
+  sentences could still leak.
+
+**Screened on real data:** leakage dropped from **89.6% to 0 of 3,378** held-out phrases. Size
+3,378 vs 3,368 before. Positive share 0.565 vs 0.557 in training. Mean length 9.8 vs 9.4 words, so
+the held-out set still looks like the training phrases. Validation (the reported numbers) never
+leaked, so already-reported accuracies don't move; only which model settings get chosen can
+change. A new test builds nested phrases and checks all-or-nothing per sentence plus zero leakage
+over 20 seeds.
+
+**Consequence:** expect held-out accuracy to drop a little compared with the old split. That's the
+honest number. Any DistilBERT run made before this change (the Kaggle smoke test) used the old
+split; the full run must use this commit or later.

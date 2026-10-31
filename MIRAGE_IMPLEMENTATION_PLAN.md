@@ -127,7 +127,7 @@ mirage/
 
 ### 3.1 `data.py`
 - `load_sst2()` → `stanfordnlp/sst2` train + validation. Never load the test split's labels.
-- `split_heldout(train, frac=0.05, seed=42)` → stratified split; the held-out is used for **all** tuning and DistilBERT checkpoint selection. Models are **not** refit on train+held-out (keeps classical and DistilBERT comparable).
+- `split_heldout(train, frac=0.05, seed=42)` → sentence-grouped split, so no held-out phrase occurs inside a training phrase (D21); the held-out is used for **all** tuning and DistilBERT checkpoint selection. Models are **not** refit on train+held-out (keeps classical and DistilBERT comparable).
 - `negation_subset(val)` → rows matching `NEGATION_RE = r"\b(not|never|no|nothing|n't)\b"` on normalized text. Save size + label balance to `data_stats.csv`.
 - `load_imdb_sample(n=2000, seed=42)` → stratified sample of `stanfordnlp/imdb` test split, strip `<br />`.
 
@@ -252,7 +252,7 @@ Each week ends at the proposal's checkpoint. Fallbacks from the proposal apply u
 |---|---|
 | `test_text.py` | `normalize("It isn't good!")` == `"it is n't good !"`; `can't`/`won't`; `<br />`; idempotent on SST text. `negation_mark` scope ends at punctuation and at end of text; multiple negations; no negation → unchanged. |
 | `test_features.py` | Vectorizer vocabulary contains `n't`, `not`, `not good`, `NOT_good` (negmark). Regression guard for issue #3. |
-| `test_data.py` | Held-out is stratified and disjoint; no test-split labels used; IMDb sample size and balance. |
+| `test_data.py` | Held-out is disjoint and leak-free (sub-phrases follow their sentence); no test-split labels used; IMDb sample size and balance. |
 | `test_behavioral.py` | Exact counts per type; determinism by seed; typo only alters the sentiment word; INV pairs share `pair_id`. |
 | `test_metrics.py` | ECE = 0 for perfectly calibrated toy input; known value for a hand-computed case; error-by-group math. |
 | `test_stats.py` | Bootstrap CI contains the point estimate and is deterministic by seed; McNemar matches statsmodels on toy table. |

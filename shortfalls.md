@@ -42,7 +42,7 @@ sample, same loader pattern).
 
 ## B. Data
 
-### B1. 🔴 The held-out set leaks: 90% of held-out phrases appear inside training phrases
+### B1. ✅ RESOLVED (D21): the held-out set leaked; 90% of held-out phrases appeared inside training phrases
 **What:** SST-2's training set has one row per *phrase* of each parse tree, so a sentence and its sub-phrases are
 all separate rows. `split_heldout` splits rows at random, so a held-out phrase's parent sentence usually stays in
 training. Measured on the real data, **89.6%** of held-out phrases appear verbatim inside a training phrase.
@@ -347,7 +347,7 @@ data, so they need no downloads. About 20 lines of YAML.
 
 ## Suggested order if there's time
 
-1. **B1** (leaky held-out): it biases every tuned model.
+1. ~~**B1** (leaky held-out)~~: done, see D21.
 2. **F1** (distance sanity check): without it, H4 can't be tested properly.
 3. **C1** (truncation): it makes the IMDb comparison fair.
 4. **D1** (template control and per-word errors).
@@ -357,4 +357,4 @@ data, so they need no downloads. About 20 lines of YAML.
 
 ## Resolved
 
-*(nothing yet)*
+- **B1, leaky held-out split.** Fixed by a sentence-grouped split (`data.heldout_mask`). Leakage went from 89.6% to 0 of 3,378 phrases. See `majordecisions.md` D21.
