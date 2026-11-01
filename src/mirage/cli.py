@@ -329,6 +329,21 @@ def stage_figures(args) -> None:
         gaps = pd.read_csv(R / "negation_gap.csv")
         for t in gaps["test"].unique():
             plots.negation_gap_bars(gaps, t)
+    if (R / "mirage_gap.csv").exists():  # D40: headline figure + fingerprint, report and slide
+        from mirage.evaluate import fingerprint_table
+
+        gap = pd.read_csv(R / "mirage_gap.csv")
+        if len(gap):
+            warn = R / "early_warning.csv"
+            fp = fingerprint_table(
+                gap,
+                pd.read_csv(R / "main_table.csv"),
+                pd.read_csv(warn) if warn.exists() else None,
+            )
+            fp.to_csv(R / "shortcut_fingerprint.csv", index=False)
+            for slide in (False, True):
+                plots.mirage_gap_chart(gap, "base", slide=slide)
+                plots.shortcut_fingerprint(fp, slide=slide)
     if (R / "imdb_by_length.csv").exists():
         lengths = pd.read_csv(R / "imdb_by_length.csv")
         if len(lengths):

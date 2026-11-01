@@ -472,6 +472,99 @@ def typo_direction(preds: pd.DataFrame, tests=("typo", "typo_noun"), **ci_kw) ->
     return pd.DataFrame(rows)
 
 
+# D40: the four core shortcut tests behind the robustness score, equally weighted. typo_noun is a
+# control, name_swap is near-impossible to fail (D32) and the *_neg tests are unscored probes.
+ROBUSTNESS_TESTS = {
+    "beh_negation_dir": "negation",
+    "sst2_neg": "real negation",
+    "beh_typo": "typo",
+    "beh_name_shortcut": "names",
+}
+
+
+def pair_accuracy(beh: pd.DataFrame, test_type: str) -> pd.Series:
+    """Per case: True only if the model gets *every* sentence of the pair right (D40).
+
+    Stricter than the invariance / direction checks in errors_by_type, which a model passes by
+    never changing its answer: a model that can't read the sentiment word doesn't flip on a typo
+    in it. Requiring both sentences right means robustness can't exceed competence.
+    """
+    t = beh[beh["test_type"] == test_type]
+    return t.groupby("case_id")["correct"].agg(lambda c: bool(c.astype(bool).all()))
+
+
+def mirage_gap(preds: pd.DataFrame, tests=ROBUSTNESS_TESTS) -> pd.DataFrame:
+    """D40: how good a model looks (SST-2 test accuracy) vs how it behaves (robustness).
+
+    robustness = mean over the core tests of the share of cases the model gets fully right
+    (accuracy on real negated sentences; both sentences right for behavioral pairs).
+    gap = accuracy - robustness. DistilBERT is its median seed, like every per-item table.
+    """
+    rows = []
+    for (m, v), g in canonical(preds).groupby(["model", "variant"]):
+        test, beh = g[g["dataset"] == INDIST], g[g["dataset"] == "behavioral"]
+        row = {"model": m, "variant": v, "accuracy": float(test["correct"].mean())}
+        for t in tests:
+            if t.startswith("beh_"):
+                passed = pair_accuracy(beh, t.removeprefix("beh_"))
+            else:
+                passed = g.loc[g["dataset"] == t, "correct"]
+            row[f"pass__{t}"] = float(passed.mean()) if len(passed) else np.nan
+        rows.append(row)
+    out = pd.DataFrame(rows)
+    cols = [f"pass__{t}" for t in tests]
+    if out.empty:
+        return pd.DataFrame()
+    out = out.dropna(subset=["accuracy", *cols])
+    out["robustness"] = out[cols].mean(axis=1)
+    out["gap"] = out["accuracy"] - out["robustness"]
+    out["external"] = out["model"].isin(external_models())
+    return out.sort_values(["variant", "gap"], ascending=[True, False]).reset_index(drop=True)
+
+
+def mirage_gap_sensitivity(gap: pd.DataFrame, tests=ROBUSTNESS_TESTS) -> pd.DataFrame:
+    """Leave each component out in turn: does the robustness ordering of models hold? (D40)"""
+    from scipy.stats import spearmanr
+
+    rows = []
+    for v, g in gap.groupby("variant"):
+        if len(g) < 3:
+            continue
+        full = g["robustness"].rank(ascending=False)
+        for test in tests:
+            rest = [f"pass__{t}" for t in tests if t != test]
+            loo = g[rest].mean(axis=1).rank(ascending=False)
+            rows.append(
+                {
+                    "variant": v,
+                    "left_out": test,
+                    "n_models": len(g),
+                    "spearman": float(spearmanr(full, loo).statistic),
+                    "same_order": bool((full == loo).all()),
+                    "same_top": g["model"].iloc[full.argmin()] == g["model"].iloc[loo.argmin()],
+                    "same_bottom": g["model"].iloc[full.argmax()] == g["model"].iloc[loo.argmax()],
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+def fingerprint_table(
+    gap: pd.DataFrame, main: pd.DataFrame, warning: pd.DataFrame | None = None
+) -> pd.DataFrame:
+    """D40 shortcut fingerprint (base variants): the four pass rates, calibration on IMDb
+    (1 - ECE) and how well low confidence flags IMDb errors (AUROC, from the warn stage)."""
+    out = gap[gap["variant"] == "base"].drop(columns="variant")
+    m = main[main["variant"] == "base"]
+    if "ece__imdb" in m:
+        out = out.merge(m[["model"]].assign(calibration=1 - m["ece__imdb"]), on="model", how="left")
+    if warning is not None and len(warning):
+        w = warning[(warning["variant"] == "base") & (warning["predictor"] == "low_conf")]
+        out = out.merge(
+            w[["model", "auroc"]].rename(columns={"auroc": "warning_auroc"}), on="model", how="left"
+        )
+    return out
+
+
 def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
     preds = load_predictions()
     kw = {"n_resamples": ci_resamples}
@@ -488,6 +581,8 @@ def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
         "name_effect": name_effect(preds, **kw),
         "typo_direction": typo_direction(preds, **kw),
     }
+    tables["mirage_gap"] = mirage_gap(preds)
+    tables["mirage_gap_sensitivity"] = mirage_gap_sensitivity(tables["mirage_gap"])
     if (preds["model"] == REFERENCE).any():
         tables["negation_gap"] = negation_gap(preds, **kw)
     for name, df in tables.items():

@@ -1,0 +1,13 @@
+variant,left_out,n_models,spearman,same_order,same_top,same_bottom
+base,beh_negation_dir,6,1.0,True,True,True
+base,sst2_neg,6,1.0,True,True,True
+base,beh_typo,6,1.0,True,True,True
+base,beh_name_shortcut,6,1.0,True,True,True
+negmark,beh_negation_dir,5,0.9999999999999999,True,True,True
+negmark,sst2_neg,5,0.9999999999999999,True,True,True
+negmark,beh_typo,5,0.9999999999999999,True,True,True
+negmark,beh_name_shortcut,5,0.9999999999999999,True,True,True
+negmark_w3,beh_negation_dir,5,0.9999999999999999,True,True,True
+negmark_w3,sst2_neg,5,0.9999999999999999,True,True,True
+negmark_w3,beh_typo,5,0.9999999999999999,True,True,True
+negmark_w3,beh_name_shortcut,5,0.9999999999999999,True,True,True

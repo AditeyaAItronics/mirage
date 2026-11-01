@@ -1011,3 +1011,59 @@ earlier p-value unchanged.
   comparison**. Its behavioral results are clean, because the test sentences are ours.
 - `distilbert_hf` was trained on GLUE SST-2 train, which contains our held-out phrases, so its
   held-out accuracy is inflated. Validation and test are fine.
+
+## D40 — The Mirage Gap: one score for "how a model behaves"
+
+**Decision:** a **robustness score** per model is the equally weighted mean of four core
+shortcut checks. It's plotted against SST-2 test accuracy (`mirage_gap.csv`,
+`figures/mirage_gap*.png`). The gap between the two is the "mirage": how much better a model
+looks on a leaderboard than it behaves.
+
+| component | source | a case counts as passed when… |
+|---|---|---|
+| negation | `negation_dir` pairs | both "X" and "not X" are classified correctly |
+| real negation | `sst2_neg` | the real negated sentence is classified correctly |
+| typos | `typo` pairs | both the clean and the misspelled sentence are correct |
+| names | `name_shortcut` pairs | both name versions are correct |
+
+Left out: `typo_noun` (a control), `name_swap` (almost impossible to fail, D32) and the unscored
+`*_neg` probes.
+
+**Changed while screening: pair accuracy, not "didn't flip".** The first version used the
+invariance and direction failure rates from `errors_by_type`, and weak models came out "robust":
+the decision tree scored 79% against 65% accuracy, and Gaussian NB passed 86% of typo pairs. A
+model that can't read the sentiment word never changes its answer, so it never "fails" an
+invariance test. Requiring **both sentences of a pair to be right** means robustness can't
+exceed competence. The decision tree drops to 37% on negation and 45% on typos, and every model
+now sits below the diagonal.
+
+**Result (base variants):**
+
+| model | SST-2 test accuracy | robustness | gap |
+|---|---|---|---|
+| Multinomial NB | 0.834 | 0.554 | **0.280** |
+| Gaussian NB | 0.591 | 0.395 | 0.196 |
+| Decision tree | 0.653 | 0.514 | 0.139 |
+| Logistic regression | 0.835 | 0.743 | 0.091 |
+| Random forest | 0.754 | 0.694 | 0.060 |
+| DistilBERT (ours) | 0.922 | 0.876 | 0.046 |
+
+- **The headline:** logistic regression and Multinomial NB look identical on the leaderboard
+  (83.5% vs 83.4%), but NB behaves 19 points worse (names 61% vs 99%, negation 35% vs 70%).
+- **Negation marking narrows the gap.** LR's gap goes from 0.091 to 0.040 (robustness 0.743 →
+  0.807), mostly through template negation.
+
+**Sensitivity:** leaving out each component in turn keeps the model ordering identical for every
+variant (Spearman 1.0 in all 12 checks, `mirage_gap_sensitivity.csv`), so the ranking doesn't
+hinge on the equal weights.
+
+**Shortcut fingerprint** (`shortcut_fingerprint.csv`, `figures/shortcut_fingerprint*.png`): small
+multiples, one panel per model, one bar per check, plus calibration (1 − ECE on IMDb) and
+error warning (AUROC of low confidence on IMDb). Bars rather than a radar chart: radar areas
+distort and are hard to read from a distance. Each figure also has a 16:9 `_slide` version.
+
+**Rejected:**
+- Weights tuned to make the story cleaner.
+- A radar chart.
+- Folding calibration and warning into the score (they measure something else: whether you
+  can *tell* when the model is wrong).

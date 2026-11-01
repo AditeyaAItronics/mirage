@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.ticker import PercentFormatter
 
 from mirage import paths
 
@@ -300,3 +301,158 @@ def attribution_strip(
     ax.set_xlim(-0.7, len(words) - 0.3)
     ax.set_title(title, fontsize=9, loc="left")
     return _save(fig, name, out_dir)
+
+
+SHORT_NAME = {
+    "logreg": "Logistic regression",
+    "dtree": "Decision tree",
+    "rf": "Random forest",
+    "mnb": "Multinomial NB",
+    "gnb": "Gaussian NB",
+    "distilbert": "DistilBERT (ours)",
+    "distilbert_hf": "DistilBERT (HF)",
+    "roberta_large": "RoBERTa-large",
+}
+
+
+def _color(model: str) -> str:
+    return MODEL_COLOR.get(model, INK_2)
+
+
+def _spread(y: np.ndarray, min_gap: float) -> np.ndarray:
+    """Nudge label heights apart (keeping their order) so direct labels don't collide."""
+    order = np.argsort(y)
+    out = np.asarray(y, dtype=float).copy()
+    for a, b in zip(order[:-1], order[1:], strict=True):
+        if out[b] - out[a] < min_gap:
+            out[b] = out[a] + min_gap
+    return out
+
+
+def mirage_gap_chart(gap: pd.DataFrame, variant: str = "base", slide: bool = False, out_dir=None):
+    """D40: accuracy (what a leaderboard shows) vs robustness (what the model handles).
+
+    Dots below the diagonal look better than they behave; the thin drop line is the mirage.
+    Filled dots = our models, hollow = ready-made external models (different training data).
+    """
+    d = gap[gap["variant"] == variant].set_index("model").reindex(_order(gap["model"]))
+    d = d.dropna(subset=["accuracy", "robustness"])
+    fs = 15 if slide else 10
+    fig, ax = plt.subplots(figsize=(13.33, 7.5) if slide else (7.5, 5.5))
+    lo = min(0.4, float(d[["accuracy", "robustness"]].min().min()) - 0.05)
+    ax.plot([lo, 1], [lo, 1], color=INK_2, linewidth=1, linestyle="--")
+    ax.text(  # along the diagonal, in its upper-left corner
+        lo + 0.03,
+        lo + 0.04,
+        "robustness = accuracy",
+        fontsize=fs * 0.8,
+        color=INK_2,
+        rotation=45,
+        rotation_mode="anchor",
+        transform_rotates_text=True,
+    )
+    for m, r in d.iterrows():
+        ax.plot(
+            [r["accuracy"]] * 2,
+            [r["robustness"], r["accuracy"]],
+            color=_color(m),
+            linewidth=1.2,
+            alpha=0.6,
+        )
+        hollow = bool(r.get("external", False))
+        ax.scatter(
+            r["accuracy"],
+            r["robustness"],
+            s=(170 if slide else 70),
+            zorder=3,
+            facecolor=SURFACE if hollow else _color(m),
+            edgecolor=_color(m),
+            linewidth=2.5 if hollow else 2,
+        )
+    worst = d["gap"].idxmax()  # the biggest mirage gets a second, bold line under its label
+    label_y = _spread(d["robustness"].to_numpy(), 0.035 if slide else 0.03)
+    for (m, r), yl in zip(d.iterrows(), label_y, strict=True):
+        text = f"{SHORT_NAME.get(m, m)}  {r['robustness']:.0%}"
+        if m == worst:
+            text += f"\nlooks {r['accuracy']:.0%}, behaves {r['robustness']:.0%}"
+        ax.annotate(
+            text,
+            (r["accuracy"], r["robustness"]),
+            xytext=(r["accuracy"] + 0.012, yl),
+            fontsize=fs * 0.85,
+            color=INK,
+            va="top" if m == worst else "center",
+            fontweight="bold" if m == worst else "normal",
+        )
+    ax.set_xlim(lo, 1.0)
+    ax.set_ylim(lo, 1.02)
+    ax.set_xlabel("SST-2 test accuracy (what a leaderboard shows)", fontsize=fs)
+    ax.set_ylabel("robustness (share of shortcut tests fully right)", fontsize=fs)
+    ax.tick_params(labelsize=fs * 0.85)
+    ax.xaxis.set_major_formatter(PercentFormatter(1, decimals=0))
+    ax.yaxis.set_major_formatter(PercentFormatter(1, decimals=0))
+    ax.set_title("Accuracy hides how models fail", fontsize=fs * 1.3, loc="left")
+    if d.get("external", pd.Series(False)).any():
+        ax.text(
+            1.0,
+            lo + 0.01,
+            "hollow = ready-made external model",
+            ha="right",
+            fontsize=fs * 0.75,
+            color=INK_2,
+        )
+    return _save(fig, f"mirage_gap{'_slide' if slide else ''}", out_dir)
+
+
+FINGERPRINT_COLUMNS = {
+    "pass__beh_negation_dir": "negation",
+    "pass__sst2_neg": "real negation",
+    "pass__beh_typo": "typos",
+    "pass__beh_name_shortcut": "names",
+    "calibration": "calibration (1−ECE, IMDb)",
+    "warning_auroc": "error warning (AUROC)",
+}
+
+
+def shortcut_fingerprint(table: pd.DataFrame, slide: bool = False, out_dir=None) -> Path:
+    """D40: small multiples, one panel per model, one bar per check (higher = better).
+
+    Bars, not a radar chart: radar areas distort and are hard to read from a distance. Each
+    panel wears its model's colour; values are printed in ink. AUROC 0.5 is chance (marked).
+    """
+    cols = [c for c in FINGERPRINT_COLUMNS if c in table]
+    d = table.set_index("model").reindex(_order(table["model"])).dropna(subset=cols, how="all")
+    n = len(d)
+    ncol = 4 if n > 4 else n
+    nrow = int(np.ceil(n / ncol))
+    fs = 13 if slide else 9
+    size = (13.33, 7.5) if slide else (3.2 * ncol, 2.6 * nrow + 0.6)
+    fig, axes = plt.subplots(nrow, ncol, figsize=size, squeeze=False, sharex=True, sharey=True)
+    y = np.arange(len(cols))
+    for ax, (m, r) in zip(axes.flat, d.iterrows(), strict=False):
+        vals = r[cols].astype(float).to_numpy()
+        ax.barh(y, vals, color=_color(m), height=0.7, edgecolor=SURFACE, linewidth=2)
+        for yi, v in zip(y, vals, strict=True):
+            if not np.isnan(v):
+                ax.text(v + 0.03, yi, f"{v:.0%}", va="center", fontsize=fs * 0.85, color=INK)
+        if "warning_auroc" in cols:
+            yi = cols.index("warning_auroc")
+            ax.plot([0.5, 0.5], [yi - 0.45, yi + 0.45], color=INK_2, linewidth=1, linestyle=":")
+        ax.set_title(SHORT_NAME.get(m, m), fontsize=fs * 1.1, loc="left", color=INK)
+        ax.set_xlim(0, 1.25)
+        ax.set_axisbelow(True)
+        ax.grid(axis="y", visible=False)
+        ax.set_yticks(y, [FINGERPRINT_COLUMNS[c] for c in cols], fontsize=fs * 0.9)
+        ax.set_xticks([0, 0.5, 1], ["0", "50%", "100%"], fontsize=fs * 0.8)
+    axes.flat[0].invert_yaxis()  # shared y: first check on top in every panel
+    for ax in list(axes.flat)[n:]:
+        ax.set_visible(False)
+    fig.suptitle(
+        "Each model fails in its own way (higher = better; dotted line = chance AUROC)",
+        fontsize=fs * 1.25,
+        fontweight="bold",
+        x=0.01,
+        ha="left",
+        color=INK,
+    )
+    return _save(fig, f"shortcut_fingerprint{'_slide' if slide else ''}", out_dir)
