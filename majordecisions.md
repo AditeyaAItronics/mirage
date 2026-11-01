@@ -968,3 +968,46 @@ random draws the typo generator uses (it depends on word length), so every test 
 was resampled: `name_swap`, `name_shortcut`, and now `typo_noun`. The name-shortcut numbers moved
 within noise. Naive Bayes flips 37.6% of pairs (shift +0.37), against 40.4% / +0.38 in D32. Cite
 the current tables (`name_effect.csv`); D32 keeps its numbers as a record of the earlier run.
+
+## D39 — External models: "does scale cure shortcuts?"
+
+**Decision:** two ready-made Hugging Face models go through exactly the same eval sets and
+behavioral suite, with no training (`configs/external.yaml`, stage `predict-external`):
+
+| short name | model | why |
+|---|---|---|
+| `roberta_large` | `siebert/sentiment-roberta-large-english` (355M) | **Scale:** about 5× DistilBERT, trained on 15 sentiment datasets |
+| `distilbert_hf` | `distilbert/distilbert-base-uncased-finetuned-sst-2-english` (66M) | **Replication control:** same architecture as ours, trained on SST-2 by someone else |
+
+**How:**
+- `ExternalClassifier` reuses our DistilBERT wrapper (batching, head + tail truncation at 512 for
+  IMDb), so the long-text rule matches D23.
+- **The label order comes from the model's own `id2label`.** It never assumes 0 = negative, and
+  it refuses anything that isn't exactly one negative and one positive label.
+- **Raw text, no `normalize`.** These models were trained on ordinary English. SST-2 rows are
+  already in SST's tokenized style ("does n't"), which they read slightly less well; that's a
+  caveat, not a fix, since changing the text would make the comparison less like-for-like.
+- Seed 0, variant `base`: there's no training run to seed.
+- **Every eval set, including all 10,000 IMDb reviews, runs on the Kaggle GPU**
+  (`notebooks/kaggle_external.ipynb`, one run, one zip). Every model, ours and external, is
+  compared on exactly the same reviews, so the existing tables and figures need no subsample
+  caveat. (A first plan ran the short sets on the laptop CPU and only IMDb on Kaggle; one
+  notebook run is simpler and adds only minutes of GPU time.)
+
+**Statistics are kept separate:** pairs involving an external model form their own Holm family in
+McNemar, and external models form their own family in early warning. They're left out of
+`negation_gap` (H2 is our classical models vs our DistilBERT). So adding them leaves every
+earlier p-value unchanged.
+
+**Rejected:**
+- `cardiffnlp/twitter-roberta-base-sentiment-latest`: three classes (neutral) and trained on
+  tweets.
+- `textattack/roberta-base-SST-2`: unnamed labels, so the mapping can't be checked.
+- A 2,000-review CPU subsample of IMDb: cheaper, but it either breaks like-for-like comparison or
+  forces every model onto the subsample.
+
+**Caveats written into the results:**
+- SiEBERT was very likely trained on SST-2 and IMDb, so **its accuracy isn't a fair
+  comparison**. Its behavioral results are clean, because the test sentences are ours.
+- `distilbert_hf` was trained on GLUE SST-2 train, which contains our held-out phrases, so its
+  held-out accuracy is inflated. Validation and test are fine.

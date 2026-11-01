@@ -9,5 +9,6 @@ models:
     batch_size: 64
 max_length: 128        # short text (SST-2, behavioral), same budget as our DistilBERT
 long_max_length: 512   # IMDb: head + tail tokens, same rule as our DistilBERT (D23)
-# Local CPU runs; IMDb and imdb_edges run on the Kaggle GPU (notebooks/kaggle_external.ipynb).
-datasets: [sst2_heldout, sst2_val, sst2_test, sst2_neg, behavioral]
+# Every eval set; run on the Kaggle GPU (notebooks/kaggle_external.ipynb). CPU works but is slow
+# for RoBERTa-large on the 10,000 IMDb reviews.
+datasets: [sst2_heldout, sst2_val, sst2_test, sst2_neg, behavioral, imdb, imdb_edges]
