@@ -20,7 +20,7 @@ After you change code locally: `git add -A && git commit -m "..." && git push`.
 - Settings panel: **Accelerator = GPU T4 x1**, **Internet = On**.
 - `REPO_URL` is already set to the GitHub repo.
 
-### 3. Start the DistilBERT smoke test, then the real run (2 min of clicking, ~1–2 h of waiting)
+### 3. ✅ DONE (Nov 2026, D34): Start the DistilBERT smoke test, then the real run (2 min of clicking, ~1–2 h of waiting)
 - First run with `SMOKE_TEST = True` and `SEEDS = [42]` (about 5 minutes; it skips the IMDb
   predictions) to catch setup problems cheaply.
 - Cell 2 prints `code version:`. Check that it shows the latest commit on GitHub. Re-running in

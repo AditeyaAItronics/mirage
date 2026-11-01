@@ -1,4 +1,24 @@
 decile,error,score,model
+0,0.081,distance,distilbert
+1,0.079,distance,distilbert
+2,0.085,distance,distilbert
+3,0.109,distance,distilbert
+4,0.094,distance,distilbert
+5,0.126,distance,distilbert
+6,0.102,distance,distilbert
+7,0.121,distance,distilbert
+8,0.1,distance,distilbert
+9,0.107,distance,distilbert
+0,0.007,low confidence,distilbert
+1,0.016,low confidence,distilbert
+2,0.016,low confidence,distilbert
+3,0.019,low confidence,distilbert
+4,0.029,low confidence,distilbert
+5,0.047,low confidence,distilbert
+6,0.069,low confidence,distilbert
+7,0.156,low confidence,distilbert
+8,0.26,low confidence,distilbert
+9,0.385,low confidence,distilbert
 0,0.376,distance,dtree
 1,0.388,distance,dtree
 2,0.35,distance,dtree

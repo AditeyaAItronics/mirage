@@ -1,4 +1,8 @@
 model_a,model_b,jaccard,rbo,shared
+distilbert,dtree,0.07526881720430108,0.038911721643642296,"., bad, but, n't, no, not, too"
+distilbert,logreg,0.05263157894736842,0.03850546713746489,"bad, n't, no, not, too"
+distilbert,mnb,0.010101010101010102,0.002767378674473504,lousy
+distilbert,rf,0.07526881720430108,0.03866565609296616,"., bad, n't, no, not, this, too"
 dtree,logreg,0.25,0.38977901550176763,"bad, best, dull, dumb, flat, fun, funny, good, lack, less, love, mess, n't, no, not, nothing, predictable, tired, too, worst"
 dtree,mnb,0.030927835051546393,0.0015241206701791922,"flat, poorly, unfunny"
 dtree,rf,0.7241379310344828,0.832708425810712,"'s, ,, ., a, an, and, as, bad, best, down, dull, film, flat, fun, funny, good, is, it, just, less, like, little, love, mess, minutes, n't, no, not, nothing, of, or, performances, plot, predictable, pretentious, that, the, to, too, unfunny, with, worst"

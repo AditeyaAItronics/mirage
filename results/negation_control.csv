@@ -1,4 +1,5 @@
 model,variant,n_words_known,n_words,neg_error_all,neg_error_all_lo,neg_error_all_hi,n_all,neg_error_known_words,neg_error_known_words_lo,neg_error_known_words_hi,n_known_words
+distilbert,base,19,19,0.0,0.0,0.0,500,0.0,0.0,0.0,500
 dtree,base,3,19,0.08,0.056,0.104,500,0.21428571428571427,0.14285714285714285,0.29591836734693877,98
 dtree,negmark,5,19,0.02,0.008,0.034,500,0.02027027027027027,0.0,0.0472972972972973,148
 dtree,negmark_w3,10,19,0.216,0.18,0.254,500,0.1875,0.14338235294117646,0.23897058823529413,272

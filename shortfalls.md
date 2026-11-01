@@ -173,11 +173,9 @@ A second variant, `negmark_w3` (3-token scope with fixed-phrase exceptions: "not
 the original rule, but no gain survives Holm (except GNB with `negmark`). The C10 conclusion
 doesn't depend on the scope rule.
 
-### C8. 🟠 READY, waiting for DistilBERT (D30): short-phrase training vs long reviews
-`imdb_by_length.csv` and the `imdb_error_by_length` figure break IMDb error down by review length.
-The classical baseline is already measured: error rises from short to long reviews even for
-bag-of-words models (LR 0.167 → 0.236, RF 0.251 → 0.323). Once DistilBERT's predictions are in,
-only growth **beyond** that slope points to its short-phrase training.
+### C8. ✅ ANSWERED (D35): short-phrase training vs long reviews
+DistilBERT's IMDb error is flat across lengths (about 0.095) and rises only for the capped
+reviews (0.126). Training on short phrases didn't hurt it on long reviews; cutting text did.
 
 ### C9. ✅ RESOLVED for the tree (D29); 🟢 GNB and MNB remain as notes
 **Tree:** it now keeps at least 10 examples per leaf (accuracy picked 20). Its probabilities are
@@ -197,6 +195,18 @@ either scope rule (Holm 0.27 at best). The same holds on the 339 test-only sente
 which is the easy case for any marking rule.
 **Possible fix:** inspect which real negated sentences change prediction under marking. Report
 template and real-sentence effects side by side.
+**Effort:** small.
+
+### C11. 🟠 NEW (first result): DistilBERT has shortcuts of its own
+**What:** it's perfect on simple, negation, direction and both name tests, but fails **39%** of
+typo pairs. The failures are one-sided: a misspelled positive word flips it to negative in 65% of
+pairs (e.g. "brilliant" 0.999 → "brililant" 0.010), a misspelled negative word in only 9%. It has
+learned "unfamiliar-looking ⇒ negative".
+**Why it matters:** this supports C2. DistilBERT is a stronger reference, not a shortcut-free
+one, and its shortcuts are different in kind from the classical models' (word identity, names).
+**Possible fix:** test it on misspellings in negative words and in neutral words (does a typo in
+"movie" also push it negative?), and check whether SST-2's negative phrases contain more rare or
+odd tokens.
 **Effort:** small.
 
 ---
@@ -251,7 +261,7 @@ None of its Indian names occur in SST-2 training, so the classical models never 
 every pair also swapped gender. It's now a gender-matched "unseen names" probe, and a new
 `name_shortcut` test swaps film people whose training labels lean positive vs negative.
 
-### D8. 🟠 NEW (first result): Naive Bayes judges films by who made them
+### D8. 🟠 NEW (first result): Naive Bayes judges films by who made them (DistilBERT: 0 flips)
 **What:** swapping Kidman for Seagal (etc.) in an otherwise identical mild sentence flips Naive
 Bayes's label in **40.4%** of pairs (mean probability shift +0.38). LR shifts every prediction
 (+0.063) but rarely flips (0.6%). Unseen names move no model.
@@ -400,16 +410,9 @@ show raw p-values next to adjusted ones.
 
 ## H. Engineering and reproducibility
 
-### H1. 🟠 MOSTLY RESOLVED (D26): not yet run end to end on the full data
-The whole classical pipeline has run on the real data:
-- `prepare`, then both variants of all 5 models;
-- predictions on all 6 evaluation sets (10,000 IMDb reviews included);
-- `evaluate`, `explain` (without IG), `warn` and `figures`.
-
-Screening it found and fixed three problems: LR's grid edge, the early-warning combiner, and
-redundant predictions.
-**Still open:** DistilBERT at full scale (3 seeds on Kaggle), which also unlocks IG and the
-negation-gap tables.
+### H1. ✅ RESOLVED (D26, D34, D35): not yet run end to end on the full data
+Everything has now run on the real data: 5 classical models × 3 variants, DistilBERT × 3 seeds
+(trained and predicted on Kaggle), and every stage of `all`, IG included. Results are in D35.
 
 ### H2. 🟠 Dependencies aren't pinned
 **What:** `pyproject.toml` gives minimum versions only. Kaggle currently runs Python 3.13, while local runs
@@ -467,3 +470,4 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 - **F4, length inside the distance.** Measured with a length-matched check (0.612 vs 0.926) and removed with a length-adjusted distance; H4 is unchanged (D30).
 - **B4, B9, C7: robustness of the headline results.** An IMDb excerpt set splits length from content, test-only negation rows were added, and a second negation-scope variant was trained (D31).
 - **D7, name test that couldn't fail.** Replaced by a name-shortcut test built from the training labels, plus a gender-matched unseen-names probe (D32).
+- **H1, C8: full run.** Pipeline complete with DistilBERT (D34, D35); the length question is answered.

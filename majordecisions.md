@@ -780,3 +780,97 @@ redone. The other word lists, the name pairs and the mild adjectives were left a
 **Review completed:** the author then reviewed the remaining lists (Indian and Western names, the
 six film-person pairs, mild adjectives, nouns and verbs) and kept them unchanged. The word-list
 review in `whatyouneedtodo.md` (step 7) is done.
+
+## D34 — The DistilBERT run as it actually happened (Kaggle, Nov 2026)
+
+**What ran:** the committed Kaggle notebook (code from commit 332bac0 or later), 3 seeds, then
+GPU predictions on all 7 evaluation sets. About 40 minutes in total. Every one of the 21
+prediction files matches this laptop's data item for item (ids, text and order, behavioral suite
+included) and passes the predictions contract.
+
+**Deviation from the plan, recorded rather than rerun:** Kaggle assigned **GPU T4 x2**. Hugging
+Face's Trainer then splits each batch across both GPUs, so:
+- **Effective batch: 64, not 32.** 3,000 steps per seed instead of 6,000.
+- **Warm-up: 360 steps, which is 12% of training, not 6%.** `train()` computes warm-up from the
+  per-device batch size, assuming one GPU.
+
+Both are ordinary fine-tuning settings, and the seeds agree closely, so the results stand. The
+report should state batch 64 and 12% warm-up. Future runs should either pick GPU T4 x1 or have the
+code count GPUs.
+
+| seed | held-out by epoch (1 / 2 / 3) | best | SST-2 test | negation (519) | IMDb | train time |
+|---|---|---|---|---|---|---|
+| 13 | 0.914 / 0.912 / **0.921** | 0.921 | 0.922 | 0.900 | 0.900 | 519 s |
+| 42 | 0.916 / 0.917 / **0.920** | 0.920 | 0.920 | 0.898 | 0.898 | 522 s |
+| 87 | 0.912 / **0.918** / 0.915 | 0.918 | 0.923 | 0.894 | 0.890 | 521 s |
+
+Seed 87's best epoch was epoch 2 (`load_best_model_at_end`). The median-accuracy seed on `sst2_val`
+(D13) is used for per-item analyses.
+
+## D35 — First complete results, DistilBERT included (classical models: base variant)
+
+Everything below comes from one `python -m mirage all` run on the real data. DistilBERT is
+reported as mean ± std over 3 seeds for aggregates; per-item analyses use its median seed (13).
+
+**Accuracy and the IMDb drop**
+
+| model | SST-2 test | negation (519) | IMDb | drop | ECE (test / IMDb) |
+|---|---|---|---|---|---|
+| **distilbert** | **0.922 ± 0.002** | **0.897** | **0.896** | 0.026 | 0.046 / 0.051 |
+| logreg | 0.835 | 0.773 | 0.795 | 0.039 | 0.016 / 0.081 |
+| mnb | 0.834 | 0.761 | 0.760 | 0.073 | 0.122 / 0.229 |
+| rf | 0.754 | 0.726 | 0.703 | 0.051 | 0.068 / 0.057 |
+| dtree | 0.653 | 0.607 | 0.612 | 0.041 | 0.144 / 0.200 |
+| gnb | 0.591 | 0.522 | 0.546 | 0.045 | 0.365 / 0.376 |
+
+DistilBERT differs significantly from every classical model on every dataset (McNemar, Holm).
+
+**H1: hidden failures on behavioral tests (error rate)**
+
+| model | simple | negation | "X / not X" | typo | unseen names | name shortcut |
+|---|---|---|---|---|---|---|
+| distilbert | 0.000 | 0.000 | 0.000 | **0.394** | 0.000 | 0.000 |
+| logreg | 0.040 | 0.272 | 0.277 | 0.454 | 0.016 | 0.008 |
+| mnb | 0.102 | 0.492 | 0.572 | 0.386 | 0.084 | **0.376** |
+| rf | 0.094 | 0.206 | 0.247 | 0.366 | 0.048 | 0.024 |
+
+**New shortcut found in DistilBERT: a misspelled word reads as negative.** "The movie was
+brilliant." scores 0.999 positive; "The movie was brililant." scores 0.010. A typo in a positive
+adjective flips DistilBERT's label in **65%** of pairs (mean p_pos −0.64). A typo in a negative
+adjective flips only 9% (+0.11). The classical models lose typo'd words much more symmetrically:
+LR flips 42% for positive words and 49% for negative ones, because an unseen word is simply
+ignored. DistilBERT breaks the misspelled word into unfamiliar word pieces and has learned
+"unfamiliar-looking ⇒ negative" (shortfalls D9).
+
+**H2 / H3: negation gap to DistilBERT, and how much `NOT_` marking closes it**
+
+| model | gap on real negated sentences | closed by marking | gap on "X / not X" | closed |
+|---|---|---|---|---|
+| logreg | +12.7 pts [8.9, 16.6] | 23% [−2, 43], n.s. | +27.9 | **96%** |
+| mnb | +13.9 | 17%, n.s. | +60.9 | 63% |
+| rf | +17.3 | −2%, n.s. | +25.3 | 49% |
+| dtree | +29.3 | −5%, n.s. | +20.9 | 74% |
+| gnb | +37.8 | **25%** [13, 35] | +97.7 | 30% |
+
+Every base gap is significant (H2 supported). Marking closes most of the *template* gap but none
+of the *real-sentence* gap significantly, except for GNB (H3: supported only on templates; see
+C10). The same holds on the 339 test-only sentences (B9).
+
+**H4: does distance flag errors better than confidence?** No, for every model. For DistilBERT,
+low confidence has AUROC **0.836** [0.823, 0.847] on 1,004 IMDb errors. Distance reaches 0.530,
+length 0.525, and length-adjusted distance 0.531. Combining distance with confidence adds nothing
+(0.835).
+
+**C8: length.** DistilBERT's IMDb error is flat across lengths (0.098 / 0.096 / 0.094) and rises
+only for capped reviews (0.126), where text was cut. Training on short phrases didn't hurt it on
+long reviews.
+
+**B4: length vs content.** First + last sentence only: DistilBERT's error goes 0.100 → 0.207 on
+the same reviews. At SST length, IMDb text is harder than SST-2 by 12.9 points (an upper bound,
+see B10), the same size as for LR and MNB.
+
+**H5: do model families rely on the same words?** Hardly. Top-50 overlap between DistilBERT's IG
+words and any classical model is Jaccard 0.01–0.08 (RBO ≤ 0.04). The tree and forest agree
+(0.72), and LR shares a quarter of its words with them. The IG explanations are faithful:
+deleting the top-1/2/3 attributed words lowers DistilBERT's confidence by 0.37/0.46/0.52, against
+0.11/0.19/0.27 for the same number of random words. IG convergence delta ≤ 0.024.
