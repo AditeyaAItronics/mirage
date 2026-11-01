@@ -203,7 +203,7 @@ template and real-sentence effects side by side.
 
 ## D. Behavioral tests
 
-### D1. 🟠 MITIGATED (D24): templates and word lists are hand-written by us
+### D1. ✅ RESOLVED (D24, D33): templates and word lists are hand-written by us
 **Done:**
 - Every behavioral case records its adjective.
 - `word_errors.csv` shows failures per word.
@@ -211,8 +211,9 @@ template and real-sentence effects side by side.
   every simple case. For LR: 0.262 on all words, 0.284 on known words, so its negation failure is
   real and not caused by the words.
 
-**Still open:** someone other than the author should review `wordlists.py` (in
-`whatyouneedtodo.md`). Code can show the bias, but can't remove it.
+**Human review done (D33):** the project author reviewed every list (adjectives, mild adjectives,
+nouns, names) and the six film-person pairs. One word changed ("messy" → "sloppy"); the rest were
+kept. The lists remain author-chosen, so say so in the report's limitations section.
 
 ### D2. ✅ RESOLVED (D22): behavioral suite was small
 5× larger: 2,000 cases (2,750 rows); with the directional test (D27), 2,750 cases (4,250 rows).
@@ -456,7 +457,7 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 - **B1, leaky held-out split.** Fixed by a sentence-grouped split (`data.heldout_mask`). Leakage went from 89.6% to 0 of 3,378 phrases. See `majordecisions.md` D21.
 - **B2 (size), B3, B5, D2, F3: too little data, and validation reused as test.** Fixed by adding 1,820 SST-2 test sentences, pooling the negation set (519 sentences), using 10,000 IMDb reviews and a 2,000-case behavioral suite (D22).
 - **C1, unequal IMDb truncation.** Fixed by giving every model the same capped text, plus head+tail tokens at 512 for DistilBERT (D23).
-- **D1, template bias.** Mitigated by per-word errors and a known-words negation control (D24); the human review of the word lists is still open.
+- **D1, template bias.** Per-word errors and a known-words negation control (D24), plus the author's review of every word list (D33).
 - **F1, a distance blind to the domain change.** Mitigated by scoring the most unusual sentence: sanity AUROC 0.646 → 0.926 (D25); the length caveat is tracked in F4.
 - **H1, never run on full data.** The classical side has run end to end, with three fixes (D26); the DistilBERT run on Kaggle is still pending.
 - **H4, stale docs.** Updated.

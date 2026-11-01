@@ -776,3 +776,7 @@ positive to a reader and stay. Removing them would hide exactly the failures the
 
 **Effect:** the behavioral suite was rebuilt and the classical models' behavioral predictions
 redone. The other word lists, the name pairs and the mild adjectives were left as they were.
+
+**Review completed:** the author then reviewed the remaining lists (Indian and Western names, the
+six film-person pairs, mild adjectives, nouns and verbs) and kept them unchanged. The word-list
+review in `whatyouneedtodo.md` (step 7) is done.

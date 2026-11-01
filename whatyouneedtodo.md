@@ -66,7 +66,7 @@ It trained fine here (about 4 min per fit), but saves at **822 MB** per variant.
 - Drop `null` from `configs/classical.yaml → rf.grid.max_depth` (keep `[30]`), and say so in the report.
 - Reduce `n_estimators` to 100.
 
-### 7. Review the behavioral word lists (10 min) — *you're faster*
+### 7. Review the behavioral word lists — ✅ done ("messy" → "sloppy", everything else kept; D33)
 `src/mirage/behavioral/wordlists.py` and the `name_pairs` in `configs/behavioral.yaml`. You know your audience. Also check that the name pairs (Kidman↔Seagal, Spielberg↔Costner, …, chosen from SST-2's training labels, evidence in `results/name_associations.csv`) and the mild adjectives (`MILD_POS` / `MILD_NEG`) are ones you're happy to defend. Check that every adjective is clearly
 positive or negative *in a movie review*, and that the names are a fair cross-section (the
 name-swap test uses Indian vs Western names). Then run `python -m mirage build-suite` and skim
