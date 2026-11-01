@@ -139,15 +139,13 @@ They run on small synthetic data, need no downloads or GPU, and finish in about 
 
 ## Bugs and issues found while writing this
 
-1. **🔴 Kaggle notebook can silently run old code.** Cell 2 clones the repo only `if not
-   os.path.isdir("mirage")`. In an interactive Kaggle session where the repo was already cloned
-   (for example your earlier smoke test), re-running the notebook **keeps the old code**: the
-   leaky held-out split, the 256-token IMDb cut, no `imdb_edges`. A committed run ("Save & Run
-   All") starts in a fresh environment and is fine. **Fix:** `git pull` when the folder exists,
-   or restart the session first.
-2. **🟠 The notebook's smoke test is no longer about 2 minutes.** `SMOKE_TEST` limits training to
-   2,000 examples, but cell 5 still predicts on every evaluation set, including 10,000 IMDb
-   reviews at 512 tokens. That adds about 5 minutes per seed. The comment in cell 1 is out of date.
+1. **✅ FIXED: the Kaggle notebook could silently run old code.** Cell 2 cloned the repo only if
+   the folder was missing, so an interactive session that already had a clone (e.g. from the smoke
+   test) kept the old code. It now fetches and resets an existing clone to `origin/main`, prints
+   the commit it's running (`code version:`), and avoids a nested clone on Colab.
+2. **✅ FIXED: the smoke test took longer than advertised.** In smoke mode, cell 5 now predicts only
+   the short datasets (it skips the 10,000 IMDb reviews), and the comments say about 5 minutes
+   per seed.
 3. **🟢 ECE uses about 8 bins, not 15.** Confidence (the larger of P(pos) and P(neg)) is always at
    least 0.5, so the 7 bins below 0.5 are always empty. ECE is still computed correctly over the
    occupied bins, but "15 bins" overstates the resolution (related to shortfall G3).

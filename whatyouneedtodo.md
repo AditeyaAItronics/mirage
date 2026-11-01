@@ -21,7 +21,10 @@ After you change code locally: `git add -A && git commit -m "..." && git push`.
 - `REPO_URL` is already set to the GitHub repo.
 
 ### 3. Start the DistilBERT smoke test, then the real run (2 min of clicking, ~1–2 h of waiting)
-- First run with `SMOKE_TEST = True` (≈ 2 min) to catch setup problems cheaply.
+- First run with `SMOKE_TEST = True` and `SEEDS = [42]` (about 5 minutes; it skips the IMDb
+  predictions) to catch setup problems cheaply.
+- Cell 2 prints `code version:`. Check that it shows the latest commit on GitHub. Re-running in
+  the same session is safe: it updates an existing clone instead of reusing the old code.
 - Then `SMOKE_TEST = False`, *Save Version → Save & Run All (Commit)*. A committed run keeps going
   after you close the tab. Free quota is about 30 GPU-hours a week; 3 seeds of training plus GPU predictions use about 1–2 h.
 - When it finishes: Output tab → download `distilbert_outputs.zip` → unzip it into the **repo root**
