@@ -36,6 +36,7 @@ TEST_ORDER = [
     "beh_negation_dir_neg",
     "beh_typo",
     "beh_name_swap",
+    "beh_name_shortcut",
 ]
 MODEL_COLOR = dict(zip(MODEL_ORDER, SERIES, strict=False))
 VARIANT_COLOR = {"base": SERIES[0], "negmark": SERIES[1], "negmark_w3": SERIES[2]}

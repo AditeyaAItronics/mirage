@@ -37,6 +37,13 @@ PAIRED_TEMPLATES = [
     ("I thought the {noun} was {adj}.", "I don't think the {noun} was {adj}."),
     ("The {noun} was always {adj}.", "The {noun} was never {adj}."),
 ]
+# {name} is a film person; the sentiment comes only from {adj} (D32).
+NAME_SHORTCUT_TEMPLATES = [
+    "The new {name} film was {adj}.",
+    "I watched the {name} movie and it was {adj}.",
+    "{name}'s latest {noun} is {adj}.",
+    "Another {name} {noun}, and it was {adj}.",  # not "a {adj} one": "a uneven" (D32)
+]
 NAME_TEMPLATES = ["{name} {verb} the {noun}.", "{name} said the {noun} was {adj}."]
 
 
@@ -114,6 +121,40 @@ def negation_dir(n_pos: int, n_neg: int, rng: np.random.Generator) -> list[dict]
                         "scored": scored,
                     }
                 )
+    return rows
+
+
+def name_shortcut(n: int, pairs: list[tuple[str, str]], rng: np.random.Generator) -> list[dict]:
+    """Invariance: swap a name whose training phrases are mostly positive for one whose phrases
+    are mostly negative (D32). The sentence's sentiment comes only from a mild adjective, so the
+    prediction should not move. `original` always holds the positive-associated name, so
+    p_pos(original) - p_pos(perturbed) > 0 means the model learned the names' reputations.
+    """
+    texts = {}
+    for t, (good, bad), noun, (label, adj) in itertools.product(
+        NAME_SHORTCUT_TEMPLATES,
+        pairs,
+        W.WORK_NOUNS,
+        [(1, a) for a in W.MILD_POS] + [(0, a) for a in W.MILD_NEG],
+    ):
+        a = t.format(name=good, noun=noun, adj=adj)
+        texts.setdefault(a, (t.format(name=bad, noun=noun, adj=adj), label, adj))
+    pool = sorted(texts.items())
+    rows = []
+    for i, (orig, (pert, label, adj)) in enumerate(_sample(rng, pool, n)):
+        for role, text in (("original", orig), ("perturbed", pert)):
+            rows.append(
+                {
+                    "text": text,
+                    "label": label,
+                    "role": role,
+                    "case_id": f"name_shortcut-{i}",
+                    "word": adj,
+                    "test_type": "name_shortcut",
+                    "kind": "INV",
+                    "scored": True,
+                }
+            )
     return rows
 
 

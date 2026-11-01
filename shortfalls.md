@@ -225,8 +225,8 @@ scored (decision D11).
 whether they count as positive.
 **Effort:** small to medium.
 
-### D4. 🟢 Only four kinds of behavioral test
-**What:** simple, negation, typo, name swap. Missing: intensifiers ("very", "slightly"), contrast ("but"),
+### D4. 🟢 A limited set of behavioral tests
+**What:** simple, negation (template and directional), typo, name swap, name shortcut. Missing: intensifiers ("very", "slightly"), contrast ("but"),
 sarcasm, and irrelevant additions ("…, and the popcorn was salty").
 **Possible fix:** add 1–2 templates. The suite design makes this a new generator function in `templates.py`.
 **Effort:** small per template.
@@ -244,6 +244,25 @@ cases each). Weak models have few known words (MNB negmark: 3 of 20), so their c
 estimate rests on about 70 cases.
 **Possible fix:** a softer threshold (≥ 90% right), reported alongside the strict one.
 **Effort:** trivial.
+
+### D7. ✅ RESOLVED (D32): the name-swap test couldn't fail and was confounded with gender
+None of its Indian names occur in SST-2 training, so the classical models never saw them, and
+every pair also swapped gender. It's now a gender-matched "unseen names" probe, and a new
+`name_shortcut` test swaps film people whose training labels lean positive vs negative.
+
+### D8. 🟠 NEW (first result): Naive Bayes judges films by who made them
+**What:** swapping Kidman for Seagal (etc.) in an otherwise identical mild sentence flips Naive
+Bayes's label in **40.4%** of pairs (mean probability shift +0.38). LR shifts every prediction
+(+0.063) but rarely flips (0.6%). Unseen names move no model.
+**Why it matters:** this is the clearest shortcut in the project so far. The prediction depends on
+*who* is mentioned rather than *what* is said. It's real, learned from data, and (in this test)
+wrong.
+**Caveats:**
+- These names stand for real track records, so the shortcut is often right on SST-2 itself.
+- Six pairs and four templates. More pairs from `results/name_associations.csv` would show
+  whether the effect holds beyond these.
+
+**Effort:** small to extend (add pairs to `configs/behavioral.yaml`).
 
 ---
 
@@ -446,3 +465,4 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 - **C9, degenerate tree probabilities.** Fixed by a minimum leaf size of at least 10, still tuned on accuracy (D29).
 - **F4, length inside the distance.** Measured with a length-matched check (0.612 vs 0.926) and removed with a length-adjusted distance; H4 is unchanged (D30).
 - **B4, B9, C7: robustness of the headline results.** An IMDb excerpt set splits length from content, test-only negation rows were added, and a second negation-scope variant was trained (D31).
+- **D7, name test that couldn't fail.** Replaced by a name-shortcut test built from the training labels, plus a gender-matched unseen-names probe (D32).

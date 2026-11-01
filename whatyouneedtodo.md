@@ -55,7 +55,7 @@ see `majordecisions.md` D26 for the first results. Re-run them only if you chang
 These are factual corrections, and they are your academic call:
 1. "Real negation subset = SST-2 **test** sentences" → it is now validation **plus** the public SST-2 test sentences (519 in total). GLUE hides test labels, so the test labels come from the original Stanford release via `SetFit/sst2` (D22). Say so.
 2. Negation tests: say that *"not + negative adjective"* cases are reported separately and not scored (no clean expected label).
-3. Behavioral test count: now **2,750 cases = 4,250 rows** (invariance and directional tests use pairs; the directional "X / not X" test is new, D27). IMDb sample: **10,000** reviews, each capped to its first 220 + last 140 words for every model (D23).
+3. Behavioral test count: now **3,250 cases = 5,250 rows** (invariance and directional tests use pairs; the directional "X / not X" test (D27) and the name-shortcut test (D32) are new). IMDb sample: **10,000** reviews, each capped to its first 220 + last 140 words for every model (D23).
 
 ### 6. Decide on the random forest if it is too heavy
 It trained fine here (about 4 min per fit), but saves at **822 MB** per variant. If disk or RAM is tight:
@@ -64,10 +64,10 @@ It trained fine here (about 4 min per fit), but saves at **822 MB** per variant.
 - Reduce `n_estimators` to 100.
 
 ### 7. Review the behavioral word lists (10 min) — *you're faster*
-`src/mirage/behavioral/wordlists.py`. You know your audience. Check that every adjective is clearly
+`src/mirage/behavioral/wordlists.py` and the `name_pairs` in `configs/behavioral.yaml`. You know your audience. Also check that the name pairs (Kidman↔Seagal, Spielberg↔Costner, …, chosen from SST-2's training labels, evidence in `results/name_associations.csv`) and the mild adjectives (`MILD_POS` / `MILD_NEG`) are ones you're happy to defend. Check that every adjective is clearly
 positive or negative *in a movie review*, and that the names are a fair cross-section (the
 name-swap test uses Indian vs Western names). Then run `python -m mirage build-suite` and skim
-`results/behavioral_suite.csv`. Skimming the 4,250 short lines (or `results/word_errors.csv`) is faster for you than explaining which
+`results/behavioral_suite.csv`. Skimming the 5,250 short lines (or `results/word_errors.csv`) is faster for you than explaining which
 ones feel unnatural.
 
 ---

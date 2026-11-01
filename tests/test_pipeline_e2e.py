@@ -90,5 +90,7 @@ def test_cpu_pipeline(tmp_path, monkeypatch):
     shift = pd.read_csv(root / "results" / "shift_decomposition.csv")
     assert {"length_format", "content", "length_format_p_holm"} <= set(shift.columns)
     assert "sst2_neg_testonly" in set(effect["test"])
+    names = pd.read_csv(root / "results" / "name_effect.csv")
+    assert {"name_shortcut", "name_swap"} <= set(names["test"])
     assert (root / "results" / "explain" / "tree_depth4.txt").exists()
     assert (root / "figures" / "error_heatmap_base.png").exists()

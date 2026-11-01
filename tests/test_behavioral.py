@@ -21,6 +21,7 @@ def test_counts_match_config(suite):
     assert cases["name_swap"] == c["name_swap"]
     assert cases["negation_dir"] == c["negation_dir"]
     assert cases["negation_dir_neg"] == c["negation_dir_neg"]
+    assert cases["name_shortcut"] == c["name_shortcut"]
 
 
 def test_deterministic(suite):
@@ -101,3 +102,52 @@ def test_dir_cases_scores_a_model_that_reads_negation(suite):
     dc = dir_cases(d)
     assert dc["applicable"].all() and not dc["failed"].any() and not dc["no_move"].any()
     assert dc["shift"].round(6).eq(0.7).all()
+
+
+def test_name_shortcut_pairs_differ_only_by_the_name(suite):
+    from mirage.config import load_config
+
+    pairs = [tuple(p) for p in load_config("behavioral")["name_pairs"]]
+    d = suite[suite["test_type"] == "name_shortcut"]
+    for _, g in d.groupby("case_id"):
+        orig = g[g.role == "original"].text.iloc[0]
+        pert = g[g.role == "perturbed"].text.iloc[0]
+        good, bad = next((a, b) for a, b in pairs if a in orig)
+        assert orig.replace(good, bad) == pert  # same sentence, only the name swapped
+        assert g["label"].nunique() == 1
+
+
+def test_name_swap_pairs_match_gender():
+    from mirage.behavioral import wordlists as W
+
+    female = {
+        "Priya",
+        "Ananya",
+        "Kavya",
+        "Meera",
+        "Diya",
+        "Emily",
+        "Sarah",
+        "Jessica",
+        "Laura",
+        "Emma",
+    }
+    for a, b in zip(W.NAMES_A, W.NAMES_B, strict=True):
+        assert (a in female) == (b in female), (a, b)
+
+
+def test_name_associations_and_pairs():
+    import pandas as pd
+
+    from mirage.behavioral.names import name_associations, pick_pairs
+
+    train = pd.DataFrame(
+        {
+            "text": ["spielberg wins"] * 20 + ["seagal again"] * 20 + ["plain"] * 40,
+            "label": [1] * 19 + [0] + [0] * 19 + [1] + [1, 0] * 20,
+        }
+    )
+    a = name_associations(train, candidates=["spielberg", "seagal", "absent"]).set_index("name")
+    assert set(a.index) == {"spielberg", "seagal"}  # "absent" is under min_phrases
+    assert a.loc["spielberg", "log_odds"] > 0 > a.loc["seagal", "log_odds"]
+    assert pick_pairs(a.reset_index(), k=1) == [("Spielberg", "Seagal")]

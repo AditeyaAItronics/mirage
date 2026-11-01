@@ -6,4 +6,14 @@ counts:
   negation_dir: 500      # "X" vs "not X" pairs, positive X (scored, D27)
   negation_dir_neg: 250  # "X" vs "not X" pairs, negative X (unscored probe)
   typo: 500              # invariance pairs
-  name_swap: 250         # invariance pairs
+  name_swap: 250         # invariance pairs: unseen Indian vs Western names, gender-matched
+  name_shortcut: 500     # invariance pairs: film people with positive vs negative labels (D32)
+# (positive-associated, negative-associated) surnames, picked from SST-2 training labels by
+# mirage.behavioral.names.pick_pairs; evidence in results/name_associations.csv
+name_pairs:
+  - [Kidman, Seagal]
+  - [Binoche, Hopkins]
+  - [Spielberg, Costner]
+  - [Nicholson, Ritchie]
+  - [Diesel, Tarantino]
+  - [Kline, Sandler]

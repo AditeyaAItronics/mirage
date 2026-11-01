@@ -118,3 +118,27 @@ def test_length_table_bins_imdb_reviews():
     t = length_table(preds, n_resamples=20).set_index("length")
     assert t.loc["<=100", "n"] == 1 and t.loc["101-200", "error"] == 0.5
     assert t.loc[">360 (capped)", "error"] == 1.0
+
+
+def test_name_effect_measures_the_shift_toward_the_positive_name():
+    from mirage.evaluate import name_effect
+
+    rows = []
+    for i in range(40):
+        for role, p in (("original", 0.7), ("perturbed", 0.4 if i % 2 else 0.6)):
+            rows.append(
+                {
+                    "model": "logreg",
+                    "variant": "base",
+                    "seed": 42,
+                    "dataset": "behavioral",
+                    "test_type": "name_shortcut",
+                    "case_id": f"name_shortcut-{i}",
+                    "role": role,
+                    "p_pos": p,
+                    "pred": int(p >= 0.5),
+                }
+            )
+    out = name_effect(pd.DataFrame(rows), n_resamples=50).iloc[0]
+    assert out["shift"] == pytest.approx(0.2)  # (0.3 + 0.1) / 2
+    assert out["flip_rate"] == 0.5 and out["shift_p"] < 0.001

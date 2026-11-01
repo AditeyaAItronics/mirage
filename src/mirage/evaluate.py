@@ -389,6 +389,42 @@ def negation_direction(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def name_effect(preds: pd.DataFrame, tests=("name_shortcut", "name_swap"), **ci_kw) -> pd.DataFrame:
+    """D32: how much does swapping a name move each model's answer?
+
+    name_shortcut: film people whose training phrases are mostly positive (original) vs mostly
+    negative (perturbed). shift = mean p_pos(original) - p_pos(perturbed); > 0 means the model
+    learned the names' reputations. name_swap (unseen Indian vs Western first names) is the
+    contrast. flip_rate = share of pairs whose predicted label changes. Holm per test.
+    """
+    rows = []
+    for (m, v), g in canonical(preds).groupby(["model", "variant"]):
+        b = _behavioral(g)
+        for tt in tests:
+            d = b[b["test_type"] == tt]
+            if d.empty:
+                continue
+            w = d.pivot_table(index="case_id", columns="role", values=["p_pos", "pred"])
+            shift = paired_diff_ci(w["p_pos"]["original"], w["p_pos"]["perturbed"], **ci_kw)
+            rows.append(
+                {
+                    "model": m,
+                    "variant": v,
+                    "test": tt,
+                    "n_pairs": len(w),
+                    "flip_rate": float((w["pred"]["original"] != w["pred"]["perturbed"]).mean()),
+                    "shift": shift["estimate"],
+                    "shift_lo": shift["ci_low"],
+                    "shift_hi": shift["ci_high"],
+                    "shift_p": shift["p_value"],
+                }
+            )
+    out = pd.DataFrame(rows)
+    if len(out):
+        out["shift_p_holm"] = out.groupby("test")["shift_p"].transform(lambda p: holm(p))
+    return out
+
+
 def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
     preds = load_predictions()
     kw = {"n_resamples": ci_resamples}
@@ -402,6 +438,7 @@ def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
         "negmark_effect": negmark_effect(preds, **kw),
         "imdb_by_length": length_table(preds, **kw),
         "shift_decomposition": shift_decomposition(preds),
+        "name_effect": name_effect(preds, **kw),
     }
     if (preds["model"] == REFERENCE).any():
         tables["negation_gap"] = negation_gap(preds, **kw)

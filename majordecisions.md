@@ -694,3 +694,61 @@ Long live musicals." is labelled positive). That label noise inflates the edges 
 **content is an upper bound** and length_format is a lower bound on how much text helps
 (shortfalls B10). Together with D30, this means the embedding detector sees IMDb sentences as only
 mildly unusual, but the classifiers do find them harder.
+
+## D32 — Name tests rebuilt: a name-shortcut test from the training labels, and a gender-matched unseen-names probe
+
+**Problem found while reviewing `wordlists.py`:**
+- **None of the 10 Indian names occurs in SST-2's training data.** To the classical models they're
+  invisible, so the old name-swap test effectively asked "does adding *John* change anything?"
+  It was nearly impossible to fail (LR 1–2%).
+- **Every Indian/Western pair also swapped gender** (Priya ↔ John, Rahul ↔ Emily, …), so a changed
+  prediction couldn't be blamed on either factor.
+- **Meanwhile the data is full of names with learned sentiment.** LR's weights: Spielberg +3.19,
+  Seagal −1.69, and even "Sarah" −0.78 (from 7 phrases).
+
+**Decision 1: a new `name_shortcut` test** (500 invariance pairs):
+- Each pair swaps a film person whose training phrases are mostly positive for one whose phrases
+  are mostly negative. The sentiment comes only from a mild adjective
+  (decent/solid/watchable/pleasant/nice vs flat/uneven/forgettable/bland/weak), so the prediction
+  shouldn't move.
+- **Names are chosen from the training labels, not any model's weights**
+  (`behavioral/names.py`), so the test is equally fair to DistilBERT. The method: smoothed
+  log-odds of positive labels among training phrases containing the surname, with at least 15
+  phrases. Surnames that are also everyday words (cage, stone, lee, ford…) are excluded.
+- The six pairs, fixed in `configs/behavioral.yaml` (evidence in `results/name_associations.csv`):
+  Kidman↔Seagal, Binoche↔Hopkins, Spielberg↔Costner, Nicholson↔Ritchie, Diesel↔Tarantino,
+  Kline↔Sandler.
+- The templates use nouns that name a whole work ("film", "comedy"…), because "Another Spielberg
+  acting" isn't English. A first version had "and a uneven one"; it was reworded to "and it was
+  {adj}." A check confirms no a/an errors remain in the suite.
+- The generator runs last, so the other tests' random draws didn't change.
+- `name_effect.csv` reports, per model: the flip rate, and the **shift** = mean p_pos(positive
+  name) − p_pos(negative name), with CI and Holm p.
+
+**Decision 2: the old swap is kept as an honest "unseen names" probe.** The Indian and Western
+names are now paired by gender (Priya ↔ Emily, Rahul ↔ John, …).
+
+**Result (base):**
+
+| model | name_shortcut flips | shift [95% CI] | unseen-names shift |
+|---|---|---|---|
+| **mnb** | **40.4%** | **+0.380** [+0.353, +0.406] | −0.004 (n.s.) |
+| logreg | 0.6% | +0.063 [+0.057, +0.069] | −0.003 (n.s.) |
+| rf | 2.4% | +0.009 [+0.007, +0.011] | −0.004 (n.s.) |
+| dtree | 1.2% | −0.003 (n.s.) | −0.002 (n.s.) |
+| gnb | 3.0% | +0.001 (n.s.) | +0.011 (n.s.) |
+
+- **Naive Bayes learned the names' reputations strongly.** "Another Kidman picture, and it was
+  bland." and the same sentence with Seagal get very different scores (in the first version of
+  the template: 0.72 vs 0.02). It multiplies word likelihoods, so one surname whose 26 training
+  phrases were all positive outweighs a mild adjective.
+- **LR moves every prediction the same way but rarely flips the label:** it has the shortcut, but
+  the adjective usually wins.
+- **Negation marking doesn't change this** (MNB shift about +0.31 under both variants), as expected.
+- **Unseen names move nothing**, which confirms the old test couldn't detect anything for these
+  models.
+
+**Rejected:**
+- Choosing names by LR's weights: circular, since it would favour finding an effect in LR.
+- Removing the Indian/Western probe: it's still the right test for *unseen* names, and DistilBERT,
+  whose pre-training may know these names, could behave differently.

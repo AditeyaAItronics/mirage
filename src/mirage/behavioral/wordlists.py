@@ -1,8 +1,8 @@
 """Word lists for the behavioral templates.
 
-Adjectives are unambiguous, common in movie/product reviews, and >= 4 letters so a one-character
-typo still leaves a recognisable word. Extend freely; counts in configs/behavioral.yaml are drawn
-from the cartesian product, so longer lists only add variety.
+Adjectives are unambiguous and common in movie reviews. The typo test uses only those with >= 4
+letters, so a one-character typo still leaves a recognisable word. Extend freely; counts in
+configs/behavioral.yaml are drawn from the cartesian product, so longer lists only add variety.
 """
 
 POS_ADJ = [
@@ -69,7 +69,9 @@ NOUNS = [
     "sequel",
 ]
 
-# Two groups so the name-swap test crosses Indian and Western names.
+# Unseen-names probe: Indian vs Western first names, paired by position AND gender (D32), so a
+# changed prediction can't come from a gender swap. None of NAMES_A occurs in SST-2's training
+# data, so for the classical models this mainly checks that unfamiliar names are ignored.
 NAMES_A = [
     "Priya",
     "Rahul",
@@ -83,17 +85,24 @@ NAMES_A = [
     "Aditya",
 ]
 NAMES_B = [
-    "John",
     "Emily",
-    "Michael",
+    "John",
     "Sarah",
-    "David",
+    "Michael",
     "Jessica",
-    "James",
+    "David",
     "Laura",
-    "Daniel",
+    "James",
     "Emma",
+    "Daniel",
 ]
+
+# Mild adjectives for the name-shortcut test: weak enough that a name could tip the balance.
+# Nouns that name a whole work, so "{name}'s latest {noun}" and "Another {name} {noun}" read
+# naturally ("Another Spielberg acting" would not).
+WORK_NOUNS = ["movie", "film", "sequel", "drama", "comedy", "thriller", "project", "picture"]
+MILD_POS = ["decent", "solid", "watchable", "pleasant", "nice"]
+MILD_NEG = ["flat", "uneven", "forgettable", "bland", "weak"]
 
 POS_VERBS = ["loved", "enjoyed", "liked", "adored"]
 NEG_VERBS = ["hated", "disliked", "loathed", "despised"]

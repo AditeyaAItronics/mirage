@@ -75,6 +75,15 @@ def stage_build_suite(args) -> None:
     print(
         df.groupby(["test_type", "kind"]).agg(rows=("text", "size"), cases=("case_id", "nunique"))
     )
+    # Evidence behind configs/behavioral.yaml name_pairs (D32); needs the prepared data.
+    from mirage.behavioral.names import name_associations
+    from mirage.data import load
+
+    try:
+        train = pd.concat([load("sst2_train"), load("sst2_heldout")])
+    except FileNotFoundError:
+        return
+    name_associations(train).to_csv(paths.RESULTS / "name_associations.csv", index=False)
 
 
 def _saved_models(model_filter=None, variant_filter=None):
