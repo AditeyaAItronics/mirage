@@ -81,6 +81,8 @@ def test_build_splits_ids_and_sizes(sst):
     assert splits["imdb"]["text"].str.split().str.len().max() <= 3
     assert splits["imdb"]["capped"].any()
     assert len(splits["sst2_neg"]) > 0
+    # imdb_edges pairs item-for-item with imdb (B4)
+    assert splits["imdb_edges"]["item_id"].tolist() == splits["imdb"]["item_id"].tolist()
 
 
 def test_head_tail_keeps_the_ending():
@@ -91,3 +93,24 @@ def test_head_tail_keeps_the_ending():
 def test_drop_seen_ignores_case_and_spacing():
     df = pd.DataFrame({"text": ["Great  Film", "new one"], "label": [1, 0]})
     assert drop_seen(df, pd.Series(["great film"]))["text"].tolist() == ["new one"]
+
+
+def test_imdb_edges_keep_first_and_last_sentence():
+    from mirage.data import build_imdb_edges
+
+    sample = pd.DataFrame(
+        {
+            "item_id": ["imdb-0", "imdb-1"],
+            "text": [
+                "I went in with hopes. The middle dragged on. In the end it was a fine film.",
+                "Short and sweet review here",
+            ],
+            "label": [1, 0],
+        }
+    )
+    e = build_imdb_edges(sample)
+    assert e["text"].tolist() == [
+        "I went in with hopes. In the end it was a fine film.",
+        "Short and sweet review here",  # no sentence break -> whole text
+    ]
+    assert e["item_id"].tolist() == ["imdb-0", "imdb-1"] and e["label"].tolist() == [1, 0]

@@ -26,7 +26,9 @@ TEST_ORDER = [
     "sst2_val",
     "sst2_test",
     "sst2_neg",
+    "sst2_neg_testonly",
     "imdb",
+    "imdb_edges",
     "beh_simple",
     "beh_negation",
     "beh_negation_neg",
@@ -36,7 +38,7 @@ TEST_ORDER = [
     "beh_name_swap",
 ]
 MODEL_COLOR = dict(zip(MODEL_ORDER, SERIES, strict=False))
-VARIANT_COLOR = {"base": SERIES[0], "negmark": SERIES[1]}
+VARIANT_COLOR = {"base": SERIES[0], "negmark": SERIES[1], "negmark_w3": SERIES[2]}
 BLUE_RAMP = LinearSegmentedColormap.from_list(
     "mirage_blue", ["#cde2fb", "#86b6ef", "#3987e5", "#256abf", "#184f95", "#0d366b"]
 )

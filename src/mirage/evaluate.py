@@ -11,6 +11,7 @@ import itertools
 
 import numpy as np
 import pandas as pd
+from scipy.stats import norm
 
 from mirage import paths
 from mirage.behavioral.suite import case_failures, dir_cases
@@ -20,7 +21,7 @@ from mirage.stats import gap_closed_ci, holm, mcnemar_test, paired_diff_ci, rate
 
 REFERENCE = "distilbert"
 INDIST = "sst2_test"  # reported in-distribution test set; sst2_val is for choices only
-SETS = ("sst2_val", "sst2_test", "sst2_neg", "imdb")
+SETS = ("sst2_val", "sst2_test", "sst2_neg", "imdb", "imdb_edges")
 
 
 def median_seed(preds: pd.DataFrame, model: str = REFERENCE) -> int:
@@ -70,6 +71,9 @@ def _error_flags(preds: pd.DataFrame) -> dict[str, pd.Series]:
         g = preds[preds["dataset"] == ds]
         if len(g):
             out[ds] = (~g["correct"].astype(bool)).set_axis(g["item_id"]).rename(ds)
+    if "sst2_neg" in out:  # B9: negated sentences never used to pick DistilBERT's seed
+        neg = out["sst2_neg"]
+        out["sst2_neg_testonly"] = neg[neg.index.str.startswith("sst2_test")]
     beh = preds[preds["dataset"] == "behavioral"]
     if len(beh):
         cf = case_failures(beh)
@@ -102,7 +106,9 @@ def error_table(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
 
 
 def negation_gap(
-    preds: pd.DataFrame, tests=("sst2_neg", "beh_negation", "beh_negation_dir"), **ci_kw
+    preds: pd.DataFrame,
+    tests=("sst2_neg", "sst2_neg_testonly", "beh_negation", "beh_negation_dir"),
+    **ci_kw,
 ) -> pd.DataFrame:
     """H2/H3: classical negation error minus DistilBERT's, before/after negation marking."""
     preds = canonical(preds)
@@ -158,22 +164,26 @@ def negation_gap(
 
 def negmark_effect(
     preds: pd.DataFrame,
-    tests=("sst2_neg", "beh_negation_dir", "sst2_test", "imdb"),
+    tests=("sst2_neg", "sst2_neg_testonly", "beh_negation_dir", "sst2_test", "imdb"),
     **ci_kw,
 ) -> pd.DataFrame:
-    """H3 within each classical model: error(base) - error(negmark) on the same items.
+    """H3 within each classical model: error(base) - error(variant) on the same items, for every
+    negation-marking variant (negmark, negmark_w3, ...).
 
     Needs no DistilBERT. sst2_test and imdb are controls: marking should help on negation without
-    costing accuracy elsewhere. Holm-adjusted across every (model, test) row (D28).
+    costing accuracy elsewhere. Holm-adjusted across every (model, variant, test) row (D28).
     DIR cases are compared on pairs that are applicable under both variants.
     """
     preds = canonical(preds)
     rows = []
-    for m, g in preds.groupby("model"):
-        if m == REFERENCE or not {"base", "negmark"} <= set(g["variant"]):
+    for (m, variant), g in preds.groupby(["model", "variant"]):
+        if m == REFERENCE or variant == "base":
             continue
-        fb = _error_flags(g[g["variant"] == "base"])
-        fn = _error_flags(g[g["variant"] == "negmark"])
+        base = preds[(preds["model"] == m) & (preds["variant"] == "base")]
+        if base.empty:
+            continue
+        fb = _error_flags(base)
+        fn = _error_flags(g)
         for test in tests:
             if test not in fb or test not in fn:
                 continue
@@ -182,6 +192,7 @@ def negmark_effect(
             rows.append(
                 {
                     "model": m,
+                    "variant": variant,
                     "test": test,
                     "n": len(both),
                     "error_base": float(both["base"].mean()),
@@ -232,6 +243,49 @@ def length_table(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
             }
         )
     return pd.DataFrame(rows)
+
+
+def shift_decomposition(preds: pd.DataFrame) -> pd.DataFrame:
+    """B4 (D31): split each model's SST-2 -> IMDb error increase into two parts.
+
+    length_format = err(imdb) - err(imdb_edges): the same reviews, whole vs first + last sentence
+                    (paired bootstrap).
+    content       = err(imdb_edges) - err(sst2_test): SST-length text, IMDb vs SST-2
+                    (independent samples; normal-approximation CI and p).
+    Holm-adjusted within each part across models and variants.
+    """
+    rows = []
+    for (m, v), g in canonical(preds).groupby(["model", "variant"]):
+        f = _error_flags(g)
+        if not {"imdb", "imdb_edges", INDIST} <= set(f):
+            continue
+        both = pd.concat({"full": f["imdb"], "edges": f["imdb_edges"]}, axis=1, join="inner")
+        lf = paired_diff_ci(both["full"], both["edges"])
+        e, t = f["imdb_edges"].astype(float), f[INDIST].astype(float)
+        diff = e.mean() - t.mean()
+        se = np.sqrt(e.var(ddof=1) / len(e) + t.var(ddof=1) / len(t))
+        rows.append(
+            {
+                "model": m,
+                "variant": v,
+                "err_sst2_test": t.mean(),
+                "err_imdb_edges": e.mean(),
+                "err_imdb": f["imdb"].mean(),
+                "length_format": lf["estimate"],
+                "length_format_lo": lf["ci_low"],
+                "length_format_hi": lf["ci_high"],
+                "length_format_p": lf["p_value"],
+                "content": diff,
+                "content_lo": diff - 1.96 * se,
+                "content_hi": diff + 1.96 * se,
+                "content_p": float(2 * norm.sf(abs(diff) / se)) if se > 0 else 1.0,
+            }
+        )
+    out = pd.DataFrame(rows)
+    for part in ("length_format", "content"):
+        if len(out):
+            out[f"{part}_p_holm"] = holm(out[f"{part}_p"])
+    return out
 
 
 def mcnemar_table(preds: pd.DataFrame, datasets=SETS) -> pd.DataFrame:
@@ -347,6 +401,7 @@ def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
         "negation_direction": negation_direction(preds, **kw),
         "negmark_effect": negmark_effect(preds, **kw),
         "imdb_by_length": length_table(preds, **kw),
+        "shift_decomposition": shift_decomposition(preds),
     }
     if (preds["model"] == REFERENCE).any():
         tables["negation_gap"] = negation_gap(preds, **kw)

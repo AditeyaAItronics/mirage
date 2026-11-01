@@ -21,8 +21,15 @@ from sklearn.tree import DecisionTreeClassifier
 from mirage.features import build_counts, build_tfidf
 from mirage.models.base import CLASSICAL_MODELS, SklearnClassifier
 
+# Variant name -> what the vectorizer's Preprocessor does with negation (D31).
+VARIANT_NEGMARK: dict[str, bool | str] = {
+    "base": False,
+    "negmark": True,  # Pang et al. scope, up to punctuation
+    "negmark_w3": "window3",  # 3-token scope with fixed-phrase exceptions
+}
 
-def build_pipeline(name: str, cfg: dict, negmark: bool, params: dict) -> Pipeline:
+
+def build_pipeline(name: str, cfg: dict, negmark: bool | str, params: dict) -> Pipeline:
     seed = cfg["seed"]
     vec_cfg = cfg["vectorizer"]
     if name == "logreg":
@@ -59,13 +66,13 @@ def tune(
     train: pd.DataFrame,
     heldout: pd.DataFrame,
     cfg: dict,
-    negmark: bool = False,
+    variant: str = "base",
 ) -> tuple[SklearnClassifier, pd.DataFrame]:
     """Fit every grid point on train, score on held-out, return the best model and the log."""
     grid = cfg["models"][name].get("grid") or {}
     rows, best, best_acc, best_idx = [], None, -1.0, -1
     for i, params in enumerate(ParameterGrid(grid)):
-        pipe = build_pipeline(name, cfg, negmark, params)
+        pipe = build_pipeline(name, cfg, VARIANT_NEGMARK[variant], params)
         t0 = time.perf_counter()
         pipe.fit(train["text"].tolist(), train["label"].to_numpy())
         fit_s = time.perf_counter() - t0
@@ -73,7 +80,7 @@ def tune(
         rows.append(
             {
                 "model": name,
-                "variant": "negmark" if negmark else "base",
+                "variant": variant,
                 "params": str(params),
                 "heldout_acc": round(acc, 4),
                 "fit_seconds": round(fit_s, 1),
@@ -90,12 +97,12 @@ def train_all(
     train: pd.DataFrame,
     heldout: pd.DataFrame,
     cfg: dict,
-    negmark: bool = False,
+    variant: str = "base",
     models: tuple[str, ...] = CLASSICAL_MODELS,
 ) -> tuple[dict[str, SklearnClassifier], pd.DataFrame]:
     fitted, logs = {}, []
     for name in models:
-        clf, log = tune(name, train, heldout, cfg, negmark)
+        clf, log = tune(name, train, heldout, cfg, variant)
         fitted[name] = clf
         logs.append(log)
     return fitted, pd.concat(logs, ignore_index=True)

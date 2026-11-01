@@ -16,7 +16,7 @@ from mirage import paths
 from mirage.config import load_config, save_resolved, set_seed
 from mirage.models.base import CLASSICAL_MODELS
 
-VARIANTS = ("base", "negmark")
+VARIANTS = ("base", "negmark", "negmark_w3")  # see models.classical.VARIANT_NEGMARK
 
 
 # ---------------------------------------------------------------- stages
@@ -38,7 +38,7 @@ def stage_train_classical(args) -> None:
     models = tuple(args.models) if args.models else CLASSICAL_MODELS
     log_path = paths.RESULTS / "tuning_classical.csv"
     for variant in args.variants:
-        fitted, log = train_all(train, heldout, cfg, negmark=variant == "negmark", models=models)
+        fitted, log = train_all(train, heldout, cfg, variant=variant, models=models)
         for name, clf in fitted.items():
             out = paths.model_dir(name, variant, cfg["seed"])
             clf.save(out)

@@ -36,11 +36,11 @@ After you change code locally: `git add -A && git commit -m "..." && git push`.
 Kaggle run needs nobody watching it.
 
 ### 4. Data download and classical training: ✅ already done on this laptop (Nov 2026)
-`prepare`, `train-classical --variants base negmark` and the whole classical pipeline (`all`) have run;
+`prepare`, `train-classical --variants base negmark negmark_w3` and the whole classical pipeline (`all`) have run;
 see `majordecisions.md` D26 for the first results. Re-run them only if you change data or model configs:
 ```bash
 .venv/Scripts/python -m mirage prepare
-.venv/Scripts/python -m mirage train-classical --variants base negmark
+.venv/Scripts/python -m mirage train-classical --variants base negmark negmark_w3
 ```
 - `prepare` downloads SST-2 (with public test labels) and IMDb (~100 MB) and prints `results/data_stats.csv`.
   Current sizes: train 63,971 / held-out 3,378 / val 872 / **test 1,820** / **negation 519** / IMDb 10,000.
@@ -59,7 +59,7 @@ These are factual corrections, and they are your academic call:
 
 ### 6. Decide on the random forest if it is too heavy
 It trained fine here (about 4 min per fit), but saves at **822 MB** per variant. If disk or RAM is tight:
-- Keep the grid, but train it alone overnight: `python -m mirage train-classical --models rf --variants base negmark`
+- Keep the grid, but train it alone overnight: `python -m mirage train-classical --models rf --variants base negmark negmark_w3`
 - Drop `null` from `configs/classical.yaml → rf.grid.max_depth` (keep `[30]`), and say so in the report.
 - Reduce `n_estimators` to 100.
 

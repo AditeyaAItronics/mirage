@@ -12,9 +12,17 @@ from sklearn.model_selection import train_test_split
 
 from mirage import paths
 from mirage.config import load_config
-from mirage.text import has_negation, normalize
+from mirage.text import has_negation, normalize, sentences
 
-DATASETS = ("sst2_train", "sst2_heldout", "sst2_val", "sst2_test", "sst2_neg", "imdb")
+DATASETS = (
+    "sst2_train",
+    "sst2_heldout",
+    "sst2_val",
+    "sst2_test",
+    "sst2_neg",
+    "imdb",
+    "imdb_edges",
+)
 
 
 def _download_sst2(name: str) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -138,14 +146,33 @@ def _with_ids(df: pd.DataFrame, prefix: str) -> pd.DataFrame:
     return df
 
 
-def build_imdb(imdb: pd.DataFrame, cfg: dict) -> pd.DataFrame:
-    """Stratified sample, each review capped to head + tail words so every model reads the same
-    text (shortfalls.md C1). `n_words` and `capped` record what was cut."""
-    df = _with_ids(stratified_sample(imdb, cfg["imdb_sample_size"], cfg["seed"]), "imdb")
+def build_imdb(sample: pd.DataFrame, cfg: dict) -> pd.DataFrame:
+    """Each sampled review capped to head + tail words so every model reads the same text
+    (shortfalls.md C1). `n_words` and `capped` record what was cut."""
+    df = sample.copy()
     df["n_words"] = df["text"].str.split().str.len()
     head, tail = cfg["imdb_head_words"], cfg["imdb_tail_words"]
     df["capped"] = df["n_words"] > head + tail
     df["text"] = df["text"].map(lambda t: head_tail(t, head, tail))
+    return df
+
+
+def build_imdb_edges(sample: pd.DataFrame) -> pd.DataFrame:
+    """B4 (D31): each review's first and last sentence only, with the review's label and item_id.
+
+    SST-like length (about 40 words) with IMDb content, so the IMDb drop can be split into a
+    length/format part (imdb vs imdb_edges, same reviews) and a content part (imdb_edges vs
+    sst2_test). Caveat: the two sentences may not carry the review's verdict, so this set has
+    some label noise that the full review doesn't.
+    """
+
+    def edges(text: str) -> str:
+        s = sentences(text) or [text]
+        return s[0] if len(s) == 1 else f"{s[0]} {s[-1]}"
+
+    df = sample[["item_id", "text", "label"]].copy()
+    df["text"] = df["text"].map(edges)
+    df["n_words"] = df["text"].str.split().str.len()
     return df
 
 
@@ -163,6 +190,7 @@ def build_splits(
     """
     tr, ho = split_heldout(train, cfg["heldout_frac"], cfg["seed"])
     val = _with_ids(val, "sst2_val")
+    sample = _with_ids(stratified_sample(imdb, cfg["imdb_sample_size"], cfg["seed"]), "imdb")
     test = _with_ids(drop_seen(test, pd.concat([train["text"], val["text"]])), "sst2_test")
     return {
         "sst2_train": _with_ids(tr, "sst2_train"),
@@ -170,7 +198,8 @@ def build_splits(
         "sst2_val": val,
         "sst2_test": test,
         "sst2_neg": negation_subset(pd.concat([val, test], ignore_index=True)),
-        "imdb": build_imdb(imdb, cfg),
+        "imdb": build_imdb(sample, cfg),
+        "imdb_edges": build_imdb_edges(sample),
     }
 
 

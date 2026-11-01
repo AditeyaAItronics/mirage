@@ -70,17 +70,11 @@ Validation has 0% overlap.
 `sst2_val` now only makes choices (DistilBERT's median seed). `sst2_test` (1,820 sentences with the
 original public labels) is the reported in-distribution set.
 
-### B4. 🟠 The IMDb shift mixes several changes at once
-**What:** IMDb differs from SST-2 in length (about 230 words vs about 20), writing style, vocabulary (plot
-summaries, actor names) and label definition (whole-review star rating vs sentence sentiment).
-**Why it matters:** when accuracy drops on IMDb, we can't say *which* difference caused it, so "shortcut
-failure" is only one explanation among several.
-**Possible fix:**
-- Bucket IMDb results by review length.
-- Evaluate on IMDb's first and last sentences only, which is SST-length text from the IMDb domain. This
-  separates the effect of length from the effect of domain.
-
-**Effort:** small to medium.
+### B4. ✅ RESOLVED (D31): the IMDb shift mixed several changes at once
+`imdb_edges` (each review's first + last sentence, same item_ids) splits the drop. Cutting a review
+to two sentences makes it *harder* (LR −7.7 points for full reviews against edges). At SST
+length, IMDb text is harder than SST-2 (LR +11.6). `shift_decomposition.csv` has every model. See
+B10 for the label-noise caveat.
 
 ### B5. ✅ RESOLVED (D22): IMDb sample was 2,000 reviews
 Now 10,000. The weakest model has 2,000 or more IMDb errors.
@@ -108,12 +102,19 @@ is fair, but it isn't "full IMDb".
 if DistilBERT's 512-token limit allows.
 **Effort:** small.
 
-### B9. 🟢 NEW: part of the negation set also picks DistilBERT's seed
-**What:** 180 of the 519 negated sentences come from validation, which is also where DistilBERT's
-median seed is chosen.
-**Why it matters:** a tiny selection effect on per-item negation results.
-**Possible fix:** report the negation gap on the 339 test-only sentences as a robustness check.
-**Effort:** small.
+### B9. ✅ RESOLVED (D31): part of the negation set also picks DistilBERT's seed
+`sst2_neg_testonly` (339 test-only sentences) is reported next to the pooled set in
+`negmark_effect`, `negation_gap` and the heatmap. For the classical models it gives the same
+conclusions. Re-check the DistilBERT gap on it when it arrives.
+
+### B10. 🟠 NEW: `imdb_edges` inherits whole-review labels
+**What:** a review's first and last sentences don't always state its verdict ("Caught this 1969
+film on cable TCM one night. Long live musicals." is labelled positive).
+**Why it matters:** label noise raises the edges error. So the "content" part of the IMDb drop
+(D31) is an upper bound, and the "length/format" part understates how much full text helps.
+**Possible fix:** hand-label about 200 edges excerpts as positive, negative or unclear, measure the
+noise rate, and re-estimate on the clear ones. A sentence-level sentiment check is another option.
+**Effort:** small to medium (about 1 hour of labelling).
 
 ---
 
@@ -166,15 +167,11 @@ from classical models as such.
 competitor.
 **Effort:** trivial (wording).
 
-### C7. 🟠 Negation marking uses a simple scope rule
-**What:** `negation_mark` adds `NOT_` to every word from a negation word up to the next punctuation mark.
-It doesn't handle "not only … but also", double negatives, "no doubt", or scope across clauses that have no
-punctuation.
-**Why it matters:** H3 ("negation marking closes the gap") tests *this heuristic*, not negation handling in
-general. A weak result might come from the rule rather than the idea.
-**Possible fix:** add exceptions for fixed phrases ("not only", "no doubt", "nothing but"), and an alternative
-scope rule (the next 3 words only); report both.
-**Effort:** small.
+### C7. ✅ RESOLVED (D31): negation marking used one simple scope rule
+A second variant, `negmark_w3` (3-token scope with fixed-phrase exceptions: "not only", "no doubt"
+…), is trained for every model. On real negated sentences it helps slightly more consistently than
+the original rule, but no gain survives Holm (except GNB with `negmark`). The C10 conclusion
+doesn't depend on the scope rule.
 
 ### C8. 🟠 READY, waiting for DistilBERT (D30): short-phrase training vs long reviews
 `imdb_by_length.csv` and the `imdb_error_by_length` figure break IMDb error down by review length.
@@ -191,15 +188,15 @@ bound (C6), not a fault to tune away.
 **MNB** pushes half its IMDb probabilities to exactly 1.0. The early-warning combiner handles this
 (D26). Note it next to MNB's calibration numbers.
 
-### C10. 🟠 NEW (first result): negation marking helps templates, not clearly real sentences
+### C10. 🟠 (first result, robust to scope rule and test-only subset): negation marking helps templates, not clearly real sentences
 **What:** after Holm, `NOT_` marking cuts the directional-test error significantly for every model
-(LR −25.7 points, MNB −39.5). On real negated SST-2 sentences (n = 519) it's significant only
-for GNB. LR's gain is −2.9 points [−0.2, +5.8], Holm p 0.64.
-**Why it matters:** H3 rests on real negation. The templates are short and have a single, clear
-negation scope, which is the case `negation_mark` handles best (C7).
-**Possible fix:** check which real negated sentences change prediction under marking. Try the
-scope variants from C7. Report the template and real-sentence effects side by side, not just the
-template one.
+(LR −25.7 points, MNB −39.5 with `negmark`; similar with `negmark_w3`). On real negated SST-2
+sentences (n = 519) it's significant only for GNB with `negmark`. LR gains +2.9 points under
+either scope rule (Holm 0.27 at best). The same holds on the 339 test-only sentences (B9).
+**Why it matters:** H3 rests on real negation. Templates are short with one clear negation scope,
+which is the easy case for any marking rule.
+**Possible fix:** inspect which real negated sentences change prediction under marking. Report
+template and real-sentence effects side by side.
 **Effort:** small.
 
 ---
@@ -432,7 +429,7 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 2. ~~**G1** (multiple-comparison correction)~~: done, see D28.
 3. ~~**C9** (degenerate DT probabilities)~~: done, see D29.
 4. ~~**F4**~~ and **C8** (length checks): F4 done, C8 ready and waiting for DistilBERT (D30).
-5. **B4**, **C7** and **B9**: cheap robustness checks for the headline results.
+5. ~~**B4**, **C7** and **B9**~~: done, see D31.
 6. Everything 🟢: one sentence each in the report's Limitations section.
 
 ## Resolved
@@ -448,3 +445,4 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 - **G1, no multiple-comparison correction.** Fixed with Holm-adjusted p-values on every paired comparison, plus a paired AUROC test for H4 (D28).
 - **C9, degenerate tree probabilities.** Fixed by a minimum leaf size of at least 10, still tuned on accuracy (D29).
 - **F4, length inside the distance.** Measured with a length-matched check (0.612 vs 0.926) and removed with a length-adjusted distance; H4 is unchanged (D30).
+- **B4, B9, C7: robustness of the headline results.** An IMDb excerpt set splits length from content, test-only negation rows were added, and a second negation-scope variant was trained (D31).

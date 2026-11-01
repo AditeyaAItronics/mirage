@@ -299,3 +299,153 @@ flat,0.008284923788899485,importance,dtree,negmark
 with,0.008263023084953499,importance,dtree,negmark
 nothing,0.007963979791384888,importance,dtree,negmark
 that,0.007576088938370305,importance,dtree,negmark
+good,11.127984378303163,positive,logreg,negmark_w3
+funny,10.091747291106602,positive,logreg,negmark_w3
+fascinating,9.348448872061038,positive,logreg,negmark_w3
+beautiful,8.930047066830818,positive,logreg,negmark_w3
+fun,8.860624316604993,positive,logreg,negmark_w3
+best,8.834801156919628,positive,logreg,negmark_w3
+entertaining,8.731490240764877,positive,logreg,negmark_w3
+powerful,8.48233308074882,positive,logreg,negmark_w3
+enjoyable,8.316931981053957,positive,logreg,negmark_w3
+compelling,8.27270700774505,positive,logreg,negmark_w3
+hilarious,8.24198896782227,positive,logreg,negmark_w3
+love,7.744078247044356,positive,logreg,negmark_w3
+brilliant,7.577704685517808,positive,logreg,negmark_w3
+wonderful,7.461639098665696,positive,logreg,negmark_w3
+remarkable,7.3664336766527185,positive,logreg,negmark_w3
+terrific,7.247586587277099,positive,logreg,negmark_w3
+great,7.220705026146162,positive,logreg,negmark_w3
+worth,7.187284477358446,positive,logreg,negmark_w3
+solid,7.04313541608304,positive,logreg,negmark_w3
+never fails,7.01458980836116,positive,logreg,negmark_w3
+beautifully,7.009839056932956,positive,logreg,negmark_w3
+moving,6.942066657383142,positive,logreg,negmark_w3
+intriguing,6.843955248513903,positive,logreg,negmark_w3
+appealing,6.7894549043077115,positive,logreg,negmark_w3
+well,6.746561173715479,positive,logreg,negmark_w3
+bad,-12.866081886095088,negative,logreg,negmark_w3
+lacks,-12.28268393328883,negative,logreg,negmark_w3
+too,-11.894565475683143,negative,logreg,negmark_w3
+dull,-9.757898230557808,negative,logreg,negmark_w3
+worst,-9.386599159450034,negative,logreg,negmark_w3
+lacking,-9.36191951371274,negative,logreg,negmark_w3
+no,-9.341182300968985,negative,logreg,negmark_w3
+less,-8.741653444814299,negative,logreg,negmark_w3
+n't,-8.575942250012085,negative,logreg,negmark_w3
+lack,-8.428811098651774,negative,logreg,negmark_w3
+mess,-8.368996846532514,negative,logreg,negmark_w3
+flat,-8.126856058483186,negative,logreg,negmark_w3
+neither,-8.058295862442739,negative,logreg,negmark_w3
+loses,-7.9333850479641335,negative,logreg,negmark_w3
+predictable,-7.660319155979252,negative,logreg,negmark_w3
+stupid,-7.659041443994933,negative,logreg,negmark_w3
+fails,-7.629056277940213,negative,logreg,negmark_w3
+depressing,-7.621184057231046,negative,logreg,negmark_w3
+dumb,-7.454621166838311,negative,logreg,negmark_w3
+bland,-7.40232018801609,negative,logreg,negmark_w3
+nothing,-7.350431944857792,negative,logreg,negmark_w3
+waste,-7.304974006035135,negative,logreg,negmark_w3
+nor,-7.297500789801275,negative,logreg,negmark_w3
+wrong,-7.292207400354531,negative,logreg,negmark_w3
+the worst,-7.28684198621449,negative,logreg,negmark_w3
+solid,5.184493019004453,positive,mnb,negmark_w3
+", funny",4.52557901008675,positive,mnb,negmark_w3
+a solid,4.476307961079968,positive,mnb,negmark_w3
+touching,4.341332524883212,positive,mnb,negmark_w3
+playful,4.3120049097886906,positive,mnb,negmark_w3
+a powerful,4.3000287187419755,positive,mnb,negmark_w3
+love and,4.1852532041495465,positive,mnb,negmark_w3
+a sweet,4.171647552093768,positive,mnb,negmark_w3
+detailed,4.157854229961433,positive,mnb,negmark_w3
+mesmerizing,4.115294615542638,positive,mnb,negmark_w3
+heartwarming,4.085880730336342,positive,mnb,negmark_w3
+riveting,4.070842852971802,positive,mnb,negmark_w3
+"fun ,",4.070842852971802,positive,mnb,negmark_w3
+elegant,4.055575380841013,positive,mnb,negmark_w3
+dazzling,4.00832249599047,positive,mnb,negmark_w3
+thought-provoking,4.00832249599047,positive,mnb,negmark_w3
+refreshingly,3.9920619751186877,positive,mnb,negmark_w3
+evocative,3.9755326731674785,positive,mnb,negmark_w3
+tender,3.9755326731674785,positive,mnb,negmark_w3
+absorbing,3.9416311214917954,positive,mnb,negmark_w3
+powerful and,3.9416311214917954,positive,mnb,negmark_w3
+perfectly,3.932973058748681,positive,mnb,negmark_w3
+vibrant,3.906539801680527,positive,mnb,negmark_w3
+wonderfully,3.8885212961778493,positive,mnb,negmark_w3
+accomplished,3.8701721575096517,positive,mnb,negmark_w3
+ugly,-4.906303631836668,negative,mnb,negmark_w3
+unfunny,-4.846199707766964,negative,mnb,negmark_w3
+worse,-4.800943116178843,negative,mnb,negmark_w3
+poorly,-4.683160080522459,negative,mnb,negmark_w3
+pointless,-4.525531136318875,negative,mnb,negmark_w3
+tiresome,-4.462617310908307,negative,mnb,negmark_w3
+unnecessary,-4.395478008070679,negative,mnb,negmark_w3
+offensive,-4.367307131103981,negative,mnb,negmark_w3
+suffers,-4.323504508445588,negative,mnb,negmark_w3
+badly,-4.293199158950259,negative,mnb,negmark_w3
+how bad,-4.261946615446156,negative,mnb,negmark_w3
+listless,-4.261946615446156,negative,mnb,negmark_w3
+inept,-4.196349332960342,negative,mnb,negmark_w3
+pretentious,-4.187838643292434,negative,mnb,negmark_w3
+amateurish,-4.161863156889172,negative,mnb,negmark_w3
+virtually,-4.126145074287095,negative,mnb,negmark_w3
+irritating,-4.089103802606745,negative,mnb,negmark_w3
+"contrived ,",-4.07005560763605,negative,mnb,negmark_w3
+the worst,-4.0555275070731405,negative,mnb,negmark_w3
+loses,-4.050637521778949,negative,mnb,negmark_w3
+crap,-4.050637521778949,negative,mnb,negmark_w3
+suffers from,-4.050637521778949,negative,mnb,negmark_w3
+lousy,-4.030834894482769,negative,mnb,negmark_w3
+your head,-4.030834894482769,negative,mnb,negmark_w3
+choppy,-4.01063218716525,negative,mnb,negmark_w3
+too,0.006511779317360669,importance,rf,negmark_w3
+bad,0.005804117210862742,importance,rf,negmark_w3
+and,0.004527849513193303,importance,rf,negmark_w3
+a,0.004427907400201257,importance,rf,negmark_w3
+n't,0.003899814379854643,importance,rf,negmark_w3
+no,0.00387704500746197,importance,rf,negmark_w3
+the,0.003572787334501611,importance,rf,negmark_w3
+good,0.003497709861852455,importance,rf,negmark_w3
+",",0.003034861802250888,importance,rf,negmark_w3
+funny,0.003001712381867922,importance,rf,negmark_w3
+not,0.002787580081749917,importance,rf,negmark_w3
+of,0.0025834517139987144,importance,rf,negmark_w3
+dull,0.002527898695670622,importance,rf,negmark_w3
+.,0.0024025542415037336,importance,rf,negmark_w3
+to,0.002333349818781874,importance,rf,negmark_w3
+film,0.0023305982502937086,importance,rf,negmark_w3
+best,0.002188516193120613,importance,rf,negmark_w3
+worst,0.00215631761369895,importance,rf,negmark_w3
+with,0.0020103301545840568,importance,rf,negmark_w3
+or,0.0019617260314256945,importance,rf,negmark_w3
+'s,0.0019406869135180505,importance,rf,negmark_w3
+nothing,0.0019105955424081856,importance,rf,negmark_w3
+is,0.0018580575049198,importance,rf,negmark_w3
+an,0.0018284027995799275,importance,rf,negmark_w3
+fun,0.0017779393821649129,importance,rf,negmark_w3
+and,0.02649589117789939,importance,dtree,negmark_w3
+a,0.025334396400752,importance,dtree,negmark_w3
+too,0.024083150897107598,importance,dtree,negmark_w3
+bad,0.021334256354191495,importance,dtree,negmark_w3
+the,0.02099394911647114,importance,dtree,negmark_w3
+n't,0.020639512873723002,importance,dtree,negmark_w3
+",",0.018201429443867507,importance,dtree,negmark_w3
+no,0.013900826947410455,importance,dtree,negmark_w3
+of,0.013280944010956294,importance,dtree,negmark_w3
+or,0.010925225474029214,importance,dtree,negmark_w3
+'s,0.00977041338962375,importance,dtree,negmark_w3
+good,0.009732153757105347,importance,dtree,negmark_w3
+not,0.009707745490331054,importance,dtree,negmark_w3
+to,0.009567489607079616,importance,dtree,negmark_w3
+with,0.009204270378899794,importance,dtree,negmark_w3
+film,0.008987521097600435,importance,dtree,negmark_w3
+funny,0.008922612053715348,importance,dtree,negmark_w3
+worst,0.008871564058948182,importance,dtree,negmark_w3
+.,0.008687339830877938,importance,dtree,negmark_w3
+dull,0.008228858720782828,importance,dtree,negmark_w3
+best,0.007769228539333298,importance,dtree,negmark_w3
+in,0.007597554357411652,importance,dtree,negmark_w3
+minutes,0.00746445050737566,importance,dtree,negmark_w3
+an,0.007426307351636673,importance,dtree,negmark_w3
+like,0.0070333142395780255,importance,dtree,negmark_w3

@@ -67,3 +67,31 @@ def test_has_negation_uses_tokens_not_substrings():
 def test_preprocessor_pipeline():
     assert Preprocessor(negmark=False)("It isn't good.") == "it is n't good ."
     assert Preprocessor(negmark=True)("It isn't good.") == "it is n't NOT_good ."
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        ("not good movie at all .", "not NOT_good NOT_movie NOT_at all ."),  # 3 tokens only
+        ("not only great but also funny", "not only great but also funny"),  # exception
+        ("no doubt the best film", "no doubt the best film"),
+        ("nothing but praise", "nothing but praise"),
+        ("it is n't good , but fun", "it is n't NOT_good , but fun"),  # still cut at punctuation
+        ("not bad not good", "not NOT_bad not NOT_good"),  # a new negation restarts the window
+    ],
+)
+def test_negation_mark_window3(text, expected):
+    assert negation_mark(text, "window3") == expected
+
+
+def test_punct_scheme_ignores_window_exceptions():
+    # the original Pang-style rule (`negmark`) is unchanged by D31
+    assert negation_mark("not only great") == "not NOT_only NOT_great"
+    with pytest.raises(ValueError):
+        negation_mark("not good", "window5")
+
+
+def test_preprocessor_accepts_scheme_names():
+    assert Preprocessor(negmark="window3")("Not only good, not bad at all here") == (
+        "not only good , not NOT_bad NOT_at NOT_all here"
+    )

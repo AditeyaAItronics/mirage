@@ -12,7 +12,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from mirage.text import Preprocessor, tokens
 
 
-def _common(cfg: dict, negmark: bool) -> dict:
+def _common(cfg: dict, negmark: bool | str) -> dict:
     return {
         "preprocessor": Preprocessor(negmark=negmark),
         "tokenizer": tokens,
@@ -24,9 +24,9 @@ def _common(cfg: dict, negmark: bool) -> dict:
     }
 
 
-def build_tfidf(cfg: dict, negmark: bool = False) -> TfidfVectorizer:
+def build_tfidf(cfg: dict, negmark: bool | str = False) -> TfidfVectorizer:
     return TfidfVectorizer(sublinear_tf=cfg["sublinear_tf"], **_common(cfg, negmark))
 
 
-def build_counts(cfg: dict, negmark: bool = False) -> CountVectorizer:
+def build_counts(cfg: dict, negmark: bool | str = False) -> CountVectorizer:
     return CountVectorizer(**_common(cfg, negmark))

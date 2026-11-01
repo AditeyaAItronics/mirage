@@ -634,3 +634,63 @@ CI per original-length bin: ≤100, 101–200, 201–360, >360 capped) and `figu
 points, RF +7.2), probably because long reviews mix praise and criticism. When DistilBERT
 arrives, its curve has to be compared against these slopes, not against a flat line: only
 growth *beyond* the classical slope points to its short-phrase training (C8).
+
+## D31 — Robustness checks: test-only negation (B9), a second negation scope (C7), IMDb excerpts (B4)
+
+**B9: does part of the negation set picking DistilBERT's seed matter?** `sst2_neg_testonly` (the
+339 negated *test* sentences, never used for any choice) is now a row in `negmark_effect`,
+`negation_gap` and the error heatmap. For the classical models it tells the same story as the
+pooled 519 sentences: the same signs, and nothing significant after Holm except GNB with
+`negmark`. The DistilBERT gap will be checked the same way when it arrives.
+
+**C7: is the H3 result about negation marking, or about our scope rule?** A second variant,
+`negmark_w3`, marks at most the **3 tokens** after a negation word (still cut at punctuation) and
+skips fixed phrases where the negation doesn't negate ("not only", "not just", "no doubt",
+"nothing but", "never fails"). The original `negmark` (Pang et al., scope up to punctuation) is
+unchanged, and old saved models still load (`Preprocessor(negmark=True)` means "punct").
+Trained for all 5 models (held-out: LR 0.843, MNB 0.822, RF 0.770, DT 0.667, GNB 0.566).
+
+Effect on real negated sentences (sst2_neg, n = 519), base − variant error. Holm is now over 50
+rows (5 models × 2 variants × 5 tests):
+
+| model | negmark | negmark_w3 |
+|---|---|---|
+| logreg | +2.9 [−0.2, +5.8] | +2.9 [+0.8, +5.2], Holm 0.27 |
+| mnb | +2.3 [−1.3, +6.0] | +3.9 [+1.3, +6.6], Holm 0.12 |
+| rf | −0.4 [−3.5, +2.7] | +3.1 [+0.4, +6.0], Holm 0.78 |
+| dtree | −1.5 | +0.2 |
+| gnb | **+9.2, Holm 0.002** | +5.0, Holm 0.21 |
+
+**Finding:** the shorter scope helps real sentences a little more consistently (every raw CI
+except DT's is above 0), but nothing survives Holm except GNB with `negmark`. On templates the two
+rules are similar for LR and MNB. The short scope does less for DT and GNB, whose template gains
+under `negmark` came partly from marking whole clauses. So C10 holds with either scope rule:
+negation marking's big template gains don't carry over to real negated sentences. Side effect: LR
+`negmark_w3` improves SST-2 test by 1.4 points (Holm 0.009), the only significant test-set gain
+from marking.
+
+**B4: which part of the IMDb drop is length and which is content?** A new evaluation set,
+`imdb_edges`, holds each IMDb review's **first and last sentence** (mean 44 words, close to SST-2's
+19) with the review's label and *the same item_ids* as `imdb`. `shift_decomposition.csv` splits
+each model's error change:
+- length_format = err(imdb) − err(imdb_edges), same reviews, paired.
+- content = err(imdb_edges) − err(sst2_test), independent samples.
+
+| model (base) | SST-2 test | IMDb edges | IMDb full | length_format | content |
+|---|---|---|---|---|---|
+| logreg | 0.165 | 0.281 | 0.205 | **−7.7** [−8.6, −6.7] | **+11.6** [+9.7, +13.5] |
+| mnb | 0.166 | 0.298 | 0.240 | −5.8 | +13.1 |
+| rf | 0.246 | 0.334 | 0.297 | −3.7 | +8.8 |
+| dtree | 0.347 | 0.417 | 0.388 | −2.9 | +7.0 |
+| gnb | 0.409 | 0.481 | 0.454 | −2.6 | +7.1 |
+
+All significant after Holm. **Finding:** cutting a review down to two sentences makes it *harder*
+(every model), so full reviews' extra text helps more than their length hurts. Two short IMDb
+sentences are much harder than two SST-2-length sentences, by 7–13 points.
+
+**Caveat, which limits that content number:** `imdb_edges` inherits the review's label, but
+its two sentences don't always state the verdict ("Caught this 1969 film on cable TCM one night.
+Long live musicals." is labelled positive). That label noise inflates the edges error, so
+**content is an upper bound** and length_format is a lower bound on how much text helps
+(shortfalls B10). Together with D30, this means the embedding detector sees IMDb sentences as only
+mildly unusual, but the classifiers do find them harder.

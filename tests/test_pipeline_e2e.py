@@ -71,7 +71,7 @@ def test_cpu_pipeline(tmp_path, monkeypatch):
     _run("figures", env=env)
 
     preds = list((root / "results" / "predictions").glob("*.parquet"))
-    assert len(preds) == 5 * 2 * 6  # models x variants x eval sets
+    assert len(preds) == 5 * 2 * 7  # models x variants x eval sets
     errors = pd.read_csv(root / "results" / "errors_by_type.csv")
     assert {"sst2_test", "sst2_neg", "beh_negation", "beh_typo"} <= set(errors["test"])
     control = pd.read_csv(root / "results" / "negation_control.csv")
@@ -87,5 +87,8 @@ def test_cpu_pipeline(tmp_path, monkeypatch):
     by_len = pd.read_csv(root / "results" / "imdb_by_length.csv")
     assert by_len["n"].sum() == 5 * 2 * 100  # every IMDb review lands in one bin
     assert (root / "figures" / "imdb_error_by_length_base.png").exists()
+    shift = pd.read_csv(root / "results" / "shift_decomposition.csv")
+    assert {"length_format", "content", "length_format_p_holm"} <= set(shift.columns)
+    assert "sst2_neg_testonly" in set(effect["test"])
     assert (root / "results" / "explain" / "tree_depth4.txt").exists()
     assert (root / "figures" / "error_heatmap_base.png").exists()
