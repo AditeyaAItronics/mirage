@@ -10,6 +10,9 @@ Read `ARCHITECTURE.md` for the design, `majordecisions.md` for why, and
   Validate with `mirage.predict.validate_predictions`.
 - **Raw text in, normalization inside.** Classifiers receive raw text; `mirage.text.normalize`
   (and `negation_mark` for the `negmark` variant) run inside the model pipeline. Never normalize twice.
+  Exception: the ready-made external models (`models/external.py`, D39) read raw text unnormalized.
+- **External models never change our statistics.** Every multi-model Holm family is split with
+  `evaluate.holm_family` (ours vs external), and H2's `negation_gap` excludes them.
 - **Held-out is split by sentence** (`data.heldout_mask`): never replace it with a random row split. SST-2 rows are sub-phrases, so a random split leaks (D21).
 - **Never use GLUE's SST-2 test labels** (they are `-1`). The test set comes from `SetFit/sst2` (original public Stanford labels, D22).
   `sst2_val` is for choices (DistilBERT's median seed); `sst2_test` is the reported in-distribution set. The negation subset pools both.
@@ -23,8 +26,9 @@ Read `ARCHITECTURE.md` for the design, `majordecisions.md` for why, and
 
 ## Commands (Windows, from repo root)
 - Tests: `.venv/Scripts/python -m pytest`
-- Lint/format: `.venv/Scripts/python -m ruff check src tests` / `ruff format src tests`
+- Lint/format: `.venv/Scripts/python -m ruff check src tests app` / `ruff format src tests app`
 - Stages: `.venv/Scripts/python -m mirage <stage>` (`python -m mirage --help` lists them)
+- Demo: `.venv/Scripts/python -m streamlit run app/shortcut_explorer.py` (needs the `[demo]` extra); the app is layout only, its logic is `mirage.demo`
 
 ## Seeds
-Data/classical/behavioral: 42. DistilBERT: 13, 42, 87 (per-item analyses use the median-accuracy seed).
+Data/classical/behavioral: 42. DistilBERT: 13, 42, 87 (per-item analyses use the median-accuracy seed). External models: 0 (no training).

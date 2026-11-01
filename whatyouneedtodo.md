@@ -54,8 +54,26 @@ see `majordecisions.md` D26 for the first results. Re-run them only if you chang
 
 ## Week 1 — decisions only you can make
 
-### 5. Fix three statements in the proposal before you submit or present it
-These are factual corrections, and they are your academic call:
+### 5. ✅ DONE (Nov 2026): Fix the factual statements in the proposal
+Applied to `Downloads/Mirage_Full_Proposal_4_Week.md`; the untouched original is saved next to it
+as `Mirage_Full_Proposal_4_Week.original.md`. Besides the three below, these were corrected to
+match the code:
+- test set (1,820 SST-2 test sentences; validation is for choices only);
+- the leak-free held-out split;
+- IMDb (10,000 reviews, capped, 512 tokens with start + end kept);
+- the tuning grids for LR and the decision tree;
+- DistilBERT's seeds and median-seed rule;
+- the full behavioral suite table (with the name-shortcut test explained);
+- the second negation-scope rule;
+- the per-sentence early-warning score with the length baseline;
+- Holm correction.
+
+**Still open, your call:** H2 says "single-word features" and H3 "word-pair features … close part
+of the gap", but every classical model already uses words *and* word pairs. Either add a
+single-word variant to test it, or reword H2/H3. The hypotheses table is unchanged until you
+decide.
+
+The three original corrections (all applied):
 1. "Real negation subset = SST-2 **test** sentences" → it is now validation **plus** the public SST-2 test sentences (519 in total). GLUE hides test labels, so the test labels come from the original Stanford release via `SetFit/sst2` (D22). Say so.
 2. Negation tests: say that *"not + negative adjective"* cases are reported separately and not scored (no clean expected label).
 3. Behavioral test count: now **3,750 cases = 6,250 rows** (invariance and directional tests use pairs; the directional "X / not X" test (D27), the name-shortcut test (D32) and the noun-typo control (D37) are new). IMDb sample: **10,000** reviews, each capped to its first 220 + last 140 words for every model (D23).
@@ -150,7 +168,8 @@ limitations section are yours**: you are graded on them, and you know what your 
 ### 13. Final checks before submission
 - `python -m pytest`: all green.
 - Ask Claude to run `/security-review` before making the repo public (it catches stray tokens).
-- Fill in the README "Results" section with the main table and one figure.
+- ~~Fill in the README "Results" section with the main table and one figure.~~ Done; add the
+  external models' rows once their Kaggle run is in.
 
 ---
 

@@ -11,7 +11,13 @@ demo (#2). Each section gives the goal, what the result looks like (the skeleton
 built, how it will be tested, and the risks. Every finished part gets an entry in
 `majordecisions.md` (D39 onward), and the tables, figures and docs are regenerated.
 
-**Status:** design only. Nothing below is built yet. The open decisions are in the last section.
+**Status: built** (Nov 2026). #4 is D39, #1 is D40, #2 is D41 in `majordecisions.md`, which also
+records where the build departed from this design:
+- IMDb for the external models runs in full on Kaggle, not as a CPU subsample.
+- The robustness score uses pair accuracy, not flip rates.
+- The demo's Integrated Gradients view was dropped.
+
+This document is kept as the original design; the decision log is the current record.
 
 ---
 
@@ -289,7 +295,7 @@ For every part, in this order:
 | # | Decision | My recommendation |
 |---|---|---|
 | 1 | External models: both, or only RoBERTa-large? | **Both.** The replication control costs about 5 minutes of CPU. |
-| 2 | IMDb for external models: Kaggle (full, about 15 min of your time) or a 2,000-review CPU sample? | **CPU sample.** IMDb isn't their main story. |
+| 2 | IMDb for external models: Kaggle (full, about 15 min of your time) or a 2,000-review CPU sample? | **CPU sample.** IMDb isn't their main story. *(Decided: full 10,000 on Kaggle, for a like-for-like comparison; then every eval set moved to Kaggle.)* |
 | 3 | Add Streamlit as an optional `[demo]` dependency? | **Yes.** It doesn't affect the rest of the project. |
 | 4 | Robustness score: equal weights over negation (direction), real negation, typo, names? | **Yes,** with the leave-one-out sensitivity check. |
 | 5 | Demo flags: confidence threshold 0.70, unusual-input threshold at the 95th percentile? | **Yes.** Both are tunable in the app's config. |

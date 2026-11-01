@@ -508,7 +508,7 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 - **C1, unequal IMDb truncation.** Fixed by giving every model the same capped text, plus head+tail tokens at 512 for DistilBERT (D23).
 - **D1, template bias.** Per-word errors and a known-words negation control (D24), plus the author's review of every word list (D33).
 - **F1, a distance blind to the domain change.** Mitigated by scoring the most unusual sentence: sanity AUROC 0.646 → 0.926 (D25); the length caveat is tracked in F4.
-- **H1, never run on full data.** The classical side has run end to end, with three fixes (D26); the DistilBERT run on Kaggle is still pending.
+- **H1, never run on full data.** The classical side has run end to end, with three fixes (D26); DistilBERT followed (D34, D35).
 - **H4, stale docs.** Updated.
 - **D5, negation template rewards negative bias.** Fixed with a directional "X / not X" test scored on the model's own answers (D27).
 - **G1, no multiple-comparison correction.** Fixed with Holm-adjusted p-values on every paired comparison, plus a paired AUROC test for H4 (D28).
