@@ -108,7 +108,8 @@ Each stage can also run on its own: `python -m mirage --help`.
 
 ## Layout
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for the design and [majordecisions.md](majordecisions.md)
+See [proposal.md](proposal.md) for the research questions and hypotheses,
+[ARCHITECTURE.md](ARCHITECTURE.md) for the design and [majordecisions.md](majordecisions.md)
 for why each choice was made.
 
 | Folder | Contents |
