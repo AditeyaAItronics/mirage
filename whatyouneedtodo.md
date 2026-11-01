@@ -39,11 +39,11 @@ After you change code locally: `git add -A && git commit -m "..." && git push`.
 Kaggle run needs nobody watching it.
 
 ### 4. Data download and classical training: ✅ already done on this laptop (Nov 2026)
-`prepare`, `train-classical --variants base negmark negmark_w3` and the whole classical pipeline (`all`) have run;
+`prepare`, `train-classical --variants base negmark negmark_w3 unigram` and the whole classical pipeline (`all`) have run;
 see `majordecisions.md` D26 for the first results. Re-run them only if you change data or model configs:
 ```bash
 .venv/Scripts/python -m mirage prepare
-.venv/Scripts/python -m mirage train-classical --variants base negmark negmark_w3
+.venv/Scripts/python -m mirage train-classical --variants base negmark negmark_w3 unigram
 ```
 - `prepare` downloads SST-2 (with public test labels) and IMDb (~100 MB) and prints `results/data_stats.csv`.
   Current sizes: train 63,971 / held-out 3,378 / val 872 / **test 1,820** / **negation 519** / IMDb 10,000.
@@ -68,10 +68,10 @@ match the code:
 - the per-sentence early-warning score with the length baseline;
 - Holm correction.
 
-**Still open, your call:** H2 says "single-word features" and H3 "word-pair features … close part
-of the gap", but every classical model already uses words *and* word pairs. Either add a
-single-word variant to test it, or reword H2/H3. The hypotheses table is unchanged until you
-decide.
+**✅ Resolved (D42):** H2 says "single-word features" and H3 "word-pair features … close part of
+the gap", but every classical model used words *and* word pairs. A single-word variant now
+completes the ladder, so H2 and H3 are tested exactly as worded, and the hypotheses table stays
+unchanged.
 
 The three original corrections (all applied):
 1. "Real negation subset = SST-2 **test** sentences" → it is now validation **plus** the public SST-2 test sentences (519 in total). GLUE hides test labels, so the test labels come from the original Stanford release via `SetFit/sst2` (D22). Say so.

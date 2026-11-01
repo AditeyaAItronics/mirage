@@ -16,7 +16,7 @@ from mirage import paths
 from mirage.config import load_config, save_resolved, set_seed
 from mirage.models.base import CLASSICAL_MODELS
 
-VARIANTS = ("base", "negmark", "negmark_w3")  # see models.classical.VARIANT_NEGMARK
+VARIANTS = ("base", "negmark", "negmark_w3", "unigram")  # see models.classical.VARIANT_NEGMARK
 
 
 # ---------------------------------------------------------------- stages
@@ -304,7 +304,7 @@ def stage_warn(args) -> None:
     # models are a family of their own, so they don't change our models' p-values (D39).
     from mirage.evaluate import holm_family
 
-    out["family"] = holm_family(out["model"])
+    out["family"] = holm_family(out["model"], variant=out["variant"])
     out["diff_p_holm"] = out.groupby(["predictor", "family"])["diff_p"].transform(lambda p: holm(p))
     out["beats_conf"] = (out["diff_p_holm"] < 0.05) & (out["diff_vs_conf"] > 0)
     out.to_csv(paths.RESULTS / "early_warning.csv", index=False)

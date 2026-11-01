@@ -39,13 +39,16 @@ Base variants; DistilBERT is the mean of 3 seeds. Full tables are in `results/`,
 - **Hidden failures (H1):** classical models that score 65–84% on SST-2 fail 20–57% of simple
   negation pairs (Gaussian NB 96%). Naive Bayes flips its answer in 38% of sentences when only a
   film person's name changes.
-- **Negation gap (H2):** every classical model is significantly worse than DistilBERT on real
-  negated sentences, by 12.7–37.8 points.
-- **Negation marking (H3):** `NOT_` marking closes most of the gap on templates (96% for LR) but
-  significantly closes it on real sentences only for Gaussian NB. Real negations are longer-range,
-  idiomatic and sometimes doubly negated (D38).
+- **Negation gap (H2):** with single-word features, as the proposal states, every classical
+  model is significantly worse than DistilBERT on real negated sentences, by 14–35 points (and by
+  12.7–37.8 points with word pairs too).
+- **Word pairs and negation marking (H3):** together they close **40%** of logistic regression's
+  real-sentence gap (95% CI 21–58%): part, but not all. On templates they close 25–98% for every
+  model. On real sentences the other models barely benefit, because real negations are
+  longer-range, idiomatic and sometimes doubly negated (D38, D42).
 - **Early warning (H4):** low confidence flags IMDb errors well (DistilBERT AUROC 0.836). Embedding
   distance doesn't (0.53), even though it separates the two datasets (0.93, mostly via length).
+  The single-word models show the same pattern (confidence 0.55–0.74, distance about 0.5).
 - **Shared shortcuts (H5):** DistilBERT relies on almost entirely different words from the
   classical models (top-50 overlap ≤ 0.08). Its IG explanations are faithful (deleting top words
   hurts 3× more than random ones).
@@ -54,6 +57,12 @@ Base variants; DistilBERT is the mean of 3 seeds. Full tables are in `results/`,
   nothing. Fragmented words lean negative in SST-2's training data (D37).
 
 ![Error rate by model and test](figures/error_heatmap_base.png)
+
+**H2/H3 ladder (D42):** the gap to DistilBERT on the 519 real negated sentences, for single words
+→ + word pairs → + negation marking. Logistic regression improves at each step; the decision tree
+gets worse.
+
+![Negation gap ladder](figures/negation_gap_sst2_neg.png)
 
 ### The Mirage Gap (D40)
 
@@ -96,7 +105,7 @@ python -m venv .venv
 
 ```bash
 python -m mirage prepare                                  # download SST-2 (+ public test labels) + IMDb, build splits
-python -m mirage train-classical --variants base negmark negmark_w3  # 5 models x 3 variants
+python -m mirage train-classical --variants base negmark negmark_w3 unigram  # 5 models x 4 variants
 # DistilBERT: run notebooks/kaggle_distilbert.ipynb on a free T4 GPU,
 # then unzip distilbert_outputs.zip into the repo root (models + DistilBERT predictions)
 # External models (optional, D39): run notebooks/kaggle_external.ipynb on Kaggle,
@@ -120,6 +129,6 @@ for why each choice was made.
 | `figures/` | report figures (PNG + PDF) |
 | `notebooks/` | Kaggle notebooks: DistilBERT fine-tuning, and the external models' predictions |
 | `app/` | the live demo (Streamlit), its curated examples and presenter guide |
-| `tests/` | `python -m pytest` (114 tests, about 1–2 min, no GPU needed) |
+| `tests/` | `python -m pytest` (119 tests, about 2–3 min, no GPU needed) |
 
 For a file-by-file tour of the code, see [codeexplanations.md](codeexplanations.md).

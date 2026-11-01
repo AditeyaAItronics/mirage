@@ -163,6 +163,12 @@ the behavioral suite or IMDb, which are ordinary English.
 our held-out phrases. Its held-out accuracy is inflated; validation and test are unaffected.
 **Effort:** none (don't report its held-out accuracy).
 
+### C15. ✅ RESOLVED (D42): H2/H3 didn't test the features the proposal names
+**What:** the proposal compares DistilBERT with *single-word* models (H2) and asks whether *word
+pairs* and marking close the gap (H3), but every classical model already used word pairs.
+**Fix:** a `unigram` variant completes the ladder single words → + pairs → + marking. Result:
+pairs and marking together close 40% of LR's real-sentence gap (CI 21–58%).
+
 ### C3. 🟠 DistilBERT hyperparameters are not tuned
 **What:** fixed lr 2e-5, 3 epochs and batch size 32, while the classical models get a grid search.
 **Why it matters:** this asymmetry slightly favours the classical models. That's conservative for our claims,
@@ -516,4 +522,5 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 - **F4, length inside the distance.** Measured with a length-matched check (0.612 vs 0.926) and removed with a length-adjusted distance; H4 is unchanged (D30).
 - **B4, B9, C7: robustness of the headline results.** An IMDb excerpt set splits length from content, test-only negation rows were added, and a second negation-scope variant was trained (D31).
 - **D7, name test that couldn't fail.** Replaced by a name-shortcut test built from the training labels, plus a gender-matched unseen-names probe (D32).
+- **C15, H2/H3 tested on the wrong features.** A single-word variant completes the ladder (D42).
 - **H1, C8: full run.** Pipeline complete with DistilBERT (D34, D35); the length question is answered.

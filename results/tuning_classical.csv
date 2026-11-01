@@ -41,3 +41,17 @@ mnb,negmark_w3,{'alpha': 0.1},0.8108,4.2,False
 mnb,negmark_w3,{'alpha': 0.5},0.8206,3.3,False
 mnb,negmark_w3,{'alpha': 1.0},0.8218,3.2,True
 gnb,negmark_w3,{},0.566,28.8,True
+logreg,unigram,{'C': 0.1},0.7795,1.5,False
+logreg,unigram,{'C': 1},0.8354,1.6,True
+logreg,unigram,{'C': 10},0.8348,1.8,False
+logreg,unigram,{'C': 30},0.825,2.0,False
+logreg,unigram,{'C': 100},0.8188,2.0,False
+dtree,unigram,"{'max_depth': None, 'min_samples_leaf': 10}",0.6465,10.2,False
+dtree,unigram,"{'max_depth': None, 'min_samples_leaf': 20}",0.6507,8.5,False
+dtree,unigram,"{'max_depth': None, 'min_samples_leaf': 50}",0.6522,6.0,True
+rf,unigram,{'max_depth': 30},0.6776,5.7,False
+rf,unigram,{'max_depth': None},0.7726,108.1,True
+mnb,unigram,{'alpha': 0.1},0.807,2.7,False
+mnb,unigram,{'alpha': 0.5},0.8153,2.3,False
+mnb,unigram,{'alpha': 1.0},0.8185,2.2,True
+gnb,unigram,{},0.5435,23.3,True

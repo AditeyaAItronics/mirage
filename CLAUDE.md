@@ -11,8 +11,15 @@ Read `ARCHITECTURE.md` for the design, `majordecisions.md` for why, and
 - **Raw text in, normalization inside.** Classifiers receive raw text; `mirage.text.normalize`
   (and `negation_mark` for the `negmark` variant) run inside the model pipeline. Never normalize twice.
   Exception: the ready-made external models (`models/external.py`, D39) read raw text unnormalized.
-- **External models never change our statistics.** Every multi-model Holm family is split with
-  `evaluate.holm_family` (ours vs external), and H2's `negation_gap` excludes them.
+- **Additions never change earlier statistics.** Every multi-model Holm family is split with
+  `evaluate.holm_family`: ours / external models (D39) / ablation variants (`unigram`, D42).
+  H2's `negation_gap` excludes external models, and `negmark_effect` excludes ablations. After
+  adding models or variants, re-run `evaluate` and check the committed CSVs' existing rows are
+  unchanged.
+- **Classical variants:** `base` (words + word pairs), `negmark` / `negmark_w3` (+ negation
+  marking), `unigram` (single words only, the first rung of the H2/H3 ladder). Ablation variant
+  names live in `models.base.ABLATION_VARIANTS`, so analysis code never imports model classes.
+- **Don't edit `src/` while a stage is running:** lazy imports can mix old and new modules mid-run.
 - **Held-out is split by sentence** (`data.heldout_mask`): never replace it with a random row split. SST-2 rows are sub-phrases, so a random split leaks (D21).
 - **Never use GLUE's SST-2 test labels** (they are `-1`). The test set comes from `SetFit/sst2` (original public Stanford labels, D22).
   `sst2_val` is for choices (DistilBERT's median seed); `sst2_test` is the reported in-distribution set. The negation subset pools both.

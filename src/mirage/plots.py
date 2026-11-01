@@ -51,7 +51,12 @@ TEST_ORDER = [
     "beh_name_shortcut",
 ]
 MODEL_COLOR = dict(zip(MODEL_ORDER, SERIES, strict=False))
-VARIANT_COLOR = {"base": SERIES[0], "negmark": SERIES[1], "negmark_w3": SERIES[2]}
+VARIANT_COLOR = {
+    "base": SERIES[0],
+    "negmark": SERIES[1],
+    "negmark_w3": SERIES[2],
+    "unigram": SERIES[3],
+}
 BLUE_RAMP = LinearSegmentedColormap.from_list(
     "mirage_blue", ["#cde2fb", "#86b6ef", "#3987e5", "#256abf", "#184f95", "#0d366b"]
 )
@@ -130,7 +135,8 @@ def error_heatmap(errors: pd.DataFrame, variant: str = "base", out_dir=None) -> 
 
 
 def negation_gap_bars(gaps: pd.DataFrame, test: str = "sst2_neg", out_dir=None) -> Path:
-    """Gap to DistilBERT before vs after negation marking, with paired-bootstrap CIs."""
+    """Gap to DistilBERT along the H2/H3 ladder (D42), with paired-bootstrap CIs:
+    single words -> + word pairs (base) -> + negation marking. Rungs without data are skipped."""
     d = (
         gaps[gaps["test"] == test]
         .set_index("model")
@@ -138,18 +144,25 @@ def negation_gap_bars(gaps: pd.DataFrame, test: str = "sst2_neg", out_dir=None) 
         .dropna(how="all")
     )
     x = np.arange(len(d))
-    fig, ax = plt.subplots(figsize=(1.3 * len(d) + 2, 4))
-    for off, (col, label) in zip(
-        (-0.2, 0.2), (("gap_base", "base"), ("gap_negmark", "negmark")), strict=True
-    ):
-        if col not in d:
-            continue
+    rungs = [
+        (col, variant, label)
+        for col, variant, label in (
+            ("gap_unigram", "unigram", "single words"),
+            ("gap_base", "base", "+ word pairs (base)"),
+            ("gap_negmark", "negmark", "+ negation marking"),
+        )
+        if col in d
+    ]
+    width = 0.8 / len(rungs)
+    fig, ax = plt.subplots(figsize=(1.5 * len(d) + 2, 4))
+    for i, (col, variant, label) in enumerate(rungs):
+        off = (i - (len(rungs) - 1) / 2) * width
         err = np.vstack([d[col] - d[f"{col}_lo"], d[f"{col}_hi"] - d[col]])
         ax.bar(
             x + off,
             d[col],
-            width=0.36,
-            color=VARIANT_COLOR[label],
+            width=width * 0.9,
+            color=VARIANT_COLOR[variant],
             label=label,
             edgecolor=SURFACE,
             linewidth=2,

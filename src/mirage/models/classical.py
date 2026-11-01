@@ -19,19 +19,32 @@ from sklearn.pipeline import Pipeline
 from sklearn.tree import DecisionTreeClassifier
 
 from mirage.features import build_counts, build_tfidf
-from mirage.models.base import CLASSICAL_MODELS, SklearnClassifier
+from mirage.models.base import ABLATION_VARIANTS, CLASSICAL_MODELS, SklearnClassifier
 
 # Variant name -> what the vectorizer's Preprocessor does with negation (D31).
 VARIANT_NEGMARK: dict[str, bool | str] = {
     "base": False,
     "negmark": True,  # Pang et al. scope, up to punctuation
     "negmark_w3": "window3",  # 3-token scope with fixed-phrase exceptions
+    "unigram": False,  # single words only (D42)
 }
+# Variant name -> n-gram range overriding configs/classical.yaml. "unigram" is the first rung of
+# the H2/H3 ladder: single words -> + word pairs (base) -> + negation marking (negmark) (D42).
+VARIANT_NGRAMS: dict[str, tuple[int, int]] = {"unigram": (1, 1)}
+assert set(VARIANT_NGRAMS) <= ABLATION_VARIANTS  # ablations get their own Holm families
 
 
-def build_pipeline(name: str, cfg: dict, negmark: bool | str, params: dict) -> Pipeline:
+def build_pipeline(
+    name: str,
+    cfg: dict,
+    negmark: bool | str,
+    params: dict,
+    ngram_range: tuple[int, int] | None = None,
+) -> Pipeline:
     seed = cfg["seed"]
     vec_cfg = cfg["vectorizer"]
+    if ngram_range is not None:
+        vec_cfg = {**vec_cfg, "ngram_range": ngram_range}
     if name == "logreg":
         # L2 is the default; passing penalty= is deprecated from scikit-learn 1.8.
         clf = LogisticRegression(solver="liblinear", max_iter=1000, random_state=seed)
@@ -72,7 +85,9 @@ def tune(
     grid = cfg["models"][name].get("grid") or {}
     rows, best, best_acc, best_idx = [], None, -1.0, -1
     for i, params in enumerate(ParameterGrid(grid)):
-        pipe = build_pipeline(name, cfg, VARIANT_NEGMARK[variant], params)
+        pipe = build_pipeline(
+            name, cfg, VARIANT_NEGMARK[variant], params, VARIANT_NGRAMS.get(variant)
+        )
         t0 = time.perf_counter()
         pipe.fit(train["text"].tolist(), train["label"].to_numpy())
         fit_s = time.perf_counter() - t0

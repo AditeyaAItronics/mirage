@@ -70,7 +70,7 @@ never writes results.
 | `predict.py` | The predictions contract. Defines the required columns, validates every prediction file, writes one parquet per (model, variant, seed, dataset), and loads them back with those four as columns. |
 | `metrics.py` | Single-number metrics: accuracy, macro-F1, confidence, reliability bins, expected calibration error (ECE), AUROC. |
 | `stats.py` | Uncertainty. Bootstrap confidence intervals and p-values, paired differences, the "gap closed" ratio, paired AUROC difference, Holm correction, McNemar's test. |
-| `evaluate.py` | Builds every results table from the prediction files: main table, errors by test type, negation gap to DistilBERT, negation-marking effect, negation control, directional negation, IMDb error by length, length-vs-content split, name effect, typo direction, McNemar, per-word errors, and the Mirage Gap (`mirage_gap`: accuracy vs a robustness score built from pair accuracy on four shortcut tests, plus its leave-one-out sensitivity check; `fingerprint_table` adds calibration and early warning, D40). External models get their own Holm families, so they don't change earlier p-values. Writes everything to `results/*.csv`. |
+| `evaluate.py` | Builds every results table from the prediction files: main table, errors by test type, negation gap to DistilBERT along the ladder single words → + word pairs → + negation marking (D42), negation-marking effect, negation control, directional negation, IMDb error by length, length-vs-content split, name effect, typo direction, McNemar, per-word errors, and the Mirage Gap (`mirage_gap`: accuracy vs a robustness score built from pair accuracy on four shortcut tests, plus its leave-one-out sensitivity check; `fingerprint_table` adds calibration and early warning, D40). External models and the single-word ablation get their own Holm families (`holm_family`), so they don't change earlier p-values. Writes everything to `results/*.csv`. |
 | `plots.py` | Every figure (PNG + PDF): error heatmap, negation-gap bars, error vs score, error by review length, reliability diagram, explanation-overlap heatmap, the small decision tree, word-attribution strips, the Mirage Gap scatter and the shortcut-fingerprint small multiples (each also as a 16:9 `_slide` version). Uses a fixed, colour-blind-checked palette with eight model slots. |
 | `demo.py` | The logic behind the live demo (D41): loads the models (DistilBERT at its median seed), scores a sentence, word importance by leaving each word out, which words a classical model never saw, the low-confidence and unusual-input flags, and the curated examples with a check that each still behaves as documented. |
 
@@ -91,8 +91,8 @@ sentences.
 | File | What happens inside |
 |---|---|
 | `__init__.py` | Re-exports the model names, the `Classifier` interface and `load_classifier`. |
-| `base.py` | The one interface every model follows: `predict_proba(raw texts)` returns P(negative) and P(positive). `SklearnClassifier` wraps a scikit-learn pipeline. `load_classifier` loads either kind of saved model from its folder. |
-| `classical.py` | The five classical models: logistic regression, decision tree, random forest, multinomial Naive Bayes, Gaussian Naive Bayes on 300 SVD components. `build_pipeline` assembles vectorizer + model for a variant (`base`, `negmark`, `negmark_w3`). `tune` tries every grid setting and keeps the best on held-out accuracy. `train_all` does this for every model. |
+| `base.py` | The one interface every model follows: `predict_proba(raw texts)` returns P(negative) and P(positive). `SklearnClassifier` wraps a scikit-learn pipeline. `load_classifier` loads either kind of saved model from its folder. Also holds the lightweight shared names analysis code needs: `CLASSICAL_MODELS`, `ABLATION_VARIANTS` (the single-word `unigram` variant, D42) and `external_models()`. |
+| `classical.py` | The five classical models: logistic regression, decision tree, random forest, multinomial Naive Bayes, Gaussian Naive Bayes on 300 SVD components. `build_pipeline` assembles vectorizer + model for a variant: `base` (words + word pairs), `negmark` and `negmark_w3` (+ negation marking, two scope rules) and `unigram` (single words only, the first rung of the H2/H3 ladder, D42). `tune` tries every grid setting and keeps the best on held-out accuracy. `train_all` does this for every model. |
 | `distilbert.py` | DistilBERT. `train` fine-tunes it with Hugging Face's Trainer (on Kaggle's GPU), keeps the best epoch and deletes checkpoints. `schedule` works out the training and warm-up steps from the effective batch, counting every GPU (D36). `DistilBertClassifier` predicts. Long IMDb reviews keep their first and last tokens rather than being cut off (`head_tail_ids`). |
 | `external.py` | Ready-made Hugging Face models (D39). `ExternalClassifier` reuses DistilBERT's batching and head + tail truncation, but reads raw text and takes its label order from the model's own config (`label_columns` refuses anything but one negative and one positive label). `from_hub` loads from the local cache first, so it works offline. |
 
@@ -118,7 +118,7 @@ sentences.
 
 ---
 
-## `tests/`: 114 automated tests (`.venv/Scripts/python -m pytest`)
+## `tests/`: 119 automated tests (`.venv/Scripts/python -m pytest`)
 
 Almost all run on small synthetic data and need no downloads or GPU. The two real-model demo
 tests use the trained models when they're on disk and skip themselves otherwise. The whole suite
@@ -135,6 +135,7 @@ takes about 2 minutes.
 | `test_metrics_stats.py` | ECE, AUROC, bootstrap, McNemar against statsmodels, Holm, p-values, length table, name effect. |
 | `test_explain_warning.py` | Overlap measures, deletion check, Mahalanobis against scipy, kNN, sentence splitting, length adjustment, the out-of-fold combiner. |
 | `test_external.py` | External models with a tiny random BERT built locally (no download): label mapping in both orders, rejection of 3-class and unnamed labels, raw text and long text, and the `predict-external` stage writing contract files and skipping existing ones. |
+| `test_ladder.py` | The single-word variant really has no word pairs; the ladder columns on hand-made error rates; adding the variant leaves every existing negation-gap column identical; `negmark_effect` skips it; its Holm family. |
 | `test_mirage_gap.py` | The robustness score on hand-made numbers, "both sentences right", a model missing a component is dropped, the leave-one-out check, the fingerprint merge, and both figures render. |
 | `test_demo.py` | Demo logic with a stand-in model: trimming, leaving words out, flags, the vocabulary check, the example checker. Plus, with the real models: every curated example behaves as documented, and the app runs headless. |
 | `test_pipeline_e2e.py` | Runs the whole CPU pipeline through the real command line on fake data, in a temporary folder, and checks every output file exists. |

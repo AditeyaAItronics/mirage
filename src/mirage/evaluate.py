@@ -16,7 +16,7 @@ from scipy.stats import norm
 from mirage import paths
 from mirage.behavioral.suite import case_failures, dir_cases
 from mirage.metrics import summarize
-from mirage.models.base import external_models
+from mirage.models.base import ABLATION_VARIANTS, external_models
 from mirage.predict import load_predictions
 from mirage.stats import gap_closed_ci, holm, mcnemar_test, paired_diff_ci, rate_ci
 
@@ -25,14 +25,18 @@ INDIST = "sst2_test"  # reported in-distribution test set; sst2_val is for choic
 SETS = ("sst2_val", "sst2_test", "sst2_neg", "imdb", "imdb_edges")
 
 
-def holm_family(*model_cols: pd.Series) -> np.ndarray:
-    """Holm family label per row: "external" if any model in the row is a ready-made external
-    model, else "ours". Keeps external models from changing our models' adjusted p-values (D39)."""
+def holm_family(*model_cols: pd.Series, variant: pd.Series | None = None) -> np.ndarray:
+    """Holm family label per row, so additions never change earlier adjusted p-values:
+    "external" if any model in the row is a ready-made external model (D39), "ablation" if the
+    row's variant only exists to test a hypothesis step, e.g. single words (D42), else "ours"."""
     external = set(external_models())
     hit = np.zeros(len(model_cols[0]), dtype=bool)
     for col in model_cols:
         hit |= col.isin(external).to_numpy()
-    return np.where(hit, "external", "ours")
+    out = np.where(hit, "external", "ours")
+    if variant is not None:
+        out = np.where(~hit & variant.isin(ABLATION_VARIANTS).to_numpy(), "ablation", out)
+    return out
 
 
 def median_seed(preds: pd.DataFrame, model: str = REFERENCE) -> int:
@@ -121,7 +125,15 @@ def negation_gap(
     tests=("sst2_neg", "sst2_neg_testonly", "beh_negation", "beh_negation_dir"),
     **ci_kw,
 ) -> pd.DataFrame:
-    """H2/H3: classical negation error minus DistilBERT's, before/after negation marking."""
+    """H2/H3: classical negation error minus DistilBERT's along the feature ladder (D42):
+    single words (unigram) -> + word pairs (base) -> + negation marking (negmark).
+
+    gap_* = error(classical) - error(DistilBERT), paired. pairs_closed = share of the single-word
+    gap removed by adding word pairs; gap_closed = share of the base gap removed by marking;
+    ladder_closed = share of the single-word gap removed by both. Each comparison is aligned on
+    its own items: DIR pairs count only where every model involved got the affirmative right, so
+    the unigram columns never change the base / negmark ones.
+    """
     preds = canonical(preds)
     flags = {(m, v): _error_flags(g) for (m, v), g in preds.groupby(["model", "variant"])}
     ref = flags.get((REFERENCE, "base"))
@@ -165,12 +177,46 @@ def negation_gap(
                     "gap_closed_hi": closed["ci_high"],
                     "gap_closed_p": closed["p_value"],
                 }
+            uni = flags.get((m, "unigram"), {}).get(test)
+            if uni is not None:
+                row |= _ladder(
+                    uni, f[test], flags.get((m, "negmark"), {}).get(test), ref[test], ci_kw
+                )
             rows.append(row)
     out = pd.DataFrame(rows)
-    # One family per question: H2 = every base gap, H3 = every gap-closed ratio (D28).
-    for col in ("gap_base_p", "gap_negmark_p", "gap_closed_p"):
+    # One family per question: H2 = every base gap, H3 = every gap-closed ratio (D28); the ladder
+    # columns (D42) are families of their own.
+    for col in (
+        "gap_base_p",
+        "gap_negmark_p",
+        "gap_closed_p",
+        "gap_unigram_p",
+        "pairs_closed_p",
+        "ladder_closed_p",
+    ):
         if col in out:
             out[col.replace("_p", "_p_holm")] = holm(out[col])
+    return out
+
+
+def _ladder(uni: pd.Series, base: pd.Series, negmark, ref: pd.Series, ci_kw: dict) -> dict:
+    """The single-word rung of the H2/H3 ladder (D42), each comparison on its own aligned items."""
+
+    def ci(prefix: str, res: dict) -> dict:
+        return {
+            prefix: res["estimate"],
+            f"{prefix}_lo": res["ci_low"],
+            f"{prefix}_hi": res["ci_high"],
+            f"{prefix}_p": res["p_value"],
+        }
+
+    a = pd.concat({"uni": uni, "ref": ref}, axis=1, join="inner")
+    out = {"n_unigram": len(a)} | ci("gap_unigram", paired_diff_ci(a["uni"], a["ref"], **ci_kw))
+    b = pd.concat({"uni": uni, "base": base, "ref": ref}, axis=1, join="inner")
+    out |= ci("pairs_closed", gap_closed_ci(b["uni"], b["base"], b["ref"], **ci_kw))
+    if negmark is not None:
+        c = pd.concat({"uni": uni, "neg": negmark, "ref": ref}, axis=1, join="inner")
+        out |= ci("ladder_closed", gap_closed_ci(c["uni"], c["neg"], c["ref"], **ci_kw))
     return out
 
 
@@ -189,7 +235,8 @@ def negmark_effect(
     preds = canonical(preds)
     rows = []
     for (m, variant), g in preds.groupby(["model", "variant"]):
-        if m == REFERENCE or variant == "base":
+        # marking variants only: the single-word ablation is in negation_gap's ladder (D42)
+        if m == REFERENCE or variant == "base" or variant in ABLATION_VARIANTS:
             continue
         base = preds[(preds["model"] == m) & (preds["variant"] == "base")]
         if base.empty:
@@ -295,7 +342,7 @@ def shift_decomposition(preds: pd.DataFrame) -> pd.DataFrame:
         )
     out = pd.DataFrame(rows)
     if len(out):
-        out["family"] = holm_family(out["model"])
+        out["family"] = holm_family(out["model"], variant=out["variant"])
     for part in ("length_format", "content"):
         if len(out):
             out[f"{part}_p_holm"] = out.groupby("family")[f"{part}_p"].transform(lambda p: holm(p))
@@ -439,7 +486,7 @@ def name_effect(preds: pd.DataFrame, tests=("name_shortcut", "name_swap"), **ci_
             )
     out = pd.DataFrame(rows)
     if len(out):
-        out["family"] = holm_family(out["model"])
+        out["family"] = holm_family(out["model"], variant=out["variant"])
         out["shift_p_holm"] = out.groupby(["test", "family"])["shift_p"].transform(
             lambda p: holm(p)
         )

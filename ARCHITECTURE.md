@@ -69,7 +69,9 @@ app/        shortcut_explorer.py examples.yaml make_fallbacks.py
 The demo is a side door, not a stage: it loads the saved models directly and never writes
 results, so it can't change a reported number (D41).
 
-**Dependency rule:** each layer imports only from layers above it in this list. Analysis code never
+**Dependency rule:** each layer imports only from layers above it in this list. Shared names that
+analysis needs (`CLASSICAL_MODELS`, `ABLATION_VARIANTS`, `external_models()`) live in the
+lightweight `models/base.py` for that reason. Analysis code never
 imports a model class. It sees prediction frames only, which is why `evaluate`, `stats` and
 `plots` have no torch or sklearn-model dependency.
 
@@ -120,7 +122,7 @@ Eight models, one interface: five classical, our DistilBERT, and two ready-made 
 | RQ / H | Data | Computed in | Output |
 |---|---|---|---|
 | RQ1 / H1 hidden failures | sst2_test, sst2_neg, behavioral | `evaluate.error_table` + `behavioral.suite.case_failures` | `errors_by_type.csv`, heatmap |
-| RQ2 / H2–H3 what context buys | sst2_neg, behavioral negation, base + negmark | `evaluate.negation_gap` (paired bootstrap, D12) | `negation_gap.csv`, gap bars |
+| RQ2 / H2–H3 what context buys | sst2_neg, behavioral negation; the ladder unigram → base (+ pairs) → negmark (+ marking), D42 | `evaluate.negation_gap` (paired bootstrap, D12) | `negation_gap.csv`, gap bars |
 | RQ3 / H4 early warning | sst2_train embeddings, imdb | `warning.*`, `cli.stage_warn` | `early_warning.csv`, error-vs-score plot |
 | RQ4 / H5 explanation | trained models, DistilBERT failures | `explain.*` | `top_features.csv`, `ig_failures.csv`, `deletion_check.csv`, `overlap.csv` |
 | H6 GNB vs MNB | sst2_test | `evaluate.main_table` + McNemar | `main_table.csv`, `mcnemar.csv` |
@@ -149,6 +151,7 @@ Seed policy (D13): tables average DistilBERT over 3 seeds; per-item analyses use
 | DistilBERT predicts on the Kaggle GPU (D23) | 10,000 reviews × 512 tokens × 3 seeds is slow on a CPU; local `predict` skips models whose predictions are newer than the model |
 | IG only on DistilBERT failures (≤100), word-level | Bounded cost; attributions comparable with classical features (D14) |
 | Bootstrap resamples item indices, not data | One generic routine for every CI; paired comparisons for free (D12) |
+| Single-word ablation (D42) trains in about 3 minutes | The H2/H3 ladder costs almost nothing; it gets its own Holm family, so no earlier p-value moves |
 | External models load cache-first (D41) | No network round trip; the demo works offline once models are cached |
 | Demo word importance by leaving words out | One batched call per model per sentence: works for every model and stays under a second |
 
@@ -173,6 +176,7 @@ laptop struggles, train it on its own with `--models rf` and limit the grid to `
 
 | Level | What | Where |
 |---|---|---|
+| Ladder (D42) | the single-word variant has no word pairs; ladder values on hand-made errors; adding it leaves existing columns identical; the ablation Holm family | `tests/test_ladder.py` |
 | Unit | normalization, negation scope, vectorizer vocabulary (the `n't` trap), ECE, bootstrap, McNemar vs statsmodels, Mahalanobis vs scipy, overlap measures, deletion check | `tests/test_*.py` |
 | Contract | every way a predictions file can be malformed is rejected | `tests/test_contract.py` |
 | Generator | suite counts, determinism, INV pairing, typo changes exactly one word | `tests/test_behavioral.py` |

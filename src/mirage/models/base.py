@@ -10,6 +10,9 @@ import numpy as np
 
 CLASSICAL_MODELS = ("logreg", "dtree", "rf", "mnb", "gnb")
 MODEL_NAMES = (*CLASSICAL_MODELS, "distilbert")
+# Classical variants that exist only to test a hypothesis step (single words, D42). Kept here, not
+# in classical.py, so analysis code can use it without importing model classes.
+ABLATION_VARIANTS = frozenset({"unigram"})
 
 
 def external_models() -> tuple[str, ...]:

@@ -11,3 +11,7 @@ negmark_w3,beh_negation_dir,5,0.9999999999999999,True,True,True
 negmark_w3,sst2_neg,5,0.9999999999999999,True,True,True
 negmark_w3,beh_typo,5,0.9999999999999999,True,True,True
 negmark_w3,beh_name_shortcut,5,0.9999999999999999,True,True,True
+unigram,beh_negation_dir,5,0.9999999999999999,True,True,True
+unigram,sst2_neg,5,0.9999999999999999,True,True,True
+unigram,beh_typo,5,0.8999999999999998,False,False,True
+unigram,beh_name_shortcut,5,0.9999999999999999,True,True,True

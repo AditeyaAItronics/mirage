@@ -1130,3 +1130,76 @@ silently. What the measurement found:
 
 Also: the Kaggle notebook's time estimate was raised to 20–30 minutes (RoBERTa-large on 10,000
 reviews at 512 tokens). Re-running `evaluate` reproduced every existing number exactly.
+
+## D42 — A single-word variant, so H2 and H3 test what the proposal says
+
+**Problem:** the proposal's H2 compares DistilBERT with "bag-of-words models with single-word
+features", and H3 says "word-pair features and negation marking close part, but not all, of that
+gap". But every classical model was built with single words *and* word pairs
+(`ngram_range: [1, 2]`), so no single-word model existed. H2 was tested against the wrong rung,
+and the word-pair half of H3 was never tested.
+
+**Decision:** a new classical variant, `unigram` (single words only; everything else identical:
+the same grids, held-out split, normalization and seed), completes a three-rung ladder:
+
+| rung | variant | the classical model sees |
+|---|---|---|
+| 1 | `unigram` | single words |
+| 2 | `base` | + word pairs |
+| 3 | `negmark` | + negation marking |
+
+`negation_gap` gains these columns:
+- `gap_unigram`: H2 as worded.
+- `pairs_closed`: the share of the single-word gap closed by word pairs (H3, first half).
+- `ladder_closed`: the share closed by pairs and marking together (H3 as a whole).
+- `gap_closed`: the marking step alone, unchanged.
+
+The figure shows three bars per model.
+
+**Nothing existing moves:**
+- Each new comparison is aligned on its own items. On "X / not X" pairs, a model counts only
+  pairs whose affirmative it got right, so joining the unigram model into the existing alignment
+  would have shrunk it.
+- `unigram` is an *ablation*: `evaluate.holm_family` puts it in its own Holm family in every
+  multi-model table (`shift_decomposition`, `name_effect`, early warning), and `negmark_effect`
+  skips it, because it isn't a marking variant.
+- Every previously reported number was checked against the committed CSVs: identical.
+
+**Results (gap to DistilBERT on real negated sentences, 519):**
+
+| model | single words | + pairs | + marking | pairs close | pairs + marking close |
+|---|---|---|---|---|---|
+| Logistic regression | 0.164 | 0.127 | 0.098 | 22% [4, 39] | **40% [21, 58]**, p_holm < 0.001 |
+| Multinomial NB | 0.141 | 0.139 | 0.116 | 1% | 18% (n.s.) |
+| Random forest | 0.179 | 0.173 | 0.177 | 3% | 1% (n.s.) |
+| Decision tree | 0.243 | 0.293 | 0.308 | −21% | −27% (n.s.) |
+| Gaussian NB | 0.347 | 0.378 | 0.285 | −9% | 18% [5, 30], p_holm 0.04 |
+
+**What it means:**
+- **H2 holds as worded.** Every single-word model is significantly worse than DistilBERT on
+  negation, on real sentences (14–35 points) and on every template test (Holm p < 0.001).
+- **H3 holds for logistic regression, the baseline model.** Pairs and marking together close 40%
+  of its real-sentence gap: part, but not all. Pairs alone help (22%), but not significantly
+  after Holm.
+- **On templates the ladder works for every model** (pairs + marking close 25–98%, all
+  significant).
+- **On real sentences the other models barely benefit**, and the decision tree gets *worse* with
+  word pairs (its sparse splits latch onto pairs that don't generalize). Real negation is
+  long-range and idiomatic (D38), which a two-word window rarely captures.
+- **Accuracy hardly depends on word pairs:** single-word LR scores 0.822 on SST-2 test against
+  0.835 with pairs. Pairs mostly matter for negation, which is the point H3 makes.
+
+**Rejected:** rewording H2/H3 to drop the word-pair claim. The ablation was cheap (about 3
+minutes of training) and tests the proposal as written.
+
+**After `warn` and the code review (D42):**
+- **Early warning (H4) is unchanged for every existing row.** The single-word models show the
+  same pattern: low confidence flags IMDb errors (AUROC 0.55–0.74), distance doesn't (about 0.5).
+  Single-word LR's combined score beats confidence by a negligible +0.003 AUROC (Holm p 0.02,
+  ablation family), like Multinomial NB's +0.012.
+- **Review fix:** `evaluate.py` had started importing `models.classical` (scikit-learn model
+  classes) to read the ablation list, which breaks the layering rule that analysis never imports
+  models. `ABLATION_VARIANTS` now lives in `models/base.py`.
+- **Process note:** a `warn` run crashed at its last line because that fix was saved while it was
+  running (lazy imports loaded the old `base.py` and the new `classical.py`). The rerun on
+  consistent code completed; CLAUDE.md now says not to edit `src/` while a stage runs.

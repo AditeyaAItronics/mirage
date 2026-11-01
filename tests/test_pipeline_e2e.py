@@ -63,7 +63,7 @@ def test_cpu_pipeline(tmp_path, monkeypatch):
         "MIRAGE_CONFIGS": str(cfg),
         "PYTHONWARNINGS": "ignore",
     }
-    _run("train-classical", "--variants", "base", "negmark", env=env)
+    _run("train-classical", "--variants", "base", "negmark", "unigram", env=env)
     _run("build-suite", env=env)
     _run("predict", env=env)
     _run("evaluate", "--resamples", "50", env=env)
@@ -71,7 +71,7 @@ def test_cpu_pipeline(tmp_path, monkeypatch):
     _run("figures", env=env)
 
     preds = list((root / "results" / "predictions").glob("*.parquet"))
-    assert len(preds) == 5 * 2 * 7  # models x variants x eval sets
+    assert len(preds) == 5 * 3 * 7  # models x variants (base, negmark, unigram) x eval sets
     errors = pd.read_csv(root / "results" / "errors_by_type.csv")
     assert {"sst2_test", "sst2_neg", "beh_negation", "beh_typo"} <= set(errors["test"])
     control = pd.read_csv(root / "results" / "negation_control.csv")
@@ -85,10 +85,13 @@ def test_cpu_pipeline(tmp_path, monkeypatch):
     mc = pd.read_csv(root / "results" / "mcnemar.csv")
     assert "p_holm" in mc.columns
     by_len = pd.read_csv(root / "results" / "imdb_by_length.csv")
-    assert by_len["n"].sum() == 5 * 2 * 100  # every IMDb review lands in one bin
+    assert by_len["n"].sum() == 5 * 3 * 100  # every IMDb review lands in one bin
     assert (root / "figures" / "imdb_error_by_length_base.png").exists()
     shift = pd.read_csv(root / "results" / "shift_decomposition.csv")
     assert {"length_format", "content", "length_format_p_holm"} <= set(shift.columns)
+    # D42: the single-word ablation has its own Holm family and isn't a marking variant
+    assert set(shift.loc[shift["variant"] == "unigram", "family"]) == {"ablation"}
+    assert "unigram" not in set(effect["variant"])
     assert "sst2_neg_testonly" in set(effect["test"])
     names = pd.read_csv(root / "results" / "name_effect.csv")
     assert {"name_shortcut", "name_swap"} <= set(names["test"])
