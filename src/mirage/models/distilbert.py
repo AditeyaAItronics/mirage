@@ -44,6 +44,7 @@ def _device():
 
 class DistilBertClassifier:
     name = "distilbert"
+    normalize_input = True  # our models read SST-style text; external models (D39) read it as is
 
     def __init__(self, model, tokenizer, max_length: int = 128, long_max_length: int = 512):
         self.model = model.eval()
@@ -54,7 +55,8 @@ class DistilBertClassifier:
         self.model.to(self.device)
 
     def encode(self, texts: list[str], long_text: bool = False):
-        texts = [normalize(t) for t in texts]
+        if self.normalize_input:
+            texts = [normalize(t) for t in texts]
         if not long_text:
             return self.tokenizer(
                 texts,

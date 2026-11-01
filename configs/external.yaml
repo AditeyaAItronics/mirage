@@ -1,0 +1,13 @@
+# Ready-made sentiment models, evaluated without training (newadditionsdesign.md #4, D39).
+# Seed is 0 for every external model: there is no training run to seed.
+models:
+  roberta_large:
+    hf_id: siebert/sentiment-roberta-large-english   # 355M params; trained on 15 datasets (scale)
+    batch_size: 16
+  distilbert_hf:
+    hf_id: distilbert/distilbert-base-uncased-finetuned-sst-2-english  # 66M; SST-2 (replication)
+    batch_size: 64
+max_length: 128        # short text (SST-2, behavioral), same budget as our DistilBERT
+long_max_length: 512   # IMDb: head + tail tokens, same rule as our DistilBERT (D23)
+# Local CPU runs; IMDb and imdb_edges run on the Kaggle GPU (notebooks/kaggle_external.ipynb).
+datasets: [sst2_heldout, sst2_val, sst2_test, sst2_neg, behavioral]

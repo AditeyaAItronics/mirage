@@ -12,6 +12,13 @@ CLASSICAL_MODELS = ("logreg", "dtree", "rf", "mnb", "gnb")
 MODEL_NAMES = (*CLASSICAL_MODELS, "distilbert")
 
 
+def external_models() -> tuple[str, ...]:
+    """Short names of the ready-made models in configs/external.yaml (D39)."""
+    from mirage.config import load_config
+
+    return tuple(load_config("external")["models"])
+
+
 @runtime_checkable
 class Classifier(Protocol):
     """Raw text in, class probabilities out. Normalization happens inside the model."""

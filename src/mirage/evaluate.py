@@ -16,6 +16,7 @@ from scipy.stats import norm
 from mirage import paths
 from mirage.behavioral.suite import case_failures, dir_cases
 from mirage.metrics import summarize
+from mirage.models.base import external_models
 from mirage.predict import load_predictions
 from mirage.stats import gap_closed_ci, holm, mcnemar_test, paired_diff_ci, rate_ci
 
@@ -117,8 +118,9 @@ def negation_gap(
     if ref is None:
         raise ValueError("negation_gap needs DistilBERT predictions as the reference")
     rows = []
+    external = set(external_models())  # H2 is our classical models vs our DistilBERT (D39)
     for (m, v), f in flags.items():
-        if m == REFERENCE or v != "base":
+        if m == REFERENCE or v != "base" or m in external:
             continue
         for test in tests:
             if test not in f or test not in ref:
@@ -301,8 +303,15 @@ def mcnemar_table(preds: pd.DataFrame, datasets=SETS) -> pd.DataFrame:
                 {"dataset": ds, "model_a": a, "model_b": b, **mcnemar_test(pair[a], pair[b])}
             )
     out = pd.DataFrame(rows)
-    if len(out):  # one family per dataset: all pairwise model comparisons on it (D28)
-        out["p_holm"] = out.groupby("dataset")["p_value"].transform(lambda p: holm(p))
+    if len(out):
+        # One family per dataset: all pairwise comparisons of our models on it (D28). Pairs with
+        # an external model form their own family, so adding them leaves the original p-values
+        # unchanged (D39).
+        external = set(external_models())
+        out["family"] = np.where(
+            out["model_a"].isin(external) | out["model_b"].isin(external), "external", "ours"
+        )
+        out["p_holm"] = out.groupby(["dataset", "family"])["p_value"].transform(lambda p: holm(p))
         out["significant"] = out["p_holm"] < 0.05
     return out
 

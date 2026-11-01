@@ -118,6 +118,30 @@ def stage_predict(args) -> None:
             print("wrote", p.name)
 
 
+def stage_predict_external(args) -> None:
+    """Ready-made Hugging Face models (D39): no training, seed 0, raw text."""
+    from mirage.models.external import EXTERNAL_SEED, ExternalClassifier
+    from mirage.predict import predictions_path, run_predictions
+
+    cfg = load_config("external")
+    datasets = tuple(args.datasets) if args.datasets else tuple(cfg["datasets"])
+    for name, spec in cfg["models"].items():
+        if args.models and name not in args.models:
+            continue
+        todo = [
+            ds
+            for ds in datasets
+            if getattr(args, "overwrite", False)
+            or not predictions_path(name, "base", EXTERNAL_SEED, ds).exists()
+        ]
+        if not todo:
+            print(f"skip {name}: predictions exist (--overwrite to redo)")
+            continue
+        clf = ExternalClassifier.from_hub(name, spec, cfg)
+        for p in run_predictions(clf, "base", EXTERNAL_SEED, todo):
+            print("wrote", p.name)
+
+
 def stage_evaluate(args) -> None:
     from mirage import evaluate
 
@@ -276,8 +300,12 @@ def stage_warn(args) -> None:
                 error_by_decile(g, 1 - conf, "low confidence").assign(model=m),
             ]
     out = pd.concat(rows, ignore_index=True).assign(ood_sanity_auroc=sanity)
-    # H4 family per predictor: "beats confidence" across every model and variant (D28)
-    out["diff_p_holm"] = out.groupby("predictor")["diff_p"].transform(lambda p: holm(p))
+    # H4 family per predictor: "beats confidence" across every model and variant (D28). External
+    # models are a family of their own, so they don't change our models' p-values (D39).
+    from mirage.models.base import external_models
+
+    out["family"] = np.where(out["model"].isin(external_models()), "external", "ours")
+    out["diff_p_holm"] = out.groupby(["predictor", "family"])["diff_p"].transform(lambda p: holm(p))
     out["beats_conf"] = (out["diff_p_holm"] < 0.05) & (out["diff_vs_conf"] > 0)
     out.to_csv(paths.RESULTS / "early_warning.csv", index=False)
     pd.concat(deciles, ignore_index=True).to_csv(
@@ -357,6 +385,7 @@ def stage_all(args) -> None:
     for fn in (
         stage_build_suite,
         stage_predict,
+        stage_predict_external,
         stage_evaluate,
         stage_explain,
         stage_warn,
@@ -397,6 +426,14 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--datasets", nargs="+")
     s.add_argument("--overwrite", action="store_true", help="redo existing prediction files")
     s.set_defaults(fn=stage_predict)
+
+    s = sub.add_parser(
+        "predict-external", help="predictions from ready-made HF models (configs/external.yaml)"
+    )
+    s.add_argument("--models", nargs="+")
+    s.add_argument("--datasets", nargs="+")
+    s.add_argument("--overwrite", action="store_true", help="redo existing prediction files")
+    s.set_defaults(fn=stage_predict_external)
 
     s = sub.add_parser("evaluate", help="main table, errors by type, gaps, McNemar")
     s.add_argument("--resamples", type=int, default=1000)

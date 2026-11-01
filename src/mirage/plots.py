@@ -21,7 +21,17 @@ from mirage import paths
 
 # Fixed categorical order (validated adjacent-pair CVD-safe). Model -> slot never changes.
 SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"]
-MODEL_ORDER = ["logreg", "dtree", "rf", "mnb", "gnb", "distilbert"]
+# Slots 7-8: ready-made external models (D39); the 8-slot palette was re-validated for them.
+MODEL_ORDER = [
+    "logreg",
+    "dtree",
+    "rf",
+    "mnb",
+    "gnb",
+    "distilbert",
+    "distilbert_hf",
+    "roberta_large",
+]
 TEST_ORDER = [
     "sst2_val",
     "sst2_test",
