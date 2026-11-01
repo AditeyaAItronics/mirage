@@ -111,3 +111,36 @@ def test_text_distance_aggregates_sentences(monkeypatch, tmp_path):
     mean = distance.text_distance(scorer, df, "t2", {**cfg, "unit": "sentence_mean"})
     assert list(mx.index) == ["r1", "r2"]
     assert mx["r1"] > mean["r1"] > mean["r2"]
+
+
+def test_length_adjusted_distance_is_uncorrelated_with_length():
+    from mirage.warning.distance import length_adjusted
+
+    rng = np.random.default_rng(3)
+    n = rng.integers(1, 40, 500)
+    signal = rng.normal(size=500)
+    d = 2.0 * np.log1p(n) + signal  # distance = length effect + real signal
+    adj = length_adjusted(d, n)
+    assert abs(np.corrcoef(np.log1p(n), adj)[0, 1]) < 1e-8
+    assert np.corrcoef(signal, adj)[0, 1] > 0.99  # the non-length part survives
+
+
+def test_one_sentence_each_is_one_per_text_and_deterministic():
+    from mirage.warning.distance import one_sentence_each
+
+    sd = pd.DataFrame({"owner": ["a", "a", "a", "b"], "distance": [1.0, 2.0, 3.0, 9.0]})
+    one = one_sentence_each(sd, seed=0)
+    assert sorted(one.index) == ["a", "b"] and one["b"] == 9.0
+    assert one.equals(one_sentence_each(sd, seed=0))
+
+
+def test_compare_predictors_scores_extra_predictors():
+    rng = np.random.default_rng(4)
+    y = rng.integers(0, 2, 300)
+    preds = pd.DataFrame({"p_pos": rng.random(300), "label": y})
+    preds["correct"] = (preds["p_pos"] >= 0.5).astype(int) == y
+    err = (~preds["correct"]).astype(int).to_numpy()
+    res = compare_predictors(
+        preds, rng.normal(size=300), n_resamples=50, extra={"oracle": err + 0.0}
+    ).set_index("predictor")
+    assert res.loc["oracle", "auroc"] == 1.0 and res.loc["oracle", "diff_vs_conf"] > 0

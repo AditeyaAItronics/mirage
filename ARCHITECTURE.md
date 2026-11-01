@@ -122,14 +122,14 @@ Seed policy (D13): tables average DistilBERT over 3 seeds; per-item analyses use
 | Choice | Effect |
 |---|---|
 | Predictions cached as parquet (D7) | All analyses re-run in seconds; models run once |
-| Heavy libraries imported lazily (D2) | `import mirage` and the 72 tests need no torch, and the test suite finishes in about 20 s |
+| Heavy libraries imported lazily (D2) | `import mirage` and the 76 tests need no torch, and the test suite finishes in about 20 s |
 | Sparse TF-IDF end to end; RF `n_jobs=-1` | Classical training fits laptop RAM and uses all cores |
 | GNB on 300-d TruncatedSVD | Dense Gaussian NB stays tractable (a dense 67k × 100k+ matrix would not) |
 | DistilBERT: dynamic padding, fp16, `save_total_limit=1`, best epoch kept | ~20–30 min per seed on a T4; only one checkpoint on disk |
 | IMDb truncated at 256 tokens for DistilBERT | Bounded inference cost; truncation is part of the domain shift studied |
 | Sentence embeddings cached by `item_id` in `artifacts/emb/*.npz` | Embedding 67k SST sentences on CPU happens once |
 | Ledoit-Wolf shrinkage covariance | Well-conditioned 384×384 precision matrix; Mahalanobis is one `einsum` |
-| Per-sentence distance, max per review (D25) | Mean-pooled long reviews looked typical (sanity AUROC 0.67); the most unusual sentence separates domains (0.93). Review length is reported as a baseline predictor |
+| Per-sentence distance, max per review (D25) | Mean-pooled long reviews looked typical (sanity AUROC 0.67); the most unusual sentence separates them (0.93), but mostly through length: one random sentence per review gives 0.61 (D30). Length and a length-adjusted distance are scored as baselines |
 | IMDb capped to head + tail words for every model (D23) | One text for all models; DistilBERT reads up to 512 tokens with head+tail token truncation |
 | DistilBERT predicts on the Kaggle GPU (D23) | 10,000 reviews × 512 tokens × 3 seeds is slow on a CPU; local `predict` skips models whose predictions are newer than the model |
 | IG only on DistilBERT failures (≤100), word-level | Bounded cost; attributions comparable with classical features (D14) |

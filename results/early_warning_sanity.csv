@@ -1,0 +1,4 @@
+check,value
+full reviews (as used),0.9259863186813185
+one random sentence per review (length-matched),0.6124245604395604
+"corr(distance, log #sentences)",0.44384329264841343

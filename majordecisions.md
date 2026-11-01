@@ -596,3 +596,41 @@ within noise for 1,820 sentences.
 **Not changed:** GNB's near-chance accuracy is the H6 comparison itself (GNB vs MNB), not a defect
 to tune away. MNB's saturated probabilities come from multiplying thousands of word likelihoods,
 and the early-warning combiner now handles them (D26).
+
+## D30 — Length checks for the early-warning distance (F4) and for IMDb errors (C8)
+
+**F4: how much of the distance is just length?** Taking the maximum over a review's sentences
+rewards long reviews by chance (D25). `warn` now writes `early_warning_sanity.csv`:
+
+| check | value |
+|---|---|
+| sanity AUROC, full reviews (as used) | 0.926 |
+| sanity AUROC, **one random sentence per review** (length-matched) | **0.612** |
+| corr(distance, log number of sentences) | 0.444 |
+
+**Finding:** most of the 0.926 was length. Sentence for sentence, IMDb is only modestly unusual
+next to SST-2. That makes sense: both are movie-review text. The SST-2 → IMDb shift is mainly
+**length and format**, not sentence content. This changes how the shift should be described in
+the report (shortfalls F7).
+
+`warn` also scores a new predictor, **`distance_adj`**: distance minus what log(number of
+sentences) predicts (an OLS residual that uses no labels). Its error-detection AUROC is 0.48–0.53
+for every model, the same as raw distance and significantly below confidence everywhere (Holm
+p < 0.001). Length wasn't hiding a useful distance signal, so the H4 conclusion stands.
+
+**C8: does IMDb error grow with length?** `evaluate` writes `imdb_by_length.csv` (error with a 95%
+CI per original-length bin: ≤100, 101–200, 201–360, >360 capped) and `figures` draws
+`imdb_error_by_length_base`. The bins hold 1,257 / 4,678 / 2,472 / 1,593 reviews.
+
+| model (base) | ≤100 | 101–200 | 201–360 | >360 (capped) |
+|---|---|---|---|---|
+| logreg | 0.167 | 0.197 | 0.218 | 0.236 |
+| rf | 0.251 | 0.304 | 0.289 | 0.323 |
+| mnb | 0.208 | 0.247 | 0.243 | 0.239 |
+| dtree | 0.375 | 0.388 | 0.384 | 0.403 |
+| gnb | 0.426 | 0.451 | 0.460 | 0.478 |
+
+**Finding:** even position-blind bag-of-words models get worse on longer reviews (LR +6.9
+points, RF +7.2), probably because long reviews mix praise and criticism. When DistilBERT
+arrives, its curve has to be compared against these slopes, not against a flat line: only
+growth *beyond* the classical slope points to its short-phrase training (C8).

@@ -30,19 +30,44 @@ def make_distance(cfg: dict):
     raise ValueError(f"unknown distance {kind!r}; expected one of {DISTANCES}")
 
 
+def sentence_distances(scorer, df: pd.DataFrame, name: str, cfg: dict) -> pd.DataFrame:
+    """One row per sentence of each text: its owner's item_id and its distance."""
+    sents = split_sentences(df)
+    emb = cached_embeddings(
+        sents, f"{name}_sentences", cfg["embedding_model"], cfg["embedding_batch_size"]
+    )
+    return pd.DataFrame({"owner": sents["owner"].to_numpy(), "distance": scorer.score(emb)})
+
+
 def text_distance(scorer, df: pd.DataFrame, name: str, cfg: dict) -> pd.Series:
     """Distance per row of `df`, indexed by item_id."""
-    model, batch = cfg["embedding_model"], cfg["embedding_batch_size"]
     unit = cfg.get("unit", "review")
     if unit == "review":
-        emb = cached_embeddings(df, name, model, batch)
+        emb = cached_embeddings(df, name, cfg["embedding_model"], cfg["embedding_batch_size"])
         return pd.Series(scorer.score(emb), index=df["item_id"].to_numpy())
     if unit not in UNITS:
         raise ValueError(f"unknown unit {unit!r}; expected one of {UNITS}")
-    sents = split_sentences(df)
-    d = pd.Series(scorer.score(cached_embeddings(sents, f"{name}_sentences", model, batch)))
-    agg = d.groupby(sents["owner"].to_numpy()).agg("max" if unit == "sentence_max" else "mean")
+    sd = sentence_distances(scorer, df, name, cfg)
+    agg = sd.groupby("owner")["distance"].agg("max" if unit == "sentence_max" else "mean")
     return agg.reindex(df["item_id"].to_numpy()).astype(float)
+
+
+def one_sentence_each(sd: pd.DataFrame, seed: int) -> pd.Series:
+    """One randomly chosen sentence's distance per text: a length-matched sample (F4)."""
+    pick = sd.sample(frac=1.0, random_state=seed).drop_duplicates("owner")
+    return pick.set_index("owner")["distance"]
+
+
+def length_adjusted(distance: np.ndarray, n_sentences: np.ndarray) -> np.ndarray:
+    """Distance minus what log(number of sentences) predicts (OLS residual, no labels used).
+
+    The max over more sentences is larger by chance; the residual keeps only the part of the
+    distance that length doesn't explain (shortfalls.md F4, D30).
+    """
+    x = np.log1p(np.asarray(n_sentences, dtype=float))
+    d = np.asarray(distance, dtype=float)
+    slope, intercept = np.polyfit(x, d, 1)
+    return d - (intercept + slope * x)
 
 
 def fit_distance(train: pd.DataFrame, cfg: dict):

@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 
+import numpy as np
 import pandas as pd
 
 from mirage import paths
@@ -210,7 +211,13 @@ def stage_warn(args) -> None:
     from mirage.evaluate import canonical
     from mirage.predict import load_predictions
     from mirage.stats import holm
-    from mirage.warning.distance import fit_distance, text_distance
+    from mirage.warning.distance import (
+        fit_distance,
+        length_adjusted,
+        one_sentence_each,
+        sentence_distances,
+        text_distance,
+    )
     from mirage.warning.error_detection import compare_predictors, error_by_decile, ood_sanity
 
     cfg = load_config("warning")
@@ -221,6 +228,22 @@ def stage_warn(args) -> None:
     in_dist = text_distance(density, load("sst2_test"), "sst2_test", cfg)
     sanity = ood_sanity(in_dist.to_numpy(), dist.to_numpy())
     print(f"sanity ({cfg['distance']}, {cfg['unit']}): AUROC SST-2 test vs IMDb = {sanity:.3f}")
+
+    # F4 / D30: how much of the distance is just length?
+    sd = sentence_distances(density, imdb, "imdb", cfg)
+    n_sent = sd.groupby("owner").size().reindex(imdb["item_id"]).to_numpy()
+    matched = ood_sanity(in_dist.to_numpy(), one_sentence_each(sd, cfg["seed"]).to_numpy())
+    adjusted = pd.Series(length_adjusted(dist.to_numpy(), n_sent), index=imdb["item_id"])
+    sanity_rows = {
+        "full reviews (as used)": sanity,
+        "one random sentence per review (length-matched)": matched,
+        "corr(distance, log #sentences)": float(np.corrcoef(np.log1p(n_sent), dist)[0, 1]),
+    }
+    pd.Series(sanity_rows, name="value").rename_axis("check").reset_index().to_csv(
+        paths.RESULTS / "early_warning_sanity.csv", index=False
+    )
+    for k, v in sanity_rows.items():
+        print(f"  {k}: {v:.3f}")
 
     preds = canonical(load_predictions())  # seed choice needs sst2_val rows
     preds = preds[preds["dataset"] == "imdb"]
@@ -234,6 +257,7 @@ def stage_warn(args) -> None:
             cfg["seed"],
             cfg["bootstrap_resamples"],
             length=n_words.loc[g["item_id"]].to_numpy(),
+            extra={"distance_adj": adjusted.loc[g["item_id"]].to_numpy()},
         )
         rows.append(res.assign(model=m, variant=v))
         if v == "base":
@@ -268,6 +292,10 @@ def stage_figures(args) -> None:
         gaps = pd.read_csv(R / "negation_gap.csv")
         for t in gaps["test"].unique():
             plots.negation_gap_bars(gaps, t)
+    if (R / "imdb_by_length.csv").exists():
+        lengths = pd.read_csv(R / "imdb_by_length.csv")
+        if len(lengths):
+            plots.error_by_length(lengths, "base")
     if (R / "early_warning_deciles.csv").exists():
         dec = pd.read_csv(R / "early_warning_deciles.csv")
         for m, g in dec.groupby("model"):

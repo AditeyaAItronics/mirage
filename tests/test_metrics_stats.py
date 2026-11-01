@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import pytest
 from statsmodels.stats.contingency_tables import mcnemar
 
@@ -97,3 +98,23 @@ def test_paired_auroc_diff_detects_the_better_score():
     d = paired_auroc_diff(y, good, noise, n_resamples=300)
     assert d["estimate"] > 0.3 and d["ci_low"] > 0 and d["p_value"] < 0.01
     assert paired_auroc_diff(y, good, good, n_resamples=100)["p_value"] == 1.0
+
+
+def test_length_table_bins_imdb_reviews():
+    from mirage.evaluate import length_table
+
+    n_words = [50, 150, 150, 300, 500, 500]
+    preds = pd.DataFrame(
+        {
+            "model": "logreg",
+            "variant": "base",
+            "seed": 42,
+            "dataset": "imdb",
+            "item_id": [f"imdb-{i}" for i in range(6)],
+            "n_words": n_words,
+            "correct": [True, True, False, True, False, False],
+        }
+    )
+    t = length_table(preds, n_resamples=20).set_index("length")
+    assert t.loc["<=100", "n"] == 1 and t.loc["101-200", "error"] == 0.5
+    assert t.loc[">360 (capped)", "error"] == 1.0

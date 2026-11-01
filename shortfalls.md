@@ -176,12 +176,11 @@ general. A weak result might come from the rule rather than the idea.
 scope rule (the next 3 words only); report both.
 **Effort:** small.
 
-### C8. 🟠 NEW: DistilBERT is trained on short phrases but tested on long reviews
-**What:** training phrases average about 9 words (128-token limit); IMDb reviews are up to 512 tokens.
-**Why it matters:** part of DistilBERT's IMDb drop may be length generalisation, not domain shift.
-**Possible fix:** bucket IMDb accuracy by length (`n_words`); compare with the classical models'
-curves, which don't depend on position.
-**Effort:** small (analysis only).
+### C8. 🟠 READY, waiting for DistilBERT (D30): short-phrase training vs long reviews
+`imdb_by_length.csv` and the `imdb_error_by_length` figure break IMDb error down by review length.
+The classical baseline is already measured: error rises from short to long reviews even for
+bag-of-words models (LR 0.167 → 0.236, RF 0.251 → 0.323). Once DistilBERT's predictions are in,
+only growth **beyond** that slope points to its short-phrase training.
 
 ### C9. ✅ RESOLVED for the tree (D29); 🟢 GNB and MNB remain as notes
 **Tree:** it now keeps at least 10 examples per leaf (accuracy picked 20). Its probabilities are
@@ -288,11 +287,12 @@ words also creates unnatural sentences.
 
 ## F. Early warning (H4)
 
-### F1. 🟠 MITIGATED (D25): distance barely separated SST-2 from IMDb
+### F1. 🟠 MITIGATED (D25, D30): distance barely separated SST-2 from IMDb
 **Was:** AUROC 0.646 with whole-review embeddings.
-**Now:** each sentence is scored and the review keeps its most unusual one: AUROC **0.926**
-(SST-2 test vs 10,000 IMDb reviews). The distance type barely mattered (0.67–0.69 for whole
-reviews whichever we used). See F4 for the caveat.
+**Now:** each sentence is scored and the review keeps its most unusual one, giving 0.926. But
+the length check (D30) shows most of that is length. With one random sentence per review, it's
+**0.612**. The detector works; the shift itself is mostly length and format, not sentence content
+(see F7).
 
 ### F2. 🟠 The embedding model is not the classifier
 **What:** distance is measured in MiniLM's embedding space, which is the same for every classifier.
@@ -305,14 +305,13 @@ Mahalanobis OOD detector (Lee et al., 2018).
 ### F3. ✅ RESOLVED (D22): few errors to detect
 With 10,000 IMDb reviews, LR makes about 2,000 errors and the others make more. AUROC CIs are now about ±0.01.
 
-### F4. 🟠 NEW: sentence-max distance is partly a length measure
-**What:** the maximum over more sentences is larger by chance, so long reviews look more unusual.
-**Done:** length is reported as its own error predictor. In the first run, distance (0.49–0.53)
-and length (0.50–0.54) were both near chance for the classical models, so there's nothing yet for
-length to explain away.
-**Possible fix:** a length-matched sanity check (SST-2 test vs single IMDb sentences); distance
-residualised on the number of sentences.
-**Effort:** small.
+### F4. ✅ RESOLVED (D30): sentence-max distance is partly a length measure
+Measured, then removed:
+- A length-matched sanity check (one random sentence per review) gives 0.612, against 0.926 for
+  full reviews. Distance correlates 0.44 with log(number of sentences).
+- A length-adjusted distance (`distance_adj`, an OLS residual on log(number of sentences)) is
+  scored in H4. It does no better than raw distance (0.48–0.53) and is significantly below
+  confidence for every model, so H4's conclusion doesn't depend on length.
 
 ### F5. 🟢 NEW: sentences are split with a regex
 **What:** reviews are split on `. ! ?` followed by whitespace. IMDb text has "..." runs and
@@ -329,6 +328,18 @@ bug, but it should be confirmed with DistilBERT and with F4's length-matched che
 goes in the report.
 **Possible fix:** none needed. Report it as is, and try DistilBERT's own features (F2) before
 concluding.
+
+### F7. 🟠 NEW (finding): the SST-2 → IMDb shift is mostly length and format
+**What:** sentence for sentence, an embedding detector separates SST-2 from IMDb only modestly
+(0.612). Whole reviews look different (0.926) mainly because they're long and multi-sentence.
+**Why it matters:**
+- The report shouldn't describe IMDb as a "new domain" in content. Both are movie reviews.
+- IMDb errors are better explained by length and by mixed opinions inside a review: even
+  bag-of-words models get 7 points worse from short to long reviews (C8).
+- This narrows what H4 can show: a sentence-level familiarity score has little to work with.
+
+**Possible fix:** none needed. Report it, and lean on the length analysis (C8) and B4 when
+explaining the IMDb drop.
 
 ---
 
@@ -420,7 +431,7 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 1. ~~**D5** (directional negation test)~~: done, see D27.
 2. ~~**G1** (multiple-comparison correction)~~: done, see D28.
 3. ~~**C9** (degenerate DT probabilities)~~: done, see D29.
-4. **F4** and **C8** (length checks): both are analyses on columns that already exist.
+4. ~~**F4**~~ and **C8** (length checks): F4 done, C8 ready and waiting for DistilBERT (D30).
 5. **B4**, **C7** and **B9**: cheap robustness checks for the headline results.
 6. Everything 🟢: one sentence each in the report's Limitations section.
 
@@ -436,3 +447,4 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 - **D5, negation template rewards negative bias.** Fixed with a directional "X / not X" test scored on the model's own answers (D27).
 - **G1, no multiple-comparison correction.** Fixed with Holm-adjusted p-values on every paired comparison, plus a paired AUROC test for H4 (D28).
 - **C9, degenerate tree probabilities.** Fixed by a minimum leaf size of at least 10, still tuned on accuracy (D29).
+- **F4, length inside the distance.** Measured with a length-matched check (0.612 vs 0.926) and removed with a length-adjusted distance; H4 is unchanged (D30).

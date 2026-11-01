@@ -161,6 +161,27 @@ def error_vs_score(deciles: pd.DataFrame, model: str, out_dir=None) -> Path:
     return _save(fig, f"error_vs_score_{model}", out_dir)
 
 
+def error_by_length(table: pd.DataFrame, variant: str = "base", out_dir=None) -> Path:
+    """IMDb error per review-length bin, one line per model with its 95% CI band (C8)."""
+    d = table[table["variant"] == variant]
+    labels = list(dict.fromkeys(d["length"]))
+    fig, ax = plt.subplots(figsize=(6.5, 4))
+    for m in _order(d["model"].unique()):
+        g = d[d["model"] == m].set_index("length").reindex(labels)
+        color = SERIES[MODEL_ORDER.index(m) % len(SERIES)] if m in MODEL_ORDER else "gray"
+        x = range(len(labels))
+        ax.plot(x, g["error"], marker="o", markersize=6, linewidth=2, color=color, label=m)
+        ax.fill_between(x, g["ci_low"], g["ci_high"], color=color, alpha=0.12, linewidth=0)
+    ax.set_xticks(range(len(labels)))
+    ax.set_xticklabels(labels)
+    ax.set_xlabel("IMDb review length (words, before capping)")
+    ax.set_ylabel("error rate")
+    ax.set_ylim(bottom=0)
+    ax.set_title(f"Does error grow with review length? ({variant})")
+    ax.legend(ncol=3, fontsize=8, frameon=False)
+    return _save(fig, f"imdb_error_by_length_{variant}", out_dir)
+
+
 def reliability_diagram(bins: dict[str, pd.DataFrame], name: str, out_dir=None) -> Path:
     """bins: panel title -> output of metrics.reliability_bins. One panel per entry."""
     fig, axes = plt.subplots(1, len(bins), figsize=(3.6 * len(bins), 3.6), squeeze=False)

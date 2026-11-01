@@ -56,8 +56,10 @@ def compare_predictors(
     seed: int = 42,
     n_resamples: int = 1000,
     length: np.ndarray | None = None,
+    extra: dict[str, np.ndarray] | None = None,
 ) -> pd.DataFrame:
-    """`preds` = one model's IMDb predictions, row-aligned with `distance` (and `length`)."""
+    """`preds` = one model's IMDb predictions, row-aligned with `distance`, `length` and every
+    array in `extra` (more candidate predictors, e.g. length-adjusted distance)."""
     target = (~preds["correct"].astype(bool)).to_numpy().astype(int)
     conf = confidence(preds["p_pos"].to_numpy())
     scores = {
@@ -67,6 +69,8 @@ def compare_predictors(
     }
     if length is not None:
         scores["length"] = np.asarray(length, dtype=float)
+    for name, s in (extra or {}).items():
+        scores[name] = np.asarray(s, dtype=float)
     rows = []
     for name, s in scores.items():
         ci = bootstrap(lambda i, s=s: auroc(target[i], s[i]), len(target), n_resamples, seed)

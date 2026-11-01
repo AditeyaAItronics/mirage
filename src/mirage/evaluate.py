@@ -199,6 +199,41 @@ def negmark_effect(
     return out
 
 
+LENGTH_BINS = (0, 100, 200, 360, np.inf)
+LENGTH_LABELS = ("<=100", "101-200", "201-360", ">360 (capped)")
+
+
+def length_table(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
+    """C8: IMDb error by original review length (words), per model and variant.
+
+    DistilBERT trains on ~9-word phrases; if its error climbs with length faster than the
+    classical models' (which ignore word position), part of its IMDb drop is length, not domain.
+    The last bin holds the reviews capped to head + tail words (D23).
+    """
+    imdb = canonical(preds)
+    imdb = imdb[imdb["dataset"] == "imdb"]
+    if imdb.empty or "n_words" not in imdb:
+        return pd.DataFrame()
+    imdb = imdb.assign(
+        length=pd.cut(imdb["n_words"], LENGTH_BINS, labels=LENGTH_LABELS, right=True)
+    )
+    rows = []
+    for (m, v, b), g in imdb.groupby(["model", "variant", "length"], observed=True):
+        ci = rate_ci((~g["correct"].astype(bool)).to_numpy(), **ci_kw)
+        rows.append(
+            {
+                "model": m,
+                "variant": v,
+                "length": b,
+                "n": ci["n"],
+                "error": ci["estimate"],
+                "ci_low": ci["ci_low"],
+                "ci_high": ci["ci_high"],
+            }
+        )
+    return pd.DataFrame(rows)
+
+
 def mcnemar_table(preds: pd.DataFrame, datasets=SETS) -> pd.DataFrame:
     preds = canonical(preds)
     preds = preds[preds["variant"] == "base"]
@@ -311,6 +346,7 @@ def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
         "negation_control": negation_control(preds, **kw),
         "negation_direction": negation_direction(preds, **kw),
         "negmark_effect": negmark_effect(preds, **kw),
+        "imdb_by_length": length_table(preds, **kw),
     }
     if (preds["model"] == REFERENCE).any():
         tables["negation_gap"] = negation_gap(preds, **kw)

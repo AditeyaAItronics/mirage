@@ -84,5 +84,8 @@ def test_cpu_pipeline(tmp_path, monkeypatch):
     assert (effect["p_holm"] >= effect["p_value"]).all()
     mc = pd.read_csv(root / "results" / "mcnemar.csv")
     assert "p_holm" in mc.columns
+    by_len = pd.read_csv(root / "results" / "imdb_by_length.csv")
+    assert by_len["n"].sum() == 5 * 2 * 100  # every IMDb review lands in one bin
+    assert (root / "figures" / "imdb_error_by_length_base.png").exists()
     assert (root / "results" / "explain" / "tree_depth4.txt").exists()
     assert (root / "figures" / "error_heatmap_base.png").exists()
