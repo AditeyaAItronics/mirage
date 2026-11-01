@@ -1,7 +1,7 @@
 model_a,model_b,jaccard,rbo,shared
-dtree,logreg,0.2345679012345679,0.41232900001979134,"bad, best, dull, flat, fun, funny, good, less, love, mess, n't, no, not, nothing, predictable, stupid, tired, too, worst"
-dtree,mnb,0.041666666666666664,0.001106253506233123,"flat, poorly, stupid, unfunny"
-dtree,rf,0.7543859649122807,0.8729548476914878,"'s, ,, ., a, an, and, as, bad, best, down, dull, film, flat, fun, funny, good, in, is, it, less, like, little, love, mess, minutes, n't, no, not, nothing, of, or, plot, predictable, stupid, that, the, this, to, too, unfunny, with, worst, you"
+dtree,logreg,0.25,0.38977901550176763,"bad, best, dull, dumb, flat, fun, funny, good, lack, less, love, mess, n't, no, not, nothing, predictable, tired, too, worst"
+dtree,mnb,0.030927835051546393,0.0015241206701791922,"flat, poorly, unfunny"
+dtree,rf,0.7241379310344828,0.832708425810712,"'s, ,, ., a, an, and, as, bad, best, down, dull, film, flat, fun, funny, good, is, it, just, less, like, little, love, mess, minutes, n't, no, not, nothing, of, or, performances, plot, predictable, pretentious, that, the, to, too, unfunny, with, worst"
 logreg,mnb,0.041666666666666664,0.0010664196029271742,"devoid, flat, stupid, ugly"
 logreg,rf,0.25,0.44020563269319896,"bad, best, dull, entertaining, flat, fun, funny, good, less, love, mess, moving, n't, no, not, nothing, predictable, stupid, too, worst"
 mnb,rf,0.030927835051546393,0.0007721653790383108,"flat, stupid, unfunny"

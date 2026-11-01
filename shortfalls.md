@@ -183,23 +183,14 @@ scope rule (the next 3 words only); report both.
 curves, which don't depend on position.
 **Effort:** small (analysis only).
 
-### C9. 🟠 NEW: two classical models give degenerate probabilities
-**What:**
-- The unpruned decision tree outputs only 0 and 1 (SST-2 test ECE 0.34). Its confidence carries
-  no ranking information (early-warning AUROC exactly 0.500).
-- GNB is near chance (SST-2 test 0.591).
-- MNB pushes half its IMDb probabilities to exactly 1.0.
-
-**Why it matters:**
-- Calibration and confidence-based results for DT are meaningless.
-- GNB's "failures" say little about shortcuts, because it barely learned the task.
-
-**Possible fix:**
-- Add a pruned or probability-smoothed tree variant (`min_samples_leaf` ≥ 5), or report DT only
-  for accuracy and behavioral tests.
-- Present GNB as a lower bound (see C6).
-
-**Effort:** small.
+### C9. ✅ RESOLVED for the tree (D29); 🟢 GNB and MNB remain as notes
+**Tree:** it now keeps at least 10 examples per leaf (accuracy picked 20). Its probabilities are
+usable: ECE 0.339 → 0.144, IMDb confidence AUROC 0.500 → 0.562, and IMDb accuracy *rose*
+0.592 → 0.612. Cost: SST-2 test 0.661 → 0.653.
+**GNB** stays near chance (SST-2 test 0.591). That's the H6 comparison, so present it as a lower
+bound (C6), not a fault to tune away.
+**MNB** pushes half its IMDb probabilities to exactly 1.0. The early-warning combiner handles this
+(D26). Note it next to MNB's calibration numbers.
 
 ### C10. 🟠 NEW (first result): negation marking helps templates, not clearly real sentences
 **What:** after Holm, `NOT_` marking cuts the directional-test error significantly for every model
@@ -428,7 +419,7 @@ wrong results.
 All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1). Next, in order:
 1. ~~**D5** (directional negation test)~~: done, see D27.
 2. ~~**G1** (multiple-comparison correction)~~: done, see D28.
-3. **C9** (degenerate DT probabilities): a pruned tree variant.
+3. ~~**C9** (degenerate DT probabilities)~~: done, see D29.
 4. **F4** and **C8** (length checks): both are analyses on columns that already exist.
 5. **B4**, **C7** and **B9**: cheap robustness checks for the headline results.
 6. Everything 🟢: one sentence each in the report's Limitations section.
@@ -444,3 +435,4 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 - **H4, stale docs.** Updated.
 - **D5, negation template rewards negative bias.** Fixed with a directional "X / not X" test scored on the model's own answers (D27).
 - **G1, no multiple-comparison correction.** Fixed with Holm-adjusted p-values on every paired comparison, plus a paired AUROC test for H4 (D28).
+- **C9, degenerate tree probabilities.** Fixed by a minimum leaf size of at least 10, still tuned on accuracy (D29).

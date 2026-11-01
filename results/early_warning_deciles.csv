@@ -1,24 +1,24 @@
 decile,error,score,model
-0,0.396,distance,dtree
-1,0.394,distance,dtree
-2,0.407,distance,dtree
-3,0.426,distance,dtree
-4,0.4,distance,dtree
-5,0.413,distance,dtree
-6,0.402,distance,dtree
-7,0.409,distance,dtree
-8,0.424,distance,dtree
-9,0.406,distance,dtree
-0,0.411,low confidence,dtree
-1,0.405,low confidence,dtree
-2,0.386,low confidence,dtree
-3,0.42,low confidence,dtree
-4,0.385,low confidence,dtree
-5,0.421,low confidence,dtree
-6,0.387,low confidence,dtree
-7,0.439,low confidence,dtree
-8,0.402,low confidence,dtree
-9,0.421,low confidence,dtree
+0,0.376,distance,dtree
+1,0.388,distance,dtree
+2,0.35,distance,dtree
+3,0.392,distance,dtree
+4,0.388,distance,dtree
+5,0.402,distance,dtree
+6,0.376,distance,dtree
+7,0.395,distance,dtree
+8,0.402,distance,dtree
+9,0.408,distance,dtree
+0,0.334,low confidence,dtree
+1,0.321,low confidence,dtree
+2,0.37,low confidence,dtree
+3,0.325,low confidence,dtree
+4,0.298,low confidence,dtree
+5,0.394,low confidence,dtree
+6,0.496,low confidence,dtree
+7,0.454,low confidence,dtree
+8,0.405,low confidence,dtree
+9,0.48,low confidence,dtree
 0,0.435,distance,gnb
 1,0.448,distance,gnb
 2,0.458,distance,gnb

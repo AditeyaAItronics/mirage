@@ -556,3 +556,43 @@ significant. The standard-error p-value has no floor, and a unit test now checks
 
 **Rejected:** Bonferroni (needlessly conservative next to Holm); Benjamini–Hochberg FDR (it
 controls a different error rate, and the report makes per-claim statements).
+
+## D29 — Decision tree with minimum leaf size ≥ 10 (C9)
+
+**Problem:** the tuned tree (`max_depth: null`, leaves of 1 example) was **2,956 levels deep**
+and output only two probabilities, 0 and 1. Its calibration error was 0.339, and its confidence
+carried no ranking information (early-warning AUROC exactly 0.500). Every calibration and
+confidence-based result for the tree was meaningless.
+
+**Experiment** (base variant, unpruned depth, varying `min_samples_leaf`):
+
+| min leaf | held-out acc | test acc | test ECE | confidence AUROC (test errors) | distinct probabilities |
+|---|---|---|---|---|---|
+| 1 (old) | 0.686 | 0.661 | 0.339 | 0.500 | 2 |
+| 10 | 0.662 | 0.659 | 0.182 | 0.599 | 114 |
+| 20 | 0.660 | 0.653 | 0.144 | 0.617 | 285 |
+| 50 | 0.656 | 0.640 | 0.109 | 0.638 | 408 |
+
+**Decision:** the tree's grid is now `min_samples_leaf: [10, 20, 50]` with unlimited depth, still
+**selected by held-out accuracy** like every other model. Accuracy picked 20 for both variants.
+A tree whose leaves hold a single example isn't a probabilistic classifier, so leaf size 1 is
+left out of the search rather than out-voted. The cost is 0.8 points of SST-2 test accuracy,
+within noise for 1,820 sentences.
+
+**Rejected:**
+- Selecting the tree by log-loss: one model with a different selection rule would be harder to
+  defend than one model with a narrower grid.
+- Calibrating after the fact (Platt or isotonic): 0/1 outputs have no ranking to calibrate.
+
+**Result (base):**
+- SST-2 test 0.661 → 0.653.
+- **IMDb 0.592 → 0.612**: the pruned tree generalises better.
+- ECE 0.339 → 0.144.
+- IMDb confidence AUROC 0.500 → 0.562. Distance is now significantly worse than confidence for
+  the tree too (Holm p < 0.001), so H4's pattern holds for all five classical models.
+- Directional negation: "not" leaves the probability unmoved in 27% of pairs (was 60%).
+  flip_failure is 0.199 on 42% testable pairs.
+
+**Not changed:** GNB's near-chance accuracy is the H6 comparison itself (GNB vs MNB), not a defect
+to tune away. MNB's saturated probabilities come from multiplying thousands of word likelihoods,
+and the early-warning combiner now handles them (D26).

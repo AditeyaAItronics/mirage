@@ -7,7 +7,9 @@ models:
   logreg:
     grid: {C: [0.1, 1, 10, 30, 100]}   # 10 was the edge of the old grid on the leak-free split
   dtree:
-    grid: {max_depth: [10, 30, null]}
+    # D29: leaves of 1 example give only 0/1 probabilities (ECE 0.34, no confidence signal) and a
+    # 2,956-level tree. Leaves of >= 10 cost 0.2 points of test accuracy and make confidence usable.
+    grid: {max_depth: [null], min_samples_leaf: [10, 20, 50]}
   rf:
     n_estimators: 300
     grid: {max_depth: [30, null]}
