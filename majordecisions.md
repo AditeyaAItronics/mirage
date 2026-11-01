@@ -874,3 +874,24 @@ words and any classical model is Jaccard 0.01–0.08 (RBO ≤ 0.04). The tree an
 (0.72), and LR shares a quarter of its words with them. The IG explanations are faithful:
 deleting the top-1/2/3 attributed words lowers DistilBERT's confidence by 0.37/0.46/0.52, against
 0.11/0.19/0.27 for the same number of random words. IG convergence delta ≤ 0.024.
+
+## D36 — Warm-up counts every GPU (fixes the two-GPU quirk from D34)
+
+**Bug:** `train()` computed warm-up from the *per-device* batch (32), assuming one GPU. On
+Kaggle's T4 x2 the Trainer splits each batch across both GPUs, so each step consumed 64 examples
+and training had 3,000 steps, not 6,000. The fixed 360-step warm-up became 12% of training
+instead of the configured 6%.
+
+**Fix:** `TrainingArguments` is built first, then warm-up is set from the batch each optimizer
+step really sees: `train_batch_size` (per-device × GPUs) × `world_size` × gradient accumulation.
+The arithmetic lives in a small, tested function, `schedule()`. Two GPUs give 3,000 steps and 180
+warm-up steps (6%), matching the Kaggle run's step count. `train_summary.json` now also records
+`devices`, `effective_batch`, `total_steps` and `warmup_steps`, so a run's real recipe is visible
+without reading its logs.
+
+**Screened:** a 64-example CPU fine-tune in a throwaway `MIRAGE_ROOT`. The plan said 6 steps and
+the Trainer ran 6. The real models were untouched.
+
+**Not changed:** the effective batch itself. Two GPUs still mean batch 64, which is a fine
+setting. The existing three models (batch 64, 12% warm-up) stay as they are and as recorded in
+D34. Retraining them for a warm-up difference isn't worth a GPU run.

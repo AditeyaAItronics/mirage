@@ -144,3 +144,13 @@ def test_compare_predictors_scores_extra_predictors():
         preds, rng.normal(size=300), n_resamples=50, extra={"oracle": err + 0.0}
     ).set_index("predictor")
     assert res.loc["oracle", "auroc"] == 1.0 and res.loc["oracle", "diff_vs_conf"] > 0
+
+
+def test_warmup_schedule_counts_every_device():
+    from mirage.models.distilbert import schedule
+
+    one = schedule(63971, 32, 3, 0.06)
+    two = schedule(63971, 64, 3, 0.06)  # T4 x2: each step sees both GPUs' halves
+    assert one == {"total_steps": 6000, "warmup_steps": 360}
+    assert two == {"total_steps": 3000, "warmup_steps": 180}  # matches the Kaggle run (D34)
+    assert two["warmup_steps"] / two["total_steps"] == pytest.approx(0.06, abs=1e-3)

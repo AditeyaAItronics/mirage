@@ -25,6 +25,17 @@ def head_tail_ids(ids: list[int], budget: int, head_frac: float = 0.5) -> list[i
     return ids[:head] + ids[len(ids) - (budget - head) :]
 
 
+def schedule(n_examples: int, step_batch: int, epochs: int, warmup_ratio: float) -> dict:
+    """Optimizer steps and warm-up steps for a run whose steps each consume `step_batch` examples.
+
+    `step_batch` must be the *effective* batch (per-device batch x devices x accumulation): with
+    2 GPUs the Trainer splits each batch across both, so one epoch has half as many steps. Using
+    the per-device batch instead doubled the warm-up share on Kaggle's T4 x2 (D34, D36).
+    """
+    steps = math.ceil(n_examples / step_batch) * epochs
+    return {"total_steps": steps, "warmup_steps": int(warmup_ratio * steps)}
+
+
 def _device():
     import torch
 
@@ -122,13 +133,11 @@ def train(
 
     train_ds, heldout_ds = to_ds(train_df), to_ds(heldout_df)
 
-    # Warmup as explicit steps: `warmup_ratio` is being deprecated across transformers versions.
-    steps = math.ceil(len(train_ds) / cfg["batch_size"]) * cfg["epochs"]
     args = TrainingArguments(
         output_dir=str(out_dir / "checkpoints"),
         learning_rate=cfg["learning_rate"],
         lr_scheduler_type="linear",
-        warmup_steps=int(cfg["warmup_ratio"] * steps),
+        warmup_steps=0,  # set below, once the Trainer has counted the devices
         per_device_train_batch_size=cfg["batch_size"],
         per_device_eval_batch_size=cfg["eval_batch_size"],
         num_train_epochs=cfg["epochs"],
@@ -143,6 +152,12 @@ def train(
         report_to="none",
         logging_steps=100,
     )
+    # Warm-up as explicit steps (`warmup_ratio` is being deprecated across transformers versions),
+    # counted from the batch each optimizer step really sees: train_batch_size is per-device x
+    # GPUs (DataParallel), world_size covers multi-process runs.
+    step_batch = args.train_batch_size * args.world_size * args.gradient_accumulation_steps
+    plan = schedule(len(train_ds), step_batch, cfg["epochs"], cfg["warmup_ratio"])
+    args.warmup_steps = plan["warmup_steps"]
 
     def compute_metrics(pred) -> dict:
         return {"accuracy": float((pred.predictions.argmax(-1) == pred.label_ids).mean())}
@@ -160,6 +175,13 @@ def train(
 
     DistilBertClassifier(trainer.model, tokenizer).save(out_dir)
     shutil.rmtree(out_dir / "checkpoints", ignore_errors=True)  # best weights are saved above
-    summary = {"seed": seed, "heldout": metrics, "log_history": trainer.state.log_history}
+    summary = {
+        "seed": seed,
+        "heldout": metrics,
+        "devices": max(1, args.n_gpu) * args.world_size,
+        "effective_batch": step_batch,
+        **plan,
+        "log_history": trainer.state.log_history,
+    }
     (out_dir / "train_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return summary

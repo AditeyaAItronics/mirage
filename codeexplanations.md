@@ -83,7 +83,7 @@ sentences.
 | `__init__.py` | Re-exports the model names, the `Classifier` interface and `load_classifier`. |
 | `base.py` | The one interface every model follows: `predict_proba(raw texts)` returns P(negative) and P(positive). `SklearnClassifier` wraps a scikit-learn pipeline. `load_classifier` loads either kind of saved model from its folder. |
 | `classical.py` | The five classical models: logistic regression, decision tree, random forest, multinomial Naive Bayes, Gaussian Naive Bayes on 300 SVD components. `build_pipeline` assembles vectorizer + model for a variant (`base`, `negmark`, `negmark_w3`). `tune` tries every grid setting and keeps the best on held-out accuracy. `train_all` does this for every model. |
-| `distilbert.py` | DistilBERT. `train` fine-tunes it with Hugging Face's Trainer (on Kaggle's GPU), keeps the best epoch and deletes checkpoints. `DistilBertClassifier` predicts. Long IMDb reviews keep their first and last tokens rather than being cut off (`head_tail_ids`). |
+| `distilbert.py` | DistilBERT. `train` fine-tunes it with Hugging Face's Trainer (on Kaggle's GPU), keeps the best epoch and deletes checkpoints. `schedule` works out the training and warm-up steps from the effective batch, counting every GPU (D36). `DistilBertClassifier` predicts. Long IMDb reviews keep their first and last tokens rather than being cut off (`head_tail_ids`). |
 
 ### `explain/`: what each model relies on
 
@@ -107,7 +107,7 @@ sentences.
 
 ---
 
-## `tests/`: 89 automated tests (`.venv/Scripts/python -m pytest`)
+## `tests/`: 90 automated tests (`.venv/Scripts/python -m pytest`)
 
 They run on small synthetic data, need no downloads or GPU, and finish in about 30 seconds.
 
