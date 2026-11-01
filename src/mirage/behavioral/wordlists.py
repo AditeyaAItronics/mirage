@@ -23,7 +23,7 @@ POS_ADJ = [
     "perfect",
     "terrific",
     "outstanding",
-    "pleasant",
+    "beautiful",
     "memorable",
     "fun",
 ]
@@ -48,7 +48,7 @@ NEG_ADJ = [
     "forgettable",
     "unpleasant",
     "bland",
-    "messy",
+    "sloppy",  # replaced "messy" (D33): only 12 training uses, and sometimes affectionate
 ]
 
 NOUNS = [

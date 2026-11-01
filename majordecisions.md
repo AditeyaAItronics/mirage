@@ -752,3 +752,27 @@ names are now paired by gender (Priya ↔ Emily, Rahul ↔ John, …).
 - Choosing names by LR's weights: circular, since it would favour finding an effect in LR.
 - Removing the Indian/Western probe: it's still the right test for *unseen* names, and DistilBERT,
   whose pre-training may know these names, could behave differently.
+
+## D33 — Word-list review: "messy" replaced by "sloppy" (user's decision)
+
+**Decision (made by the project author during the word-list review):** the negative adjective
+"messy" is replaced by **"sloppy"**.
+
+**Why:**
+- "messy" occurs in only 12 SST-2 training phrases.
+- It's sometimes affectionate in reviews ("gloriously messy"), so a model that reads it as
+  positive isn't clearly wrong.
+- "sloppy" keeps the intended meaning without the ambiguity, and is common in training (76
+  phrases, 12% positive).
+
+**Shortlisted alternatives:** tiresome, pointless, lifeless, contrived, inept, shallow, clumsy,
+stale, listless. **Ruled out:** unfunny (odd with most nouns), worst (ungrammatical in "The plot
+was worst."), ugly (can be literal), tired (can describe the viewer), silly/dumb/laughable
+(sometimes affectionate), pretentious (sometimes neutral), clichéd (encoding risk).
+
+**Rule kept:** words are removed only when the *word* is ambiguous, never because models fail on
+it. The adjectives the models misread most ("memorable", "lovely", "superb") are clearly
+positive to a reader and stay. Removing them would hide exactly the failures the project measures.
+
+**Effect:** the behavioral suite was rebuilt and the classical models' behavioral predictions
+redone. The other word lists, the name pairs and the mild adjectives were left as they were.
