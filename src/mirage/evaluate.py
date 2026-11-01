@@ -25,6 +25,16 @@ INDIST = "sst2_test"  # reported in-distribution test set; sst2_val is for choic
 SETS = ("sst2_val", "sst2_test", "sst2_neg", "imdb", "imdb_edges")
 
 
+def holm_family(*model_cols: pd.Series) -> np.ndarray:
+    """Holm family label per row: "external" if any model in the row is a ready-made external
+    model, else "ours". Keeps external models from changing our models' adjusted p-values (D39)."""
+    external = set(external_models())
+    hit = np.zeros(len(model_cols[0]), dtype=bool)
+    for col in model_cols:
+        hit |= col.isin(external).to_numpy()
+    return np.where(hit, "external", "ours")
+
+
 def median_seed(preds: pd.DataFrame, model: str = REFERENCE) -> int:
     """Seed whose sst2_val accuracy is the median across seeds (lower-middle for even counts)."""
     val = preds[(preds["model"] == model) & (preds["dataset"] == "sst2_val")]
@@ -284,9 +294,11 @@ def shift_decomposition(preds: pd.DataFrame) -> pd.DataFrame:
             }
         )
     out = pd.DataFrame(rows)
+    if len(out):
+        out["family"] = holm_family(out["model"])
     for part in ("length_format", "content"):
         if len(out):
-            out[f"{part}_p_holm"] = holm(out[f"{part}_p"])
+            out[f"{part}_p_holm"] = out.groupby("family")[f"{part}_p"].transform(lambda p: holm(p))
     return out
 
 
@@ -307,10 +319,7 @@ def mcnemar_table(preds: pd.DataFrame, datasets=SETS) -> pd.DataFrame:
         # One family per dataset: all pairwise comparisons of our models on it (D28). Pairs with
         # an external model form their own family, so adding them leaves the original p-values
         # unchanged (D39).
-        external = set(external_models())
-        out["family"] = np.where(
-            out["model_a"].isin(external) | out["model_b"].isin(external), "external", "ours"
-        )
+        out["family"] = holm_family(out["model_a"], out["model_b"])
         out["p_holm"] = out.groupby(["dataset", "family"])["p_value"].transform(lambda p: holm(p))
         out["significant"] = out["p_holm"] < 0.05
     return out
@@ -430,7 +439,10 @@ def name_effect(preds: pd.DataFrame, tests=("name_shortcut", "name_swap"), **ci_
             )
     out = pd.DataFrame(rows)
     if len(out):
-        out["shift_p_holm"] = out.groupby("test")["shift_p"].transform(lambda p: holm(p))
+        out["family"] = holm_family(out["model"])
+        out["shift_p_holm"] = out.groupby(["test", "family"])["shift_p"].transform(
+            lambda p: holm(p)
+        )
     return out
 
 

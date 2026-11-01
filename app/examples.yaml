@@ -1,0 +1,132 @@
+# Curated demo examples (D41). Each has the behaviour measured on the real models; the test
+# tests/test_demo.py::test_curated_examples_behave re-checks every `expect` line, so the scripted
+# part of the demo can't surprise you. Only clear-cut predictions (far from 0.5) are listed.
+#
+# expect:   flips   = the predicted label differs between a and b
+#           stable  = the predicted label is the same for a and b
+#           positive / negative = predicted label for sentence a (single-sentence examples)
+
+- id: names
+  title: "Names: Binoche vs Hopkins"
+  shortcut: names
+  a: "Another Binoche comedy, and it was decent."
+  b: "Another Hopkins comedy, and it was decent."
+  talking_point: >
+    Only the name changed. Naive Bayes learned that Hopkins appears in negative training phrases,
+    so the name decides the verdict. A name should carry no sentiment at all.
+  expect:
+    flips: [mnb]
+    stable: [logreg, distilbert, roberta_large]
+
+- id: names_scale
+  title: "Names again: does scale help? (Kidman vs Seagal)"
+  shortcut: names
+  a: "Another Kidman drama, and it was decent."
+  b: "Another Seagal drama, and it was decent."
+  talking_point: >
+    RoBERTa-large is five times bigger than DistilBERT and trained on 15 datasets, and it still
+    flips on a name. Scale does not cure this shortcut.
+  expect:
+    flips: [mnb, roberta_large]
+    stable: [distilbert]
+
+- id: typo
+  title: "Typos: brilliant vs brililant"
+  shortcut: typos
+  a: "The movie was brilliant."
+  b: "The movie was brililant."
+  talking_point: >
+    Our DistilBERT goes from 100% positive to 1% positive because of one typo. When it can't read
+    the sentiment word, its default answer is "negative" (D37). RoBERTa-large shrugs it off.
+  expect:
+    flips: [distilbert, distilbert_hf, logreg]
+    stable: [roberta_large]
+
+- id: typo_control
+  title: "Control: a typo in the noun"
+  shortcut: typos
+  a: "The movie was brilliant."
+  b: "The moive was brilliant."
+  talking_point: >
+    The same kind of typo in the noun changes nothing. So it isn't "any odd word means negative":
+    it's specifically losing the sentiment word.
+  expect:
+    stable: [distilbert, distilbert_hf, roberta_large]
+
+- id: negation
+  title: "Negation: bad vs not bad at all"
+  shortcut: negation
+  a: "The acting was bad."
+  b: "The acting was not bad at all."
+  talking_point: >
+    The word-counting models see "bad" and stop there. The transformers read the whole phrase.
+  expect:
+    flips: [distilbert, roberta_large]
+    stable: [logreg, mnb]
+
+- id: negation_2
+  title: "Negation: boring vs not boring at all"
+  shortcut: negation
+  a: "The plot was boring."
+  b: "The plot was not boring at all."
+  talking_point: >
+    Watch our DistilBERT: it gets this right but only just, and the low-confidence flag shows
+    it. That's the early-warning signal from H4 working live.
+  expect:
+    flips: [distilbert_hf, roberta_large]
+    stable: [logreg, mnb]
+
+- id: contrast
+  title: "Contrast: \"but I did\""
+  shortcut: negation
+  a: "I didn't think I would enjoy it, but I did."
+  talking_point: >
+    Every sentiment cue word here is negative ("didn't"); the meaning is positive. Only the
+    models that read the sentence as a whole get it.
+  expect:
+    negative: [logreg, mnb]
+    positive: [distilbert, roberta_large]
+
+- id: double_negation
+  title: "Double negation"
+  shortcut: negation
+  a: "It's almost impossible not to be moved by this film."
+  talking_point: >
+    "Impossible" and "not" cancel out. Real negation is like this: long-range and sometimes
+    double, which is why negation marking helps on templates but not on real sentences (D38).
+  expect:
+    positive: [distilbert, roberta_large]
+    negative: [gnb]
+
+- id: plain_word
+  title: "A plain negative word the models know"
+  shortcut: vocabulary
+  a: "The plot was mundane."
+  talking_point: >
+    "Mundane" appears 18 times in training, and every main model gets it. Not every unusual word
+    is a problem.
+  expect:
+    negative: [logreg, mnb, distilbert, roberta_large]
+
+- id: unknown_word
+  title: "Words the models have never seen"
+  shortcut: vocabulary
+  a: "It was a rollercoaster of meh."
+  talking_point: >
+    The greyed-out words were never in training, so the classical models literally can't see
+    them; they're guessing from the rest. The models disagree, because each guesses differently.
+  expect:
+    negative: [logreg, roberta_large]
+    positive: [distilbert]
+
+- id: sarcasm
+  title: "Where our models fail: sarcasm"
+  shortcut: sarcasm
+  a: "Oh great, another two hours of my life I will never get back."
+  talking_point: >
+    "Great" says positive, so our DistilBERT says positive, 98% sure. No model here was trained
+    to detect sarcasm; it reacts to words, not meaning. RoBERTa-large, trained on more varied
+    text, gets this one. Note the "unusual input" flag: this sentence is unlike anything in SST-2.
+  expect:
+    positive: [distilbert]
+    negative: [mnb, roberta_large]

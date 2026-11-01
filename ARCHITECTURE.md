@@ -2,7 +2,7 @@
 
 How the code is organised, how data moves through it, and the choices that keep it fast,
 reproducible and cheap to run on a laptop plus a free T4 GPU. The *why* behind each choice is in
-[majordecisions.md](majordecisions.md) (referenced as D1–D17 below).
+[majordecisions.md](majordecisions.md) (referenced as D1–D41 below).
 
 ---
 
@@ -10,9 +10,10 @@ reproducible and cheap to run on a laptop plus a free T4 GPU. The *why* behind e
 
 ```
                   ┌──────────────────────────── GPU (Kaggle / Colab) ───────────────────────────┐
-                  │  prepare ──► train-distilbert ──► artifacts/models/distilbert__base__seedN   │
+                  │  prepare ──► train-distilbert ──► predict --models distilbert               │
+                  │  prepare ──► predict-external (ready-made HF models, no training, D39)      │
                   └──────────────────────────────────────────────┬───────────────────────────────┘
-                                                                 │ download zip (3 × ~260 MB)
+                                                                 │ download zips (models + predictions)
  ┌──────────────────────────────────────── laptop CPU ───────────▼─────────────────────────────────┐
  │                                                                                                  │
  │  prepare ─► artifacts/data/*.parquet ─► train-classical ─► artifacts/models/{model}__{variant}__seed42
@@ -22,6 +23,7 @@ reproducible and cheap to run on a laptop plus a free T4 GPU. The *why* behind e
  │                    └────────────────────► predict ◄──────────────────────────┘                   │
  │                                              │                                                   │
  │                         results/predictions/{model}__{variant}__seed{s}__{dataset}.parquet       │
+ │                         (external models: {name}__base__seed0__{dataset}.parquet)                │
  │                                  ▲  THE CONTRACT (D7) — everything below reads only this  ▲      │
  │              ┌───────────────────┼─────────────────────┬─────────────────────┐                   │
  │          evaluate             explain                 warn                figures                │
@@ -34,8 +36,9 @@ reproducible and cheap to run on a laptop plus a free T4 GPU. The *why* behind e
 Every stage is `python -m mirage <stage>`. A stage reads files and writes files. Nothing is passed in
 memory between stages, so:
 
-- **The GPU is needed for exactly one step** (fine-tuning). DistilBERT *inference* runs on CPU,
-  because 2.8k evaluation texts take minutes.
+- **The GPU is needed for fine-tuning and for long-text inference.** DistilBERT and the external
+  models predict IMDb (10,000 reviews × 512 tokens) on the Kaggle GPU; short texts take minutes
+  on a CPU.
 - **Any analysis can be re-run in seconds** without re-running a model. Fixing a metric bug means
   re-running `evaluate`, not retraining.
 - **Every number in the report traces back to a file** in `results/`.
@@ -48,7 +51,7 @@ memory between stages, so:
 src/mirage/
   paths.py  config.py                 ← foundation: where things live, what settings apply
   text.py   features.py   data.py     ← input layer: one normalization for every model
-  models/   base.py classical.py distilbert.py
+  models/   base.py classical.py distilbert.py external.py
                                       ← model layer: one Classifier interface
   predict.py                          ← the contract: write/validate/load prediction files
   behavioral/ wordlists templates suite
@@ -57,8 +60,14 @@ src/mirage/
   explain/  linear trees ig deletion overlap
   warning/  embed gaussian knn distance error_detection
   plots.py                            ← presentation layer
+  demo.py                             ← logic behind the live demo (scores, word importance, flags)
   cli.py                              ← orchestration: one subcommand per stage
+app/        shortcut_explorer.py examples.yaml make_fallbacks.py
+                                      ← the Streamlit demo: layout only, logic in demo.py
 ```
+
+The demo is a side door, not a stage: it loads the saved models directly and never writes
+results, so it can't change a reported number (D41).
 
 **Dependency rule:** each layer imports only from layers above it in this list. Analysis code never
 imports a model class. It sees prediction frames only, which is why `evaluate`, `stats` and
@@ -77,6 +86,8 @@ raw text ──normalize──► SST-style tokens ──[negation_mark]──�
 
 `normalize` is idempotent, and it runs *inside* every model: inside the sklearn vectorizer
 (`Preprocessor`) and inside `DistilBertClassifier.encode`. Callers always pass raw text.
+The one exception is the external models (D39): they were trained on ordinary English, so
+`ExternalClassifier` sets `normalize_input = False` and reads the text as stored.
 
 ### 3.2 Classifier (`models/base.py`, D9)
 
@@ -85,7 +96,9 @@ predict_proba(texts: list[str], long_text: bool = False) -> np.ndarray  # (n, 2)
 save(path) / load_classifier(path)
 ```
 
-Six models, one interface. `long_text=True` (IMDb) lets DistilBERT use 256 tokens instead of 128.
+Eight models, one interface: five classical, our DistilBERT, and two ready-made external models
+(`ExternalClassifier`, which reads its label order from the model's own config). `long_text=True`
+(IMDb) lets the transformers use 512 tokens, head + tail, instead of 128.
 
 ### 3.3 Predictions (`predict.py`, D7)
 
@@ -112,6 +125,8 @@ Six models, one interface. `long_text=True` (IMDb) lets DistilBERT use 256 token
 | RQ4 / H5 explanation | trained models, DistilBERT failures | `explain.*` | `top_features.csv`, `ig_failures.csv`, `deletion_check.csv`, `overlap.csv` |
 | H6 GNB vs MNB | sst2_test | `evaluate.main_table` + McNemar | `main_table.csv`, `mcnemar.csv` |
 | Calibration | sst2_test, imdb | `metrics.ece`, `reliability_bins` | ECE columns, reliability diagram |
+| Does scale cure shortcuts? (D39) | every set, external models | the same tables; their own Holm families | new rows everywhere |
+| Accuracy vs behaviour (D40) | sst2_test, sst2_neg, behavioral pairs | `evaluate.mirage_gap` (pair accuracy) | `mirage_gap.csv`, Mirage Gap chart, fingerprint |
 
 Seed policy (D13): tables average DistilBERT over 3 seeds; per-item analyses use its median seed.
 
@@ -122,11 +137,11 @@ Seed policy (D13): tables average DistilBERT over 3 seeds; per-item analyses use
 | Choice | Effect |
 |---|---|
 | Predictions cached as parquet (D7) | All analyses re-run in seconds; models run once |
-| Heavy libraries imported lazily (D2) | `import mirage` and the 91 tests need no torch, and the test suite finishes in about 20 s |
+| Heavy libraries imported lazily (D2) | `import mirage` needs no torch; tests that need torch, transformers or Streamlit skip themselves when those are missing |
 | Sparse TF-IDF end to end; RF `n_jobs=-1` | Classical training fits laptop RAM and uses all cores |
 | GNB on 300-d TruncatedSVD | Dense Gaussian NB stays tractable (a dense 67k × 100k+ matrix would not) |
 | DistilBERT: dynamic padding, fp16, `save_total_limit=1`, best epoch kept | ~20–30 min per seed on a T4; only one checkpoint on disk |
-| IMDb truncated at 256 tokens for DistilBERT | Bounded inference cost; truncation is part of the domain shift studied |
+| IMDb read at up to 512 tokens, head + tail, by every transformer | Bounded inference cost; the ending, where the verdict often is, is kept |
 | Sentence embeddings cached by `item_id` in `artifacts/emb/*.npz` | Embedding 67k SST sentences on CPU happens once |
 | Ledoit-Wolf shrinkage covariance | Well-conditioned 384×384 precision matrix; Mahalanobis is one `einsum` |
 | Per-sentence distance, max per review (D25) | Mean-pooled long reviews looked typical (sanity AUROC 0.67); the most unusual sentence separates them (0.93), but mostly through length: one random sentence per review gives 0.61 (D30). Length and a length-adjusted distance are scored as baselines |
@@ -134,6 +149,8 @@ Seed policy (D13): tables average DistilBERT over 3 seeds; per-item analyses use
 | DistilBERT predicts on the Kaggle GPU (D23) | 10,000 reviews × 512 tokens × 3 seeds is slow on a CPU; local `predict` skips models whose predictions are newer than the model |
 | IG only on DistilBERT failures (≤100), word-level | Bounded cost; attributions comparable with classical features (D14) |
 | Bootstrap resamples item indices, not data | One generic routine for every CI; paired comparisons for free (D12) |
+| External models load cache-first (D41) | No network round trip; the demo works offline once models are cached |
+| Demo word importance by leaving words out | One batched call per model per sentence: works for every model and stays under a second |
 
 **Known heavy spot:** the random forest with `max_depth=None` and 300 trees on ~64k sparse rows
 needs the most RAM (likely a few GB) and the longest fit, and its saved model can be large. If the
@@ -159,7 +176,10 @@ laptop struggles, train it on its own with `--models rf` and limit the grid to `
 | Unit | normalization, negation scope, vectorizer vocabulary (the `n't` trap), ECE, bootstrap, McNemar vs statsmodels, Mahalanobis vs scipy, overlap measures, deletion check | `tests/test_*.py` |
 | Contract | every way a predictions file can be malformed is rejected | `tests/test_contract.py` |
 | Generator | suite counts, determinism, INV pairing, typo changes exactly one word | `tests/test_behavioral.py` |
+| External models | label mapping in both orders, rejection of 3-class / unnamed labels, the CLI stage, all with a tiny local random BERT (no download) | `tests/test_external.py` |
+| Score | robustness on hand-made numbers, pair accuracy, leave-one-out sensitivity, figures render | `tests/test_mirage_gap.py` |
+| Demo | word importance, flags, vocabulary check; every curated example's expected behaviour on the real models; the app runs headless (`AppTest`) | `tests/test_demo.py` |
 | End to end | all CPU stages via the real CLI in an isolated root | `tests/test_pipeline_e2e.py` |
 
-DistilBERT, IG and embeddings are smoke-tested manually (see majordecisions.md) rather than in
-pytest, so the suite stays fast and needs no torch.
+Fine-tuning, IG and embeddings are smoke-tested manually (see majordecisions.md) rather than in
+pytest. The real-model demo tests skip themselves on a fresh clone without trained models.

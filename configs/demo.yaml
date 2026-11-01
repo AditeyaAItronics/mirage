@@ -1,0 +1,7 @@
+# Shortcut Explorer, the live demo (app/shortcut_explorer.py, D41).
+# Our models use their base variant; DistilBERT uses its median seed (like every per-item table).
+models: [logreg, mnb, rf, dtree, gnb, distilbert, distilbert_hf, roberta_large]
+light_skip: [rf, roberta_large]   # light mode for slow laptops: 822 MB forest, 1.4 GB RoBERTa
+low_confidence: 0.70              # flag when the top probability is below this (H4: confidence predicts errors)
+unusual_percentile: 95            # flag when embedding distance exceeds this percentile of SST-2 test sentences
+max_words: 60                     # longer input is trimmed, with a message

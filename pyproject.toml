@@ -33,6 +33,8 @@ dl = [
     "sentence-transformers>=2.7",
     "captum>=0.7",
 ]
+# The live Shortcut Explorer (app/shortcut_explorer.py, D41); also needs the dl extra.
+demo = ["streamlit>=1.40"]
 dev = ["pytest>=8", "ruff>=0.4"]
 
 [project.scripts]

@@ -127,3 +127,12 @@ def test_figures_render(tmp_path):
     for slide in (False, True):
         assert plots.mirage_gap_chart(gap, slide=slide, out_dir=tmp_path).exists()
         assert plots.shortcut_fingerprint(fp, slide=slide, out_dir=tmp_path).exists()
+
+
+def test_holm_family_keeps_external_models_apart():
+    from mirage.evaluate import holm_family
+
+    a = pd.Series(["logreg", "mnb", "roberta_large", "distilbert"])
+    b = pd.Series(["mnb", "distilbert_hf", "logreg", "rf"])
+    assert holm_family(a).tolist() == ["ours", "ours", "external", "ours"]
+    assert holm_family(a, b).tolist() == ["ours", "external", "external", "ours"]

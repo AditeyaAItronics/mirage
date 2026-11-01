@@ -125,7 +125,7 @@ Every model now reads the same capped text (first 220 + last 140 words). DistilB
 went from 256 to 512 tokens, and anything still too long keeps its head and tail tokens, not just
 the start.
 
-### C2. 🟠 DistilBERT is not a "shortcut-free" reference
+### C2. 🟠 BEING ADDRESSED (D39): DistilBERT is not a "shortcut-free" reference
 **What:** the project treats DistilBERT as the model that *doesn't* use shortcuts (`REFERENCE` in
 `evaluate.py`). Transformers are known to use shortcuts too, such as lexical overlap and negation cues, and its
 pre-training text may include review-like language.
@@ -134,7 +134,34 @@ pre-training text may include review-like language.
 - Word the hypotheses relative to DistilBERT, and report DistilBERT's own failure rates prominently.
 - Optionally add a stronger model (RoBERTa-base), or an off-the-shelf sentiment model, as a second reference.
 
+**Update (D39–D41):** two ready-made models now go through every test: RoBERTa-large (SiEBERT)
+and Hugging Face's SST-2 DistilBERT. A first measurement in the demo (D41) already shows that
+RoBERTa-large also flips on a name (Kidman 0.98 → Seagal 0.02), so a bigger model isn't
+shortcut-free either. The full tables follow once the Kaggle run (whatyouneedtodo step 14) is in.
+
 **Effort:** small (wording) to medium (another model).
+
+### C12. 🟠 NEW: RoBERTa-large's accuracy may be contaminated
+**What:** SiEBERT (`roberta_large`, D39) was fine-tuned on 15 sentiment datasets, very likely
+including SST-2 and IMDb. It may have seen our test sentences and reviews.
+**Why it matters:** its SST-2 and IMDb **accuracy** isn't a fair comparison with our models.
+Its **behavioral** results are clean, because the test sentences are ours.
+**Fix:** none possible without its training data. Lead with its behavioral results, and mark its
+accuracy as "possibly contaminated" in every table and on the slides.
+**Effort:** none (wording).
+
+### C13. 🟢 NEW: external models read SST-2's tokenized text as is
+**What:** SST-2 rows are stored in SST's tokenized style ("it 's", "does n't"). Our models are
+trained on that style; the external models were trained on ordinary English and read it
+unchanged (D39).
+**Why it matters:** a small handicap for the external models on SST-2 sets. It doesn't affect
+the behavioral suite or IMDb, which are ordinary English.
+**Effort:** small, if wanted: a detokenized copy of the SST-2 sets as a robustness check.
+
+### C14. 🟢 NEW: `distilbert_hf` was trained on our held-out phrases
+**What:** Hugging Face's SST-2 DistilBERT was trained on all of GLUE SST-2 train, which contains
+our held-out phrases. Its held-out accuracy is inflated; validation and test are unaffected.
+**Effort:** none (don't report its held-out accuracy).
 
 ### C3. 🟠 DistilBERT hyperparameters are not tuned
 **What:** fixed lr 2e-5, 3 epochs and batch size 32, while the classical models get a grid search.
@@ -275,6 +302,15 @@ wrong.
 
 **Effort:** small to extend (add pairs to `configs/behavioral.yaml`).
 
+### D9. 🟢 NEW: the live demo illustrates; it isn't evidence
+**What:** the Shortcut Explorer (D41) shows hand-picked sentences, and its word importance comes
+from leaving one word out at a time. Removing a word can make a sentence ungrammatical, and it
+misses interactions between words. Its two flag thresholds (0.70 and the 95th percentile) are
+chosen, not tuned.
+**Why it matters:** the slides must not quote demo sentences as results. The numbers come from
+the suite and the tables; the demo makes them visible.
+**Effort:** none (wording on the slide: "illustration").
+
 ---
 
 ## E. Explanations
@@ -406,6 +442,15 @@ families make every test stricter.
 show raw p-values next to adjusted ones.
 **Effort:** none (wording).
 
+### G6. 🟢 NEW: the robustness score is a design choice
+**What:** the Mirage Gap's robustness score (D40) is an equal-weight mean of four tests, and
+"pass" means getting *both* sentences of a pair right. That mixes competence (reading the word)
+with robustness (not being fooled), on purpose: otherwise a model that can't read the word
+looks robust.
+**Why it matters:** another definition gives other numbers. The model **ordering** holds when
+any one component is left out (Spearman 1.0 in all 12 checks, `mirage_gap_sensitivity.csv`).
+**Effort:** none (report the definition and the sensitivity check in the caption).
+
 ---
 
 ## H. Engineering and reproducibility
@@ -454,6 +499,7 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 4. ~~**F4**~~ and **C8** (length checks): F4 done, C8 ready and waiting for DistilBERT (D30).
 5. ~~**B4**, **C7** and **B9**~~: done, see D31.
 6. Everything 🟢: one sentence each in the report's Limitations section.
+7. **C2 / C12:** finish the external-model comparison once the Kaggle run is in (D39).
 
 ## Resolved
 

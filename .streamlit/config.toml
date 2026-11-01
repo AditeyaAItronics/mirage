@@ -1,0 +1,10 @@
+# Shortcut Explorer (app/shortcut_explorer.py): light theme for projectors, no telemetry.
+[theme]
+base = "light"
+primaryColor = "#2a78d6"
+
+[browser]
+gatherUsageStats = false
+
+[server]
+headless = true

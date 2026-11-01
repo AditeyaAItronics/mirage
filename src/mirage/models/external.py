@@ -57,8 +57,20 @@ class ExternalClassifier(DistilBertClassifier):
     def from_hub(cls, name: str, spec: dict, cfg: dict) -> ExternalClassifier:
         from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-        model = AutoModelForSequenceClassification.from_pretrained(spec["hf_id"])
-        tokenizer = AutoTokenizer.from_pretrained(spec["hf_id"])
+        def fetch(local_only: bool):
+            return (
+                AutoModelForSequenceClassification.from_pretrained(
+                    spec["hf_id"], local_files_only=local_only
+                ),
+                AutoTokenizer.from_pretrained(spec["hf_id"], local_files_only=local_only),
+            )
+
+        # Cache first: no network round trip, so a cached model loads offline (e.g. on stage)
+        # and a flaky connection can't break it. Download only if it isn't cached yet.
+        try:
+            model, tokenizer = fetch(True)
+        except OSError:
+            model, tokenizer = fetch(False)
         return cls(
             name,
             model,

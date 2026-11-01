@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "shortcut-explorer",
+      "runtimeExecutable": ".venv/Scripts/python",
+      "runtimeArgs": ["-m", "streamlit", "run", "app/shortcut_explorer.py", "--server.port", "8501"],
+      "port": 8501
+    }
+  ]
+}

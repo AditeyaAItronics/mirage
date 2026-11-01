@@ -302,9 +302,9 @@ def stage_warn(args) -> None:
     out = pd.concat(rows, ignore_index=True).assign(ood_sanity_auroc=sanity)
     # H4 family per predictor: "beats confidence" across every model and variant (D28). External
     # models are a family of their own, so they don't change our models' p-values (D39).
-    from mirage.models.base import external_models
+    from mirage.evaluate import holm_family
 
-    out["family"] = np.where(out["model"].isin(external_models()), "external", "ours")
+    out["family"] = holm_family(out["model"])
     out["diff_p_holm"] = out.groupby(["predictor", "family"])["diff_p"].transform(lambda p: holm(p))
     out["beats_conf"] = (out["diff_p_holm"] < 0.05) & (out["diff_vs_conf"] > 0)
     out.to_csv(paths.RESULTS / "early_warning.csv", index=False)
@@ -371,7 +371,7 @@ def stage_figures(args) -> None:
         preds = None
     if preds is not None:
         val = preds[preds["dataset"] == "sst2_val"]
-        classical = val[val["model"] != "distilbert"]
+        classical = val[val["model"].isin(CLASSICAL_MODELS)]  # not the external models (D39)
         if len(classical):
             best = classical.groupby("model")["correct"].mean().idxmax()
             panels = {}
@@ -386,7 +386,11 @@ def stage_figures(args) -> None:
 
 
 def stage_all(args) -> None:
-    """Everything after training: predictions -> evaluation -> explanations -> warning -> figures."""
+    """Everything after training: predictions -> evaluation -> explanations -> warning -> figures.
+
+    `predict-external` is not included: it downloads 1.9 GB and is meant for the Kaggle GPU
+    (notebooks/kaggle_external.ipynb, D39). Its prediction files are picked up automatically.
+    """
     ns = argparse.Namespace(
         models=None,
         variants=None,
@@ -400,7 +404,6 @@ def stage_all(args) -> None:
     for fn in (
         stage_build_suite,
         stage_predict,
-        stage_predict_external,
         stage_evaluate,
         stage_explain,
         stage_warn,

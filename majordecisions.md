@@ -1067,3 +1067,66 @@ distort and are hard to read from a distance. Each figure also has a 16:9 `_slid
 - A radar chart.
 - Folding calibration and warning into the score (they measure something else: whether you
   can *tell* when the model is wrong).
+
+## D41 — The Shortcut Explorer: a live demo that can't embarrass you
+
+**Decision:** a Streamlit app (`app/shortcut_explorer.py`, optional `[demo]` extra) where you
+type a sentence, or pick a curated pair, and see every model's verdict and *why*. All its logic
+is in `mirage.demo` and unit-tested; the app is layout only. Settings are in `configs/demo.yaml`.
+
+**What it shows, per model:**
+- the verdict and the probability;
+- **word importance by leaving each word out** (remove the word, see how far the probability
+  moves). It works identically for every model, including the forest, and fits in one
+  sentence on stage;
+- **words a classical model never saw**, greyed out;
+- two flags:
+  - **low confidence** below 0.70, the signal H4 showed predicts errors;
+  - **unusual input** above the 95th percentile of SST-2 test sentences' embedding distance.
+    It's worded "unusual", not "probably wrong", because H4 showed distance doesn't predict
+    errors.
+
+**Pairs show the punchline first:** a table of A vs B per model with flipped verdicts highlighted.
+The per-word detail sits in tabs below.
+
+**Curated examples are measured, not assumed.** Every candidate sentence was scored on all eight
+models first, and only clear-cut predictions (far from 0.5) became expectations in
+`app/examples.yaml`. `tests/test_demo.py` re-checks them, so the scripted demo can't drift
+silently. What the measurement found:
+- **RoBERTa-large flips on a name too** (Kidman 0.98 → Seagal 0.02), so scale doesn't cure the
+  name shortcut. It does resist the typo (brililant stays 1.00) and reads the sarcasm sentence
+  correctly (0.00).
+- "The acting was not bad at all." gets 0.03 from LR and 0.99–1.00 from every transformer.
+- The sarcasm sentence is the only probe that trips "unusual input". Our DistilBERT calls it
+  0.98 positive, so it's planned into the demo as the "where our models fail" example.
+
+**Stage safety:**
+- **Cache-first model loading:** `ExternalClassifier.from_hub` tries the local cache before the
+  network. A flaky Hugging Face check had made RoBERTa-large fail to load once during
+  development. The app now runs offline once the models are cached.
+- Input is trimmed to 60 words with a message, and empty input is handled.
+- Light mode leaves out the random forest and RoBERTa-large.
+- A "reset to examples" button, and a light theme for projectors (`.streamlit/config.toml`).
+- Fallback images of every curated example are in `app/screenshots/`
+  (`app/make_fallbacks.py`).
+- A presenter guide (`app/PRESENTING.md`) gives the demo script and a ready line for each kind of
+  failure.
+
+**Changed from the design:**
+- **The optional Integrated Gradients "detailed view" was left out.** Leaving words out already
+  explains every model, including DistilBERT, while IG would explain only one model, add about 2
+  seconds per sentence and need a second explanation on stage. IG stays in the report (H5).
+- **Probability bars are neutral grey.** In model colours, RoBERTa-large's red bar read as
+  "negative" even at 98% positive, so colour is kept for the model dot.
+
+**Code review of D39–D41 (before the Kaggle results).** Three issues were found and fixed:
+1. `shift_decomposition` and `name_effect` pooled every model into one Holm family, so external
+   models would have shifted our models' adjusted p-values. All four multi-model families now
+   split by `evaluate.holm_family` (ours vs external), and a test covers it.
+2. The reliability figure picked "the best classical model" as any model other than DistilBERT,
+   which would have chosen RoBERTa-large. It now chooses among the five classical models.
+3. `all` ran `predict-external`, which on a laptop means a 1.9 GB download and hours of CPU on
+   IMDb. It's now run only explicitly (the Kaggle notebook); `all` picks up its files.
+
+Also: the Kaggle notebook's time estimate was raised to 20–30 minutes (RoBERTa-large on 10,000
+reviews at 512 tokens). Re-running `evaluate` reproduced every existing number exactly.

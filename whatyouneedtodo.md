@@ -75,6 +75,43 @@ ones feel unnatural.
 
 ---
 
+## Now — the presentation additions (D39–D41)
+
+### 14. Run the external-models notebook on Kaggle (about 20–30 min of GPU, 5 min of clicking) — *only you can*
+This gives RoBERTa-large and Hugging Face's DistilBERT predictions on **every** evaluation set,
+including all 10,000 IMDb reviews, so they're compared with our models on exactly the same data.
+- New Notebook → *File → Import notebook* → Link →
+  `https://raw.githubusercontent.com/AditeyaAItronics/mirage/main/notebooks/kaggle_external.ipynb`
+  (import fresh: an older imported copy runs old code).
+- Settings: **GPU T4** (x1 is enough), **Internet = On**.
+- *Save Version → Save & Run All*. No settings to change in the notebook.
+- Check cell 2's `code version:`: it should be the latest commit on GitHub. Cell 3 prints the
+  number of IMDb reviews (10,000) and the first ids (`imdb-0`, `imdb-1`, `imdb-2`, as on the laptop).
+- When it finishes: Output → download `external_outputs.zip` → unzip into the **repo root**. You
+  should get 14 files: `results/predictions/{roberta_large,distilbert_hf}__base__seed0__*.parquet`.
+- Then tell Claude. It checks that the reviews match the laptop's, re-runs `evaluate`, `warn` and
+  `figures` (every table and figure gains the two models), and writes up the results.
+
+### 15. Try the live demo yourself (10 min)
+```bash
+.venv/Scripts/python -m pip install -e ".[dl,demo]"
+```
+```bash
+.venv/Scripts/python -m streamlit run app/shortcut_explorer.py
+```
+It opens at http://localhost:8501. Read `app/PRESENTING.md` (the demo script and ready lines for
+when a sentence goes wrong), click through the curated examples, then try your own sentences.
+**Your call:** are the curated examples ones you're happy to show? Their wording is in
+`app/examples.yaml`; if you change one, run `python -m pytest tests/test_demo.py` to re-check its
+expected behaviour, and `python app/make_fallbacks.py` to redraw the fallback images.
+
+### 16. Look at the two new figures
+`figures/mirage_gap_slide.png` (the headline: accuracy vs robustness) and
+`figures/shortcut_fingerprint_slide.png`. The robustness score's definition is in D40. Check that
+you can explain it in one sentence: *"the share of shortcut tests a model gets fully right"*.
+
+---
+
 ## Weeks 2–3 — run, then read the results with your own eyes
 
 ### 8. ✅ DONE (D35): After the DistilBERT zip is unzipped
