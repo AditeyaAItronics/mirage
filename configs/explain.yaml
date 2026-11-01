@@ -1,0 +1,12 @@
+# H5 with one ranking rule for every model: leave-one-word-out importance (D43).
+occlusion:
+  dataset: sst2_test          # the reported in-distribution set, 1,820 sentences
+  models: [logreg, dtree, rf, mnb, gnb, distilbert]   # base variants; DistilBERT at its median seed
+  min_count: 5                # a word must occur this often to be ranked
+  top_k: 50                   # same k as D16's overlap, so the two are comparable
+  split_seed: 42              # split-half noise ceiling
+  # Main H5 measure (D43): correlation of word effects, corrected for each model's split-half
+  # reliability. The top-50 overlap stays as a secondary view (noisy at this word count).
+  reliability_splits: 20
+  bootstrap_resamples: 1000
+  sensitivity_min_count: 10   # the agreement is recomputed at this threshold as a check

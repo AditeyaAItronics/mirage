@@ -16,6 +16,11 @@ records where the build departed from this design:
 - IMDb for the external models runs in full on Kaggle, not as a CPU subsample.
 - The robustness score uses pair accuracy, not flip rates.
 - The demo's Integrated Gradients view was dropped.
+- Later (D43): the demo's word importance became the shared `explain.occlusion` function, which
+  now also ranks words for H5. The demo's behaviour is unchanged.
+
+**Still to do here:** the external models' tables, figures and demo rows wait on the Kaggle run
+(`whatyouneedtodo.md` step 14).
 
 This document is kept as the original design; the decision log is the current record.
 

@@ -31,6 +31,16 @@ Read `ARCHITECTURE.md` for the design, `majordecisions.md` for why, and
 - All paths come from `mirage.paths`; all settings from `configs/*.yaml`.
 - Log every major design change in `majordecisions.md`.
 
+## Keep the docs current as you build and fix
+Update every relevant markdown file **as part of the same change**, not at the end:
+- `majordecisions.md`: every decision taken (what, why, what was rejected, the numbers), as it is made.
+- `README.md`: new or changed results, figures and commands.
+- `ARCHITECTURE.md`: new stages, modules, interfaces, layering or data-flow changes.
+- `shortfalls.md`: new limitations found; move fixed ones to Resolved.
+- `newadditionsdesign.md`: what has been done, what hasn't, and any fixes or changes to the design.
+- `codeexplanations.md`: new or changed files (and the test count); `whatyouneedtodo.md`: steps for the user.
+- `CLAUDE.md`: new hard rules.
+
 ## Commands (Windows, from repo root)
 - Tests: `.venv/Scripts/python -m pytest`
 - Lint/format: `.venv/Scripts/python -m ruff check src tests app` / `ruff format src tests app`

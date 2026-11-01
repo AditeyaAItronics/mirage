@@ -1203,3 +1203,109 @@ minutes of training) and tests the proposal as written.
 - **Process note:** a `warn` run crashed at its last line because that fix was saved while it was
   running (lazy imports loaded the old `base.py` and the new `classical.py`). The rerun on
   consistent code completed; CLAUDE.md now says not to edit `src/` while a stage runs.
+
+## D43 — H5 with one ranking rule for every model (leave-one-word-out)
+
+**Problem:** D16 ranked each model's "top shortcut words" with a *different* method:
+- LR by |weight|;
+- Multinomial NB by its log-count ratio, which favours rare one-sided words like *devoid*;
+- the trees by impurity importance, which favours common words like *the*, *a* and *.*;
+- DistilBERT by Integrated Gradients.
+
+So the top-50 overlaps mostly measured whether two *methods* favour the same kind of word:
+- decision tree – random forest 0.72, from the same method and shared function words;
+- Multinomial NB ≤ 0.04 with everyone.
+
+An H5 verdict from those numbers would be about the explanation methods, not the models.
+
+**Decision:** rank words the same way for every model.
+- **Rule:** for each SST-2 test sentence (1,820) and each word in it, remove the word and measure
+  how far the model's P(positive) moves. A word's importance is the mean |change| over its
+  occurrences. The signed mean is kept too, to tell which way it pushes.
+- **Eligible words:** a word is ranked only if it occurs at least 5 times (fewer is too noisy)
+  and contains a letter (punctuation is removed and scored, but not ranked as a "shortcut
+  word").
+- **Models:** all five classical models (base variant), **now including Gaussian NB**, plus our
+  DistilBERT at its median seed. The external models are left out: H5 is about our models, and
+  RoBERTa-large on about 38,000 sentences is slow on CPU.
+- **Same overlap measures as D16:** Jaccard@50 and RBO (p = 0.9), so old and new results are
+  directly comparable.
+- **New noise ceiling:** each model's split-half self-overlap. The sentences are split in half
+  at random, and the model's two top-50 lists are compared. It shows how much overlap a model
+  reaches with *itself*, so "high" and "low" overlap between models have a reference point.
+- **Settings:** `configs/explain.yaml`. **Stage:** `python -m mirage occlusion` (also run by `all`).
+- **Outputs:**
+  - `results/explain/occlusion_importance.csv`
+  - `results/explain/overlap_occlusion.csv`
+  - `results/explain/occlusion_split_half.csv`
+  - `figures/overlap_occlusion_{jaccard,rbo}.png`, with split-half agreement on the diagonal
+- **D16's overlap stays** as a secondary view, with the caveat above.
+
+**Why removing words:** it treats every model as a black box, so the same rule applies to a
+forest, Naive Bayes and a transformer alike. It's the same measure the live demo uses (D41), so
+the slides and the report agree.
+
+**Rejected:**
+- SHAP: different estimators per model family, so the problem comes back, and it's slow for a
+  forest.
+- Using one model's explanation method for all: not possible across these families.
+
+**Changed while screening (D43): the main H5 measure is a reliability-corrected correlation, not
+top-50 overlap.**
+1. **The first split-half ceiling was wrong.** Each half was ranked with a halved threshold, so
+   words seen only 2–3 times dominated, and every model "agreed with itself" (0.02–0.32) *less*
+   than with other models (up to 0.49). Fixed: both halves now rank the same words (those
+   eligible in the full data), with a regression test.
+2. **Even fixed, top-50 overlap is too noisy at this data size.** A model's top 50 agrees with its
+   own other half only 11–45% (chance: 3%). Raising the word-count threshold buys reliability but
+   raises chance overlap just as fast (threshold 30: self-agreement 0.49–0.77, chance 0.29), so
+   no threshold is clearly right.
+3. **Main measure now:** for each pair of models, the Spearman correlation of their signed word
+   effects over all 773 eligible words (bootstrap 95% CI over words), divided by
+   √(reliability_a × reliability_b). Each model's reliability is its split-half correlation
+   (20 random splits, Spearman-Brown corrected). This is the standard way to compare noisy
+   measures: noise in one model's ranking can't make two models look different. It also uses
+   the direction of each word, not just membership of a top-50 list.
+
+The threshold was chosen on reliability alone, never on the H5 result. The conclusions are the
+same at 5 and 10 (`occlusion_agreement.csv` has both). Top-50 overlap stays as a secondary view,
+with its chance level (`occlusion_split_half.csv`).
+
+**Results (threshold 5, 773 words; corrected agreement, raw Spearman with 95% CI):**
+
+| pair | corrected | raw ρ [CI] |
+|---|---|---|
+| LR – Multinomial NB | **0.92** | 0.76 [0.72, 0.79] |
+| LR – random forest | **0.89** | 0.79 [0.75, 0.82] |
+| random forest – Multinomial NB | **0.88** | 0.70 [0.66, 0.74] |
+| LR – DistilBERT | 0.77 | 0.53 [0.47, 0.58] |
+| random forest – DistilBERT | 0.74 | 0.49 [0.43, 0.55] |
+| Multinomial NB – DistilBERT | 0.71 | 0.44 [0.38, 0.50] |
+| decision tree – others | 0.44–0.64 | 0.22–0.35 |
+| Gaussian NB – anyone | 0.18–0.26 | 0.09–0.22 |
+
+Reliability: LR 0.91, random forest 0.86, Gaussian NB 0.77, Multinomial NB 0.75, DistilBERT 0.52,
+decision tree 0.34.
+
+**What it means for H5:**
+- **Supported for the three main classical models.** LR, random forest and Multinomial NB agree
+  almost as much as their noise allows (0.88–0.92). They rely on the same words in the same
+  direction, which points to the shortcuts living in the data. D16's top-50 method had put
+  Multinomial NB at ≤ 0.04 with everyone; that was the ranking method, not the model.
+- **Gaussian NB is the exception** (0.18–0.26). It reads words only through 300 compressed SVD
+  components, so a single word's effect is spread out. That ties in with H6.
+- **The decision tree agrees moderately** (0.44–0.64), and its own word effects are the least
+  reproducible (0.34): one tree's path depends on a few splits.
+- **DistilBERT shares most of the classical models' word effects** (0.71–0.77). That corrects
+  D35's reading of D16 ("almost entirely different words", top-50 overlap ≤ 0.08): the earlier
+  number compared IG on DistilBERT's failures with the classical weights, a method mismatch.
+  DistilBERT differs where context matters (negation, D42), not in which words carry sentiment.
+
+**Code review (D43):**
+- **Fixed: a cache-naming bug.** Removal tables were cached as `{model}__{dataset}`. If
+  DistilBERT's median seed changed, the other seed's older table would have been reused
+  silently. Caches are now named like prediction files, `{model}__base__seed{seed}__{dataset}`.
+- **Fixed:** the reliability correction is undefined (not an error) when a model's reliability
+  is ≤ 0.
+- **Documented in shortfalls E4:** the corrected values have no interval of their own, and the
+  bootstrap resamples words, not sentences.

@@ -233,11 +233,26 @@ def reliability_diagram(bins: dict[str, pd.DataFrame], name: str, out_dir=None) 
     return _save(fig, name, out_dir)
 
 
-def overlap_heatmap(overlap: pd.DataFrame, metric: str = "jaccard", out_dir=None) -> Path:
+def overlap_heatmap(
+    overlap: pd.DataFrame,
+    metric: str = "jaccard",
+    out_dir=None,
+    name: str | None = None,
+    diagonal: dict[str, float] | None = None,
+    title: str | None = None,
+    diagonal_label: str = "split-half agreement",
+    value_label: str | None = None,
+) -> Path:
+    """Pairwise model agreement (top-50 overlap by default). `diagonal` (e.g. each model's own
+    split-half agreement or reliability, D43) replaces the 1.0s on the diagonal, so agreement
+    between models can be read against each model's agreement with itself."""
     models = _order(set(overlap["model_a"]) | set(overlap["model_b"])) or sorted(
         set(overlap["model_a"]) | set(overlap["model_b"])
     )
     m = pd.DataFrame(np.eye(len(models)), index=models, columns=models)
+    for mod, v in (diagonal or {}).items():
+        if mod in m.index:
+            m.loc[mod, mod] = v
     for _, r in overlap.iterrows():
         if r["model_a"] in m.index and r["model_b"] in m.index:
             m.loc[r["model_a"], r["model_b"]] = m.loc[r["model_b"], r["model_a"]] = r[metric]
@@ -258,9 +273,10 @@ def overlap_heatmap(overlap: pd.DataFrame, metric: str = "jaccard", out_dir=None
                 fontsize=8,
                 color="white" if v > 0.5 else INK,
             )
-    fig.colorbar(im, ax=ax, label=metric, shrink=0.8)
-    ax.set_title(f"Shared shortcut words (top-50 {metric})")
-    return _save(fig, f"overlap_{metric}", out_dir)
+    fig.colorbar(im, ax=ax, label=value_label or metric, shrink=0.8)
+    title = title or f"Shared shortcut words (top-50 {metric})"
+    ax.set_title(title + (f"\ndiagonal: {diagonal_label}" if diagonal else ""), fontsize=10)
+    return _save(fig, name or f"overlap_{metric}", out_dir)
 
 
 def tree_figure(pipeline, depth: int, out_dir=None) -> Path:

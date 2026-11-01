@@ -61,7 +61,7 @@ Each hypothesis is tested with a specific comparison. Rejecting any of them is s
 | H2 | DistilBERT handles negation much better than the bag-of-words models with single-word features | Negation error gap, on templates and on the real negation subset |
 | H3 | Word-pair features and negation marking close part, but not all, of that gap | Negation gap before vs. after negation marking |
 | H4 | Gaussian distance on sentence embeddings adds information beyond model confidence for predicting errors on IMDb | Error-detection AUROC: distance vs. confidence vs. both combined |
-| H5 | Classical models share many of the same top shortcut words, suggesting the shortcuts come from the data | Overlap of top-weighted or top-attributed words across models |
+| H5 | Classical models share many of the same top shortcut words, suggesting the shortcuts come from the data | Agreement of each word's effect across models, measured the same way for every model (remove the word, measure the change) and corrected for each model's reliability; overlap of top words as a secondary view |
 | H6 | Gaussian Naive Bayes performs worse than Multinomial Naive Bayes, because a Gaussian assumption fits text features poorly | Accuracy and F1 of both Naive Bayes variants |
 
 ## Datasets
@@ -110,7 +110,7 @@ The work runs in five stages, each building on the last.
     - Random forest: feature importances.
     - DistilBERT: Integrated Gradients token attributions (Captum library) for failed cases, with a deletion check (remove the top-attributed words and measure how much the prediction changes).
 
-    Then compare the top shortcut words across model families.
+    Then compare the shortcut words across model families. So that every model is judged by the same rule, each word's effect is measured by removing it from the test sentences and recording how much the prediction changes.
 5. **Early warning on new data.** Run all classifiers on the IMDb sample. Encode the SST-2 training sentences with a sentence-embedding model, fit a multivariate Gaussian (mean and shrinkage covariance) to the embeddings, and score each IMDb review by its Mahalanobis distance. Each review is scored by its most unusual sentence, because averaging a long review's embedding makes it look typical. Compare three error predictors: the distance score, the model's maximum predicted probability, and a simple logistic combination of both. Review length is scored as a baseline, because the most unusual of many sentences is larger by chance.
 
 ## Experimental setup

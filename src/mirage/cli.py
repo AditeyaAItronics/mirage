@@ -239,6 +239,89 @@ def _run_ig(max_items: int):
     return ig
 
 
+def stage_occlusion(args) -> None:
+    """H5 with one ranking rule for every model: leave-one-word-out importance (D43)."""
+    from mirage.data import load
+    from mirage.evaluate import median_seed
+    from mirage.explain.occlusion import (
+        chance_jaccard,
+        effect_agreement,
+        occlusion_table,
+        split_half_overlap,
+        split_half_reliability,
+        word_effects,
+        word_importance,
+    )
+    from mirage.explain.overlap import overlap_matrix
+    from mirage.models.base import load_classifier
+    from mirage.predict import load_predictions
+
+    cfg = load_config("explain")["occlusion"]
+    texts = load(cfg["dataset"])["text"].tolist()
+    out = paths.EXPLAIN
+    out.mkdir(parents=True, exist_ok=True)
+    importance, rankings, ceiling, tables = [], {}, [], {}
+    for name in cfg["models"]:
+        if name == "distilbert":
+            try:
+                seed = median_seed(load_predictions(model="distilbert", dataset="sst2_val"))
+            except FileNotFoundError:
+                print("no DistilBERT predictions - skipping it")
+                continue
+        else:
+            seed = load_config("classical")["seed"]
+        d = paths.model_dir(name, "base", seed)
+        if not d.exists():
+            print(f"no saved model {d.name} - skipping it")
+            continue
+        # Cache each model's word-removal table (DistilBERT takes ~10 min on CPU). Named like a
+        # prediction file, so a different seed (e.g. a new median seed) never reuses another
+        # model's table; a retrained model or regenerated data makes it stale, as in `predict`.
+        cache = (
+            paths.ARTIFACTS / "occlusion" / f"{name}__base__seed{seed}__{cfg['dataset']}.parquet"
+        )
+        inputs = [f for f in d.rglob("*") if f.is_file()] + [
+            paths.DATA / f"{cfg['dataset']}.parquet"
+        ]
+        newest_input = max(f.stat().st_mtime for f in inputs if f.exists())
+        if cache.exists() and cache.stat().st_mtime >= newest_input:
+            occ = pd.read_parquet(cache)
+        else:
+            occ = occlusion_table(load_classifier(d).predict_proba, texts)
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            occ.to_parquet(cache, index=False)
+        tables[name] = occ
+        imp = word_importance(occ, cfg["min_count"])
+        importance.append(imp.assign(model=name))
+        rankings[name] = imp["word"].tolist()
+        half = split_half_overlap(occ, cfg["min_count"], cfg["top_k"], cfg["split_seed"])
+        chance = chance_jaccard(len(imp), cfg["top_k"])
+        ceiling.append({"model": name, "n_ranked": len(imp), **half, "chance_jaccard": chance})
+        print(f"{name}: {len(occ)} word removals, {len(imp)} words ranked, split-half {half}")
+    if not importance:
+        return
+    pd.concat(importance, ignore_index=True).to_csv(out / "occlusion_importance.csv", index=False)
+    pd.DataFrame(ceiling).to_csv(out / "occlusion_split_half.csv", index=False)
+    if len(rankings) < 2:
+        return
+    overlap_matrix(rankings, k=cfg["top_k"]).to_csv(out / "overlap_occlusion.csv", index=False)
+    # Main H5 measure: agreement of word effects, corrected for each model's reliability (D43).
+    agreement, reliability = [], []
+    for mc in (cfg["min_count"], cfg["sensitivity_min_count"]):
+        effects = word_effects(tables, mc)
+        rel = {
+            m: split_half_reliability(
+                o, effects.index, cfg["reliability_splits"], cfg["split_seed"]
+            )
+            for m, o in tables.items()
+        }
+        res = effect_agreement(effects, rel, cfg["bootstrap_resamples"], cfg["split_seed"])
+        agreement.append(res.assign(min_count=mc))
+        reliability += [{"model": m, "min_count": mc, "reliability": r} for m, r in rel.items()]
+    pd.concat(agreement, ignore_index=True).to_csv(out / "occlusion_agreement.csv", index=False)
+    pd.DataFrame(reliability).to_csv(out / "occlusion_reliability.csv", index=False)
+
+
 def stage_warn(args) -> None:
     from mirage.data import load
     from mirage.evaluate import canonical
@@ -356,6 +439,32 @@ def stage_figures(args) -> None:
         ov = pd.read_csv(paths.EXPLAIN / "overlap.csv")
         plots.overlap_heatmap(ov, "jaccard")
         plots.overlap_heatmap(ov, "rbo")
+    if (paths.EXPLAIN / "occlusion_agreement.csv").exists():  # D43: H5's main measure
+        agr = pd.read_csv(paths.EXPLAIN / "occlusion_agreement.csv")
+        rel = pd.read_csv(paths.EXPLAIN / "occlusion_reliability.csv")
+        mc = agr["min_count"].min()  # the primary threshold
+        plots.overlap_heatmap(
+            agr[agr["min_count"] == mc],
+            "corrected",
+            name="h5_word_effect_agreement",
+            diagonal=rel[rel["min_count"] == mc].set_index("model")["reliability"].to_dict(),
+            title="Do models agree on what each word does?\n"
+            "(correlation of word effects, corrected for reliability)",
+            diagonal_label="each model's own reliability",
+            value_label="agreement (corrected Spearman)",
+        )
+    if (paths.EXPLAIN / "overlap_occlusion.csv").exists():  # D43: one ranking rule for all
+        ov = pd.read_csv(paths.EXPLAIN / "overlap_occlusion.csv")
+        half = paths.EXPLAIN / "occlusion_split_half.csv"
+        diag = pd.read_csv(half).set_index("model") if half.exists() else None
+        for metric in ("jaccard", "rbo"):
+            plots.overlap_heatmap(
+                ov,
+                metric,
+                name=f"overlap_occlusion_{metric}",
+                diagonal=None if diag is None else diag[metric].to_dict(),
+                title=f"Shared top-50 words, one ranking rule (leave one word out, {metric})",
+            )
     if (paths.EXPLAIN / "ig_failures.csv").exists():
         ig = pd.read_csv(paths.EXPLAIN / "ig_failures.csv")
         for i, r in ig.head(4).iterrows():
@@ -406,6 +515,7 @@ def stage_all(args) -> None:
         stage_predict,
         stage_evaluate,
         stage_explain,
+        stage_occlusion,
         stage_warn,
         stage_figures,
     ):
@@ -464,6 +574,9 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--overlap-k", type=int, default=50)
     s.set_defaults(fn=stage_explain)
 
+    sub.add_parser(
+        "occlusion", help="H5: leave-one-word-out word rankings and their overlap (D43)"
+    ).set_defaults(fn=stage_occlusion)
     sub.add_parser(
         "warn", help="embeddings, Gaussian distance, error-detection AUROC"
     ).set_defaults(fn=stage_warn)

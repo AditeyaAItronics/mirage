@@ -15,6 +15,7 @@ import pandas as pd
 
 from mirage import paths
 from mirage.config import load_config
+from mirage.explain.occlusion import leave_one_out, occlusion_table  # noqa: F401 (re-export)
 from mirage.text import normalize
 
 
@@ -76,22 +77,13 @@ def score(models: dict, texts: list[str], low_confidence: float = 0.70) -> pd.Da
     return pd.DataFrame(rows)
 
 
-def leave_one_out(text: str) -> tuple[list[str], list[str]]:
-    """The sentence's words, and the sentence with each word removed in turn."""
-    words = text.split()
-    return words, [" ".join(words[:i] + words[i + 1 :]) for i in range(len(words))]
-
-
 def occlusion(clf, text: str) -> pd.DataFrame:
     """Word importance: p_pos(full) - p_pos(without the word). > 0 = the word pushed positive.
 
-    One batched call per model (n_words + 1 sentences), so it's fast on short input.
+    The same rule as the H5 analysis (explain.occlusion, D43); one batched call per model.
     """
-    words, dropped = leave_one_out(text)
-    if not words:
-        return pd.DataFrame(columns=["word", "importance"])
-    p = clf.predict_proba([text, *dropped])[:, 1]
-    return pd.DataFrame({"word": words, "importance": p[0] - p[1:]})
+    occ = occlusion_table(clf.predict_proba, [text])
+    return pd.DataFrame({"word": occ["word"], "importance": occ["delta"]})
 
 
 def unknown_words(clf, text: str) -> list[bool] | None:

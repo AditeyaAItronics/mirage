@@ -125,7 +125,8 @@ expected behaviour, and `python app/make_fallbacks.py` to redraw the fallback im
 
 ### 16. Look at the two new figures
 `figures/mirage_gap_slide.png` (the headline: accuracy vs robustness) and
-`figures/shortcut_fingerprint_slide.png`. The robustness score's definition is in D40. Check that
+`figures/shortcut_fingerprint_slide.png`. Also `figures/negation_gap_sst2_neg.png` (the H2/H3
+ladder, D42) and `figures/h5_word_effect_agreement.png` (H5, D43). The robustness score's definition is in D40. Check that
 you can explain it in one sentence: *"the share of shortcut tests a model gets fully right"*.
 
 ---

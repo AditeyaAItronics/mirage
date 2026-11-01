@@ -47,6 +47,7 @@ never writes results.
 | `classical.yaml` | TF-IDF settings (unigrams + bigrams, min_df 2) and each classical model's tuning grid. |
 | `distilbert.yaml` | Fine-tuning settings: 3 seeds, learning rate, batch size, epochs, max lengths (128 for SST-2, 512 for IMDb). |
 | `behavioral.yaml` | How many cases each behavioral test gets, and the six name pairs for the name-shortcut test. |
+| `explain.yaml` | The H5 settings (D43): which sentences (SST-2 test), which models, the minimum word count (5, and 10 as a check), top-k (50), reliability splits (20), bootstrap resamples and the seed. |
 | `warning.yaml` | Embedding model (MiniLM), distance type (Gaussian), unit (per-sentence max), CV folds, bootstrap resamples. |
 | `external.yaml` | The two ready-made Hugging Face models (RoBERTa-large, HF's SST-2 DistilBERT): their ids, batch sizes, token limits, and which eval sets they predict (D39). |
 | `demo.yaml` | The live demo: which models it shows, which light mode leaves out, the two flag thresholds (0.70 confidence, 95th percentile distance) and the 60-word input limit (D41). |
@@ -61,7 +62,7 @@ never writes results.
 |---|---|
 | `__init__.py` | Package docstring and version number. |
 | `__main__.py` | Makes `python -m mirage` call `cli.main()`. |
-| `cli.py` | The command line. One `stage_*` function per pipeline step: `prepare`, `train-classical`, `train-distilbert`, `build-suite`, `predict`, `evaluate`, `explain`, `warn`, `figures`, and `all`, which runs every step after training. `predict` skips models whose prediction files are newer than the model. `predict-external` runs the ready-made models and skips files that already exist (D39). `warn` also runs the length checks (D30). `figures` also draws the Mirage Gap and the shortcut fingerprint (D40). |
+| `cli.py` | The command line. One `stage_*` function per pipeline step: `prepare`, `train-classical`, `train-distilbert`, `build-suite`, `predict`, `evaluate`, `explain`, `warn`, `figures`, and `all`, which runs every step after training. `predict` skips models whose prediction files are newer than the model. `predict-external` runs the ready-made models and skips files that already exist (D39). `occlusion` ranks words the same way for every model for H5 (D43). `warn` also runs the length checks (D30). `figures` also draws the Mirage Gap and the shortcut fingerprint (D40). |
 | `paths.py` | Every file location in one place (`artifacts/data`, `results/predictions`, `figures`…). `MIRAGE_ROOT` and `MIRAGE_CONFIGS` can move them (used by the tests and on Kaggle). |
 | `config.py` | `load_config(name)` reads a YAML file from `configs/`; `save_resolved` writes the exact settings next to a model; `set_seed` seeds Python, NumPy and torch. |
 | `text.py` | All text handling. `normalize` turns any text into SST-2 style (lowercase, "doesn't" → "does n't", punctuation split off, abbreviations kept whole). `negation_mark` adds `NOT_` to words after a negation, using either the original rule (up to punctuation) or the 3-word rule with exceptions. `sentences` splits a review into sentences. `Preprocessor` bundles these so they run inside the classical models. |
@@ -72,7 +73,7 @@ never writes results.
 | `stats.py` | Uncertainty. Bootstrap confidence intervals and p-values, paired differences, the "gap closed" ratio, paired AUROC difference, Holm correction, McNemar's test. |
 | `evaluate.py` | Builds every results table from the prediction files: main table, errors by test type, negation gap to DistilBERT along the ladder single words → + word pairs → + negation marking (D42), negation-marking effect, negation control, directional negation, IMDb error by length, length-vs-content split, name effect, typo direction, McNemar, per-word errors, and the Mirage Gap (`mirage_gap`: accuracy vs a robustness score built from pair accuracy on four shortcut tests, plus its leave-one-out sensitivity check; `fingerprint_table` adds calibration and early warning, D40). External models and the single-word ablation get their own Holm families (`holm_family`), so they don't change earlier p-values. Writes everything to `results/*.csv`. |
 | `plots.py` | Every figure (PNG + PDF): error heatmap, negation-gap bars, error vs score, error by review length, reliability diagram, explanation-overlap heatmap, the small decision tree, word-attribution strips, the Mirage Gap scatter and the shortcut-fingerprint small multiples (each also as a 16:9 `_slide` version). Uses a fixed, colour-blind-checked palette with eight model slots. |
-| `demo.py` | The logic behind the live demo (D41): loads the models (DistilBERT at its median seed), scores a sentence, word importance by leaving each word out, which words a classical model never saw, the low-confidence and unusual-input flags, and the curated examples with a check that each still behaves as documented. |
+| `demo.py` | The logic behind the live demo (D41): loads the models (DistilBERT at its median seed), scores a sentence, word importance by leaving each word out (the shared `explain.occlusion` function), which words a classical model never saw, the low-confidence and unusual-input flags, and the curated examples with a check that each still behaves as documented. |
 
 ### `behavioral/`: the hand-built test sentences (CheckList-style)
 
@@ -105,6 +106,7 @@ sentences.
 | `ig.py` | Integrated Gradients for DistilBERT (via Captum): how much each word pushed the prediction, summed from word pieces back to whole words. |
 | `deletion.py` | Faithfulness check. Delete the top-attributed words and see whether the prediction drops more than when deleting random words. |
 | `overlap.py` | Do different models rely on the same words? Compares their top-word rankings with Jaccard overlap and rank-biased overlap (H5). |
+| `occlusion.py` | One ranking rule for every model (D43): remove each word of a sentence in turn and measure how far P(positive) moves (`occlusion_table`); rank words by the mean change (`word_importance`, words seen ≥ 5 times). H5's main measure: `word_effects` (each word's signed effect per model), `split_half_reliability` (how reproducible a model's word effects are) and `effect_agreement` (Spearman correlation between models with a bootstrap CI, corrected for both models' reliability). The top-50 overlap with a split-half ceiling and its chance level (`chance_jaccard`) is the secondary view. Used by the `occlusion` stage (which caches each model's removal table in `artifacts/occlusion/`) and by the live demo. |
 
 ### `warning/`: can we flag a model's mistakes in advance? (H4)
 
@@ -118,7 +120,7 @@ sentences.
 
 ---
 
-## `tests/`: 119 automated tests (`.venv/Scripts/python -m pytest`)
+## `tests/`: 127 automated tests (`.venv/Scripts/python -m pytest`)
 
 Almost all run on small synthetic data and need no downloads or GPU. The two real-model demo
 tests use the trained models when they're on disk and skip themselves otherwise. The whole suite
@@ -135,6 +137,7 @@ takes about 2 minutes.
 | `test_metrics_stats.py` | ECE, AUROC, bootstrap, McNemar against statsmodels, Holm, p-values, length table, name effect. |
 | `test_explain_warning.py` | Overlap measures, deletion check, Mahalanobis against scipy, kNN, sentence splitting, length adjustment, the out-of-fold combiner. |
 | `test_external.py` | External models with a tiny random BERT built locally (no download): label mapping in both orders, rejection of 3-class and unnamed labels, raw text and long text, and the `predict-external` stage writing contract files and skipping existing ones. |
+| `test_occlusion.py` | Leaving words out: correct changes, chunking changes nothing, punctuation and rare words aren't ranked, the signed direction; the split-half ceiling (a stable model scores 1, and one-off words can't swamp it); chance overlap; agreement (two models that read words alike correlate, an opposite one correlates negatively, and the reliability correction is applied). |
 | `test_ladder.py` | The single-word variant really has no word pairs; the ladder columns on hand-made error rates; adding the variant leaves every existing negation-gap column identical; `negmark_effect` skips it; its Holm family. |
 | `test_mirage_gap.py` | The robustness score on hand-made numbers, "both sentences right", a model missing a component is dropped, the leave-one-out check, the fingerprint merge, and both figures render. |
 | `test_demo.py` | Demo logic with a stand-in model: trimming, leaving words out, flags, the vocabulary check, the example checker. Plus, with the real models: every curated example behaves as documented, and the app runs headless. |

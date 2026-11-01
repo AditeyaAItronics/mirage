@@ -57,7 +57,7 @@ src/mirage/
   behavioral/ wordlists templates suite
                                       ← test-suite generator + MFT/INV scoring
   metrics.py stats.py evaluate.py     ← analysis layer: point metrics → uncertainty → tables
-  explain/  linear trees ig deletion overlap
+  explain/  linear trees ig deletion overlap occlusion
   warning/  embed gaussian knn distance error_detection
   plots.py                            ← presentation layer
   demo.py                             ← logic behind the live demo (scores, word importance, flags)
@@ -124,7 +124,7 @@ Eight models, one interface: five classical, our DistilBERT, and two ready-made 
 | RQ1 / H1 hidden failures | sst2_test, sst2_neg, behavioral | `evaluate.error_table` + `behavioral.suite.case_failures` | `errors_by_type.csv`, heatmap |
 | RQ2 / H2–H3 what context buys | sst2_neg, behavioral negation; the ladder unigram → base (+ pairs) → negmark (+ marking), D42 | `evaluate.negation_gap` (paired bootstrap, D12) | `negation_gap.csv`, gap bars |
 | RQ3 / H4 early warning | sst2_train embeddings, imdb | `warning.*`, `cli.stage_warn` | `early_warning.csv`, error-vs-score plot |
-| RQ4 / H5 explanation | trained models, DistilBERT failures | `explain.*` | `top_features.csv`, `ig_failures.csv`, `deletion_check.csv`, `overlap.csv` |
+| RQ4 / H5 explanation | trained models, DistilBERT failures; for H5, SST-2 test with one ranking rule for every model (D43) | `explain.*`, stage `occlusion` | `top_features.csv`, `ig_failures.csv`, `deletion_check.csv`, `overlap.csv`; H5 (main): `occlusion_agreement.csv` (reliability-corrected correlation of word effects), `occlusion_reliability.csv`; secondary: `overlap_occlusion.csv`, `occlusion_split_half.csv` |
 | H6 GNB vs MNB | sst2_test | `evaluate.main_table` + McNemar | `main_table.csv`, `mcnemar.csv` |
 | Calibration | sst2_test, imdb | `metrics.ece`, `reliability_bins` | ECE columns, reliability diagram |
 | Does scale cure shortcuts? (D39) | every set, external models | the same tables; their own Holm families | new rows everywhere |
@@ -153,7 +153,8 @@ Seed policy (D13): tables average DistilBERT over 3 seeds; per-item analyses use
 | Bootstrap resamples item indices, not data | One generic routine for every CI; paired comparisons for free (D12) |
 | Single-word ablation (D42) trains in about 3 minutes | The H2/H3 ladder costs almost nothing; it gets its own Holm family, so no earlier p-value moves |
 | External models load cache-first (D41) | No network round trip; the demo works offline once models are cached |
-| Demo word importance by leaving words out | One batched call per model per sentence: works for every model and stays under a second |
+| Word-removal tables cached in `artifacts/occlusion/` (stale when the model or data is newer) | Re-running the H5 analysis takes seconds instead of ~10 min of DistilBERT on CPU |
+| Word importance by leaving words out (`explain.occlusion`) | One batched call per model per sentence: works for every model and stays under a second in the demo. The H5 stage scores about 38,000 removals per model on SST-2 test in chunks; DistilBERT takes the longest on CPU. The demo and the H5 analysis share this one function |
 
 **Known heavy spot:** the random forest with `max_depth=None` and 300 trees on ~64k sparse rows
 needs the most RAM (likely a few GB) and the longest fit, and its saved model can be large. If the

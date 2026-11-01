@@ -336,7 +336,7 @@ claims rest on one baseline choice and a small sample.
 
 **Effort:** small (on a GPU).
 
-### E2. 🟠 We compare explanations that mean different things
+### E2. ✅ RESOLVED for H5 (D43); 🟢 remains for the per-model explanations: we compare explanations that mean different things
 **What:** LR weights and tree importances are *global* (about the whole model), while IG is *local* (about
 one prediction, then averaged). The depth-4 tree we explain is a *separate surrogate*, not the actual RF.
 **Why it matters:** low overlap between models may reflect the explanation methods rather than the models.
@@ -345,6 +345,18 @@ one prediction, then averaged). The depth-4 tree we explain is a *separate surro
 - For trees, use the RF's own permutation importance instead of a surrogate tree.
 
 **Effort:** medium.
+
+### E4. 🟢 NEW: removing words is a rough measure of a word's effect
+**What:** H5's ranking (D43) removes one word at a time. That can leave ungrammatical text, and it
+misses words that only matter together ("not … good"). The decision tree's and DistilBERT's word
+effects are also only moderately reproducible (split-half reliability 0.34 and 0.52), so their
+agreement figures rest on noisier rankings, even after the correction.
+**Why it matters:** H5's numbers describe single-word effects on SST-2 test sentences, not
+everything a model relies on.
+**Also:** the 95% intervals cover the raw correlation only, resampling words; the
+reliability-corrected values have no interval of their own, and sentence-to-sentence variation is
+reflected only through the reliabilities.
+**Effort:** none (state it); medium to add pair removal.
 
 ### E3. 🟢 Attribution is not causation
 **What:** high attribution doesn't prove the model "relies on" a word. The deletion check helps, but deleting
@@ -522,5 +534,6 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 - **F4, length inside the distance.** Measured with a length-matched check (0.612 vs 0.926) and removed with a length-adjusted distance; H4 is unchanged (D30).
 - **B4, B9, C7: robustness of the headline results.** An IMDb excerpt set splits length from content, test-only negation rows were added, and a second negation-scope variant was trained (D31).
 - **D7, name test that couldn't fail.** Replaced by a name-shortcut test built from the training labels, plus a gender-matched unseen-names probe (D32).
+- **E2 (for H5), explanations that mean different things.** One ranking rule for every model and a reliability-corrected agreement measure (D43).
 - **C15, H2/H3 tested on the wrong features.** A single-word variant completes the ladder (D42).
 - **H1, C8: full run.** Pipeline complete with DistilBERT (D34, D35); the length question is answered.

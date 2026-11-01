@@ -68,6 +68,7 @@ def test_cpu_pipeline(tmp_path, monkeypatch):
     _run("predict", env=env)
     _run("evaluate", "--resamples", "50", env=env)
     _run("explain", "--skip-ig", env=env)
+    _run("occlusion", env=env)  # D43; no DistilBERT here, so the 5 classical models
     _run("figures", env=env)
 
     preds = list((root / "results" / "predictions").glob("*.parquet"))
@@ -97,3 +98,12 @@ def test_cpu_pipeline(tmp_path, monkeypatch):
     assert {"name_shortcut", "name_swap"} <= set(names["test"])
     assert (root / "results" / "explain" / "tree_depth4.txt").exists()
     assert (root / "figures" / "error_heatmap_base.png").exists()
+    ex = root / "results" / "explain"
+    imp = pd.read_csv(ex / "occlusion_importance.csv")
+    assert set(imp["model"]) == {"logreg", "dtree", "rf", "mnb", "gnb"}  # GNB included now
+    assert len(pd.read_csv(ex / "overlap_occlusion.csv")) == 10  # every pair of 5 models
+    assert len(pd.read_csv(ex / "occlusion_split_half.csv")) == 5
+    assert (root / "figures" / "overlap_occlusion_jaccard.png").exists()
+    agr = pd.read_csv(ex / "occlusion_agreement.csv")
+    assert {"rho", "rho_lo", "rho_hi", "corrected", "min_count"} <= set(agr.columns)
+    assert (root / "figures" / "h5_word_effect_agreement.png").exists()

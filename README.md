@@ -49,9 +49,14 @@ Base variants; DistilBERT is the mean of 3 seeds. Full tables are in `results/`,
 - **Early warning (H4):** low confidence flags IMDb errors well (DistilBERT AUROC 0.836). Embedding
   distance doesn't (0.53), even though it separates the two datasets (0.93, mostly via length).
   The single-word models show the same pattern (confidence 0.55–0.74, distance about 0.5).
-- **Shared shortcuts (H5):** DistilBERT relies on almost entirely different words from the
-  classical models (top-50 overlap ≤ 0.08). Its IG explanations are faithful (deleting top words
-  hurts 3× more than random ones).
+- **Shared shortcuts (H5):** ranked the same way for every model (remove a word, measure the
+  change; D43), logistic regression, random forest and Multinomial NB agree on what each word does
+  almost as much as their own noise allows (0.88–0.92, reliability-corrected). So the shortcuts
+  come from the data. Gaussian NB is the exception (0.18–0.26). DistilBERT shares most of their
+  word effects too (0.71–0.77); it differs where context matters, such as negation. An earlier
+  method, which ranked each model with its own tool, suggested almost no overlap; that was the
+  tools, not the models. DistilBERT's IG explanations are faithful (deleting top words hurts 3×
+  more than random ones).
 - **DistilBERT's own shortcut:** when it can't read the sentiment word (a typo), it defaults to
   *negative*. "brilliant" scores 0.999; "brililant" scores 0.010. A typo in the noun changes
   nothing. Fragmented words lean negative in SST-2's training data (D37).
@@ -63,6 +68,11 @@ Base variants; DistilBERT is the mean of 3 seeds. Full tables are in `results/`,
 gets worse.
 
 ![Negation gap ladder](figures/negation_gap_sst2_neg.png)
+
+**H5 (D43):** how much each pair of models agrees on what every word does (diagonal: each model's
+agreement with itself).
+
+![H5 word-effect agreement](figures/h5_word_effect_agreement.png)
 
 ### The Mirage Gap (D40)
 
@@ -110,7 +120,7 @@ python -m mirage train-classical --variants base negmark negmark_w3 unigram  # 5
 # then unzip distilbert_outputs.zip into the repo root (models + DistilBERT predictions)
 # External models (optional, D39): run notebooks/kaggle_external.ipynb on Kaggle,
 # then unzip external_outputs.zip into the repo root (predictions only)
-python -m mirage all                                      # suite -> predict -> evaluate -> explain -> warn -> figures
+python -m mirage all                                      # suite -> predict -> evaluate -> explain -> occlusion -> warn -> figures
 ```
 
 Each stage can also run on its own: `python -m mirage --help`.
@@ -129,6 +139,6 @@ for why each choice was made.
 | `figures/` | report figures (PNG + PDF) |
 | `notebooks/` | Kaggle notebooks: DistilBERT fine-tuning, and the external models' predictions |
 | `app/` | the live demo (Streamlit), its curated examples and presenter guide |
-| `tests/` | `python -m pytest` (119 tests, about 2–3 min, no GPU needed) |
+| `tests/` | `python -m pytest` (127 tests, about 2–3 min, no GPU needed) |
 
 For a file-by-file tour of the code, see [codeexplanations.md](codeexplanations.md).
