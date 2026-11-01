@@ -58,9 +58,9 @@ see `majordecisions.md` D26 for the first results. Re-run them only if you chang
 These are factual corrections, and they are your academic call:
 1. "Real negation subset = SST-2 **test** sentences" → it is now validation **plus** the public SST-2 test sentences (519 in total). GLUE hides test labels, so the test labels come from the original Stanford release via `SetFit/sst2` (D22). Say so.
 2. Negation tests: say that *"not + negative adjective"* cases are reported separately and not scored (no clean expected label).
-3. Behavioral test count: now **3,250 cases = 5,250 rows** (invariance and directional tests use pairs; the directional "X / not X" test (D27) and the name-shortcut test (D32) are new). IMDb sample: **10,000** reviews, each capped to its first 220 + last 140 words for every model (D23).
+3. Behavioral test count: now **3,750 cases = 6,250 rows** (invariance and directional tests use pairs; the directional "X / not X" test (D27), the name-shortcut test (D32) and the noun-typo control (D37) are new). IMDb sample: **10,000** reviews, each capped to its first 220 + last 140 words for every model (D23).
 
-### 6. Decide on the random forest if it is too heavy
+### 6. ✅ No action needed: the random forest trained fine (about 4 min per fit); only its files are large
 It trained fine here (about 4 min per fit), but saves at **822 MB** per variant. If disk or RAM is tight:
 - Keep the grid, but train it alone overnight: `python -m mirage train-classical --models rf --variants base negmark negmark_w3`
 - Drop `null` from `configs/classical.yaml → rf.grid.max_depth` (keep `[30]`), and say so in the report.
@@ -70,21 +70,21 @@ It trained fine here (about 4 min per fit), but saves at **822 MB** per variant.
 `src/mirage/behavioral/wordlists.py` and the `name_pairs` in `configs/behavioral.yaml`. You know your audience. Also check that the name pairs (Kidman↔Seagal, Spielberg↔Costner, …, chosen from SST-2's training labels, evidence in `results/name_associations.csv`) and the mild adjectives (`MILD_POS` / `MILD_NEG`) are ones you're happy to defend. Check that every adjective is clearly
 positive or negative *in a movie review*, and that the names are a fair cross-section (the
 name-swap test uses Indian vs Western names). Then run `python -m mirage build-suite` and skim
-`results/behavioral_suite.csv`. Skimming the 5,250 short lines (or `results/word_errors.csv`) is faster for you than explaining which
+`results/behavioral_suite.csv`. Skimming the 6,250 short lines (or `results/word_errors.csv`) is faster for you than explaining which
 ones feel unnatural.
 
 ---
 
 ## Weeks 2–3 — run, then read the results with your own eyes
 
-### 8. After the DistilBERT zip is unzipped
+### 8. ✅ DONE (D35): After the DistilBERT zip is unzipped
 ```bash
 .venv/Scripts/python -m mirage all
 ```
 This builds the suite and then runs predict → evaluate → explain (incl. IG) → warn (embeddings) → figures.
 The first `warn` run embeds 67k sentences on CPU. Expect several minutes; it is cached after that.
 
-### 9. Sanity-check numbers before trusting them — *you're faster at "does this look right?"*
+### 9. ✅ Checked by Claude (D35); a look from you is still worthwhile: Sanity-check numbers before trusting them
 | Check | Expect | If not |
 |---|---|---|
 | DistilBERT SST-2 val accuracy | ≈ 0.90–0.91 | training problem: check `train_summary.json` |

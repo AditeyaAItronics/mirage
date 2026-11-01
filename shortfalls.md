@@ -262,7 +262,8 @@ every pair also swapped gender. It's now a gender-matched "unseen names" probe, 
 
 ### D8. 🟠 NEW (first result): Naive Bayes judges films by who made them (DistilBERT: 0 flips)
 **What:** swapping Kidman for Seagal (etc.) in an otherwise identical mild sentence flips Naive
-Bayes's label in **40.4%** of pairs (mean probability shift +0.38). LR shifts every prediction
+Bayes's label in **37.6%** of pairs (mean probability shift +0.37; 40.4% / +0.38 on the sentence
+sample before the D33 word swap reshuffled the suite). LR shifts every prediction
 (+0.063) but rarely flips (0.6%). Unseen names move no model.
 **Why it matters:** this is the clearest shortcut in the project so far. The prediction depends on
 *who* is mentioned rather than *what* is said. It's real, learned from data, and (in this test)

@@ -61,7 +61,7 @@ prepare → train-classical / train-distilbert → build-suite → predict → e
 | `predict.py` | The predictions contract. Defines the required columns, validates every prediction file, writes one parquet per (model, variant, seed, dataset), and loads them back with those four as columns. |
 | `metrics.py` | Single-number metrics: accuracy, macro-F1, confidence, reliability bins, expected calibration error (ECE), AUROC. |
 | `stats.py` | Uncertainty. Bootstrap confidence intervals and p-values, paired differences, the "gap closed" ratio, paired AUROC difference, Holm correction, McNemar's test. |
-| `evaluate.py` | Builds every results table from the prediction files: main table, errors by test type, negation gap to DistilBERT, negation-marking effect, negation control, directional negation, IMDb error by length, length-vs-content split, name effect, McNemar, per-word errors. Writes them all to `results/*.csv`. |
+| `evaluate.py` | Builds every results table from the prediction files: main table, errors by test type, negation gap to DistilBERT, negation-marking effect, negation control, directional negation, IMDb error by length, length-vs-content split, name effect, typo direction, McNemar, per-word errors. Writes them all to `results/*.csv`. |
 | `plots.py` | Every figure (PNG + PDF): error heatmap, negation-gap bars, error vs score, error by review length, reliability diagram, explanation-overlap heatmap, the small decision tree, and word-attribution strips. Uses a fixed, colour-blind-checked palette. |
 
 ### `behavioral/`: the hand-built test sentences (CheckList-style)
@@ -72,9 +72,9 @@ sentences.
 | File | What happens inside |
 |---|---|
 | `wordlists.py` | The vocabulary: 20 positive and 20 negative adjectives, 15 movie nouns, mild adjectives and "work" nouns for the name test, Indian and Western first names (paired by gender), and sentiment verbs. |
-| `templates.py` | Turns word lists into test cases. Each generator writes sentences from patterns ("The {noun} was {adj}."): `simple`, `negation` ("not great" should be negative), `negation_dir` (the "X / not X" pairs), `typo`, `name_swap` (unseen names) and `name_shortcut` (Kidman vs Seagal). Each row records its test type, case id, role (original/perturbed) and the adjective used. |
+| `templates.py` | Turns word lists into test cases. Each generator writes sentences from patterns ("The {noun} was {adj}."): `simple`, `negation` ("not great" should be negative), `negation_dir` (the "X / not X" pairs), `typo`, `typo_noun` (the control: typo in the noun, D37), `name_swap` (unseen names) and `name_shortcut` (Kidman vs Seagal). Each row records its test type, case id, role (original/perturbed) and the adjective used. |
 | `names.py` | Picks the film people for the name test from the *training labels*: for each surname, how positive its training phrases are (smoothed log-odds). `pick_pairs` pairs the most positive names with the most negative. |
-| `suite.py` | Builds the whole suite (5,250 rows, 3,250 cases) from the config, saves it to `results/behavioral_suite.csv`, and scores predictions. Single-sentence tests fail when the label is wrong; invariance pairs fail when the label changes; direction pairs fail when adding "not" doesn't change the label. |
+| `suite.py` | Builds the whole suite (6,250 rows, 3,750 cases) from the config, saves it to `results/behavioral_suite.csv`, and scores predictions. Single-sentence tests fail when the label is wrong; invariance pairs fail when the label changes; direction pairs fail when adding "not" doesn't change the label. |
 
 ### `models/`: the classifiers
 
@@ -107,7 +107,7 @@ sentences.
 
 ---
 
-## `tests/`: 90 automated tests (`.venv/Scripts/python -m pytest`)
+## `tests/`: 91 automated tests (`.venv/Scripts/python -m pytest`)
 
 They run on small synthetic data, need no downloads or GPU, and finish in about 30 seconds.
 

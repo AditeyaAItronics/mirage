@@ -962,3 +962,9 @@ non-significant gain (D28).
 word right before one sentiment word. Real negation is longer-range, idiomatic and sometimes
 double. A token-level marking heuristic captures the first and not the second, which is the
 gap a contextual model like DistilBERT closes (0% template errors, 10.3% real-sentence errors).
+
+**Note on resampling (added with D37):** replacing "messy" with "sloppy" (D33) changed how many
+random draws the typo generator uses (it depends on word length), so every test generated after it
+was resampled: `name_swap`, `name_shortcut`, and now `typo_noun`. The name-shortcut numbers moved
+within noise. Naive Bayes flips 37.6% of pairs (shift +0.37), against 40.4% / +0.38 in D32. Cite
+the current tables (`name_effect.csv`); D32 keeps its numbers as a record of the earlier run.
