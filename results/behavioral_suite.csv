@@ -5249,3 +5249,1003 @@ beh-5246,The new Spielberg film was solid.,1,name_shortcut,INV,name_shortcut-498
 beh-5247,The new Costner film was solid.,1,name_shortcut,INV,name_shortcut-498,perturbed,True,solid
 beh-5248,The new Spielberg film was weak.,0,name_shortcut,INV,name_shortcut-499,original,True,weak
 beh-5249,The new Costner film was weak.,0,name_shortcut,INV,name_shortcut-499,perturbed,True,weak
+beh-5250,The movie was amazing.,1,typo_noun,INV,typo_noun-0,original,True,amazing
+beh-5251,The moie was amazing.,1,typo_noun,INV,typo_noun-0,perturbed,True,amazing
+beh-5252,The movie was fantastic.,1,typo_noun,INV,typo_noun-1,original,True,fantastic
+beh-5253,The mvie was fantastic.,1,typo_noun,INV,typo_noun-1,perturbed,True,fantastic
+beh-5254,The movie was impressive.,1,typo_noun,INV,typo_noun-2,original,True,impressive
+beh-5255,The mvie was impressive.,1,typo_noun,INV,typo_noun-2,perturbed,True,impressive
+beh-5256,The movie was perfect.,1,typo_noun,INV,typo_noun-3,original,True,perfect
+beh-5257,The mvoie was perfect.,1,typo_noun,INV,typo_noun-3,perturbed,True,perfect
+beh-5258,The movie was memorable.,1,typo_noun,INV,typo_noun-4,original,True,memorable
+beh-5259,The moive was memorable.,1,typo_noun,INV,typo_noun-4,perturbed,True,memorable
+beh-5260,The film was wonderful.,1,typo_noun,INV,typo_noun-5,original,True,wonderful
+beh-5261,The flim was wonderful.,1,typo_noun,INV,typo_noun-5,perturbed,True,wonderful
+beh-5262,The film was superb.,1,typo_noun,INV,typo_noun-6,original,True,superb
+beh-5263,The flim was superb.,1,typo_noun,INV,typo_noun-6,perturbed,True,superb
+beh-5264,The film was delightful.,1,typo_noun,INV,typo_noun-7,original,True,delightful
+beh-5265,The fim was delightful.,1,typo_noun,INV,typo_noun-7,perturbed,True,delightful
+beh-5266,The film was terrific.,1,typo_noun,INV,typo_noun-8,original,True,terrific
+beh-5267,The flim was terrific.,1,typo_noun,INV,typo_noun-8,perturbed,True,terrific
+beh-5268,The film was outstanding.,1,typo_noun,INV,typo_noun-9,original,True,outstanding
+beh-5269,The flim was outstanding.,1,typo_noun,INV,typo_noun-9,perturbed,True,outstanding
+beh-5270,The film was beautiful.,1,typo_noun,INV,typo_noun-10,original,True,beautiful
+beh-5271,The flim was beautiful.,1,typo_noun,INV,typo_noun-10,perturbed,True,beautiful
+beh-5272,The film was fun.,1,typo_noun,INV,typo_noun-11,original,True,fun
+beh-5273,The flm was fun.,1,typo_noun,INV,typo_noun-11,perturbed,True,fun
+beh-5274,The plot was good.,1,typo_noun,INV,typo_noun-12,original,True,good
+beh-5275,The plt was good.,1,typo_noun,INV,typo_noun-12,perturbed,True,good
+beh-5276,The plot was wonderful.,1,typo_noun,INV,typo_noun-13,original,True,wonderful
+beh-5277,The polt was wonderful.,1,typo_noun,INV,typo_noun-13,perturbed,True,wonderful
+beh-5278,The plot was brilliant.,1,typo_noun,INV,typo_noun-14,original,True,brilliant
+beh-5279,The polt was brilliant.,1,typo_noun,INV,typo_noun-14,perturbed,True,brilliant
+beh-5280,The plot was delightful.,1,typo_noun,INV,typo_noun-15,original,True,delightful
+beh-5281,The polt was delightful.,1,typo_noun,INV,typo_noun-15,perturbed,True,delightful
+beh-5282,The plot was perfect.,1,typo_noun,INV,typo_noun-16,original,True,perfect
+beh-5283,The pot was perfect.,1,typo_noun,INV,typo_noun-16,perturbed,True,perfect
+beh-5284,The plot was terrific.,1,typo_noun,INV,typo_noun-17,original,True,terrific
+beh-5285,The pot was terrific.,1,typo_noun,INV,typo_noun-17,perturbed,True,terrific
+beh-5286,The acting was brilliant.,1,typo_noun,INV,typo_noun-18,original,True,brilliant
+beh-5287,The acing was brilliant.,1,typo_noun,INV,typo_noun-18,perturbed,True,brilliant
+beh-5288,The acting was impressive.,1,typo_noun,INV,typo_noun-19,original,True,impressive
+beh-5289,The acitng was impressive.,1,typo_noun,INV,typo_noun-19,perturbed,True,impressive
+beh-5290,The acting was perfect.,1,typo_noun,INV,typo_noun-20,original,True,perfect
+beh-5291,The actng was perfect.,1,typo_noun,INV,typo_noun-20,perturbed,True,perfect
+beh-5292,The acting was beautiful.,1,typo_noun,INV,typo_noun-21,original,True,beautiful
+beh-5293,The actig was beautiful.,1,typo_noun,INV,typo_noun-21,perturbed,True,beautiful
+beh-5294,The story was good.,1,typo_noun,INV,typo_noun-22,original,True,good
+beh-5295,The stry was good.,1,typo_noun,INV,typo_noun-22,perturbed,True,good
+beh-5296,The story was delightful.,1,typo_noun,INV,typo_noun-23,original,True,delightful
+beh-5297,The sotry was delightful.,1,typo_noun,INV,typo_noun-23,perturbed,True,delightful
+beh-5298,The story was impressive.,1,typo_noun,INV,typo_noun-24,original,True,impressive
+beh-5299,The sotry was impressive.,1,typo_noun,INV,typo_noun-24,perturbed,True,impressive
+beh-5300,The script was good.,1,typo_noun,INV,typo_noun-25,original,True,good
+beh-5301,The scrit was good.,1,typo_noun,INV,typo_noun-25,perturbed,True,good
+beh-5302,The script was wonderful.,1,typo_noun,INV,typo_noun-26,original,True,wonderful
+beh-5303,The scrpt was wonderful.,1,typo_noun,INV,typo_noun-26,perturbed,True,wonderful
+beh-5304,The script was brilliant.,1,typo_noun,INV,typo_noun-27,original,True,brilliant
+beh-5305,The scipt was brilliant.,1,typo_noun,INV,typo_noun-27,perturbed,True,brilliant
+beh-5306,The script was impressive.,1,typo_noun,INV,typo_noun-28,original,True,impressive
+beh-5307,The scipt was impressive.,1,typo_noun,INV,typo_noun-28,perturbed,True,impressive
+beh-5308,The script was outstanding.,1,typo_noun,INV,typo_noun-29,original,True,outstanding
+beh-5309,The scrit was outstanding.,1,typo_noun,INV,typo_noun-29,perturbed,True,outstanding
+beh-5310,The ending was brilliant.,1,typo_noun,INV,typo_noun-30,original,True,brilliant
+beh-5311,The enidng was brilliant.,1,typo_noun,INV,typo_noun-30,perturbed,True,brilliant
+beh-5312,The ending was terrific.,1,typo_noun,INV,typo_noun-31,original,True,terrific
+beh-5313,The endnig was terrific.,1,typo_noun,INV,typo_noun-31,perturbed,True,terrific
+beh-5314,The ending was fun.,1,typo_noun,INV,typo_noun-32,original,True,fun
+beh-5315,The ening was fun.,1,typo_noun,INV,typo_noun-32,perturbed,True,fun
+beh-5316,The soundtrack was great.,1,typo_noun,INV,typo_noun-33,original,True,great
+beh-5317,The sondtrack was great.,1,typo_noun,INV,typo_noun-33,perturbed,True,great
+beh-5318,The soundtrack was wonderful.,1,typo_noun,INV,typo_noun-34,original,True,wonderful
+beh-5319,The soundrtack was wonderful.,1,typo_noun,INV,typo_noun-34,perturbed,True,wonderful
+beh-5320,The cast was good.,1,typo_noun,INV,typo_noun-35,original,True,good
+beh-5321,The cat was good.,1,typo_noun,INV,typo_noun-35,perturbed,True,good
+beh-5322,The cast was enjoyable.,1,typo_noun,INV,typo_noun-36,original,True,enjoyable
+beh-5323,The csat was enjoyable.,1,typo_noun,INV,typo_noun-36,perturbed,True,enjoyable
+beh-5324,The cast was beautiful.,1,typo_noun,INV,typo_noun-37,original,True,beautiful
+beh-5325,The cat was beautiful.,1,typo_noun,INV,typo_noun-37,perturbed,True,beautiful
+beh-5326,The cast was perfect.,1,typo_noun,INV,typo_noun-38,original,True,perfect
+beh-5327,The csat was perfect.,1,typo_noun,INV,typo_noun-38,perturbed,True,perfect
+beh-5328,The performance was good.,1,typo_noun,INV,typo_noun-39,original,True,good
+beh-5329,The performnace was good.,1,typo_noun,INV,typo_noun-39,perturbed,True,good
+beh-5330,The performance was excellent.,1,typo_noun,INV,typo_noun-40,original,True,excellent
+beh-5331,The preformance was excellent.,1,typo_noun,INV,typo_noun-40,perturbed,True,excellent
+beh-5332,The performance was charming.,1,typo_noun,INV,typo_noun-41,original,True,charming
+beh-5333,The perfrmance was charming.,1,typo_noun,INV,typo_noun-41,perturbed,True,charming
+beh-5334,The performance was impressive.,1,typo_noun,INV,typo_noun-42,original,True,impressive
+beh-5335,The perfromance was impressive.,1,typo_noun,INV,typo_noun-42,perturbed,True,impressive
+beh-5336,The direction was great.,1,typo_noun,INV,typo_noun-43,original,True,great
+beh-5337,The dierction was great.,1,typo_noun,INV,typo_noun-43,perturbed,True,great
+beh-5338,The direction was excellent.,1,typo_noun,INV,typo_noun-44,original,True,excellent
+beh-5339,The dircetion was excellent.,1,typo_noun,INV,typo_noun-44,perturbed,True,excellent
+beh-5340,The experience was wonderful.,1,typo_noun,INV,typo_noun-45,original,True,wonderful
+beh-5341,The epxerience was wonderful.,1,typo_noun,INV,typo_noun-45,perturbed,True,wonderful
+beh-5342,The experience was amazing.,1,typo_noun,INV,typo_noun-46,original,True,amazing
+beh-5343,The expereince was amazing.,1,typo_noun,INV,typo_noun-46,perturbed,True,amazing
+beh-5344,The experience was fantastic.,1,typo_noun,INV,typo_noun-47,original,True,fantastic
+beh-5345,The eperience was fantastic.,1,typo_noun,INV,typo_noun-47,perturbed,True,fantastic
+beh-5346,The experience was lovely.,1,typo_noun,INV,typo_noun-48,original,True,lovely
+beh-5347,The exerience was lovely.,1,typo_noun,INV,typo_noun-48,perturbed,True,lovely
+beh-5348,The experience was charming.,1,typo_noun,INV,typo_noun-49,original,True,charming
+beh-5349,The exprience was charming.,1,typo_noun,INV,typo_noun-49,perturbed,True,charming
+beh-5350,The experience was terrific.,1,typo_noun,INV,typo_noun-50,original,True,terrific
+beh-5351,The epxerience was terrific.,1,typo_noun,INV,typo_noun-50,perturbed,True,terrific
+beh-5352,The experience was outstanding.,1,typo_noun,INV,typo_noun-51,original,True,outstanding
+beh-5353,The experence was outstanding.,1,typo_noun,INV,typo_noun-51,perturbed,True,outstanding
+beh-5354,The experience was memorable.,1,typo_noun,INV,typo_noun-52,original,True,memorable
+beh-5355,The expeience was memorable.,1,typo_noun,INV,typo_noun-52,perturbed,True,memorable
+beh-5356,The show was enjoyable.,1,typo_noun,INV,typo_noun-53,original,True,enjoyable
+beh-5357,The sohw was enjoyable.,1,typo_noun,INV,typo_noun-53,perturbed,True,enjoyable
+beh-5358,The sequel was superb.,1,typo_noun,INV,typo_noun-54,original,True,superb
+beh-5359,The seqeul was superb.,1,typo_noun,INV,typo_noun-54,perturbed,True,superb
+beh-5360,The sequel was charming.,1,typo_noun,INV,typo_noun-55,original,True,charming
+beh-5361,The seqel was charming.,1,typo_noun,INV,typo_noun-55,perturbed,True,charming
+beh-5362,The sequel was impressive.,1,typo_noun,INV,typo_noun-56,original,True,impressive
+beh-5363,The seqeul was impressive.,1,typo_noun,INV,typo_noun-56,perturbed,True,impressive
+beh-5364,The sequel was beautiful.,1,typo_noun,INV,typo_noun-57,original,True,beautiful
+beh-5365,The sequl was beautiful.,1,typo_noun,INV,typo_noun-57,perturbed,True,beautiful
+beh-5366,This movie is excellent.,1,typo_noun,INV,typo_noun-58,original,True,excellent
+beh-5367,This moive is excellent.,1,typo_noun,INV,typo_noun-58,perturbed,True,excellent
+beh-5368,This movie is wonderful.,1,typo_noun,INV,typo_noun-59,original,True,wonderful
+beh-5369,This mvoie is wonderful.,1,typo_noun,INV,typo_noun-59,perturbed,True,wonderful
+beh-5370,This movie is brilliant.,1,typo_noun,INV,typo_noun-60,original,True,brilliant
+beh-5371,This moive is brilliant.,1,typo_noun,INV,typo_noun-60,perturbed,True,brilliant
+beh-5372,This movie is delightful.,1,typo_noun,INV,typo_noun-61,original,True,delightful
+beh-5373,This moive is delightful.,1,typo_noun,INV,typo_noun-61,perturbed,True,delightful
+beh-5374,This movie is impressive.,1,typo_noun,INV,typo_noun-62,original,True,impressive
+beh-5375,This moive is impressive.,1,typo_noun,INV,typo_noun-62,perturbed,True,impressive
+beh-5376,This film is brilliant.,1,typo_noun,INV,typo_noun-63,original,True,brilliant
+beh-5377,This fim is brilliant.,1,typo_noun,INV,typo_noun-63,perturbed,True,brilliant
+beh-5378,This film is perfect.,1,typo_noun,INV,typo_noun-64,original,True,perfect
+beh-5379,This flm is perfect.,1,typo_noun,INV,typo_noun-64,perturbed,True,perfect
+beh-5380,This film is outstanding.,1,typo_noun,INV,typo_noun-65,original,True,outstanding
+beh-5381,This flim is outstanding.,1,typo_noun,INV,typo_noun-65,perturbed,True,outstanding
+beh-5382,This film is fun.,1,typo_noun,INV,typo_noun-66,original,True,fun
+beh-5383,This fim is fun.,1,typo_noun,INV,typo_noun-66,perturbed,True,fun
+beh-5384,This plot is excellent.,1,typo_noun,INV,typo_noun-67,original,True,excellent
+beh-5385,This polt is excellent.,1,typo_noun,INV,typo_noun-67,perturbed,True,excellent
+beh-5386,This plot is amazing.,1,typo_noun,INV,typo_noun-68,original,True,amazing
+beh-5387,This polt is amazing.,1,typo_noun,INV,typo_noun-68,perturbed,True,amazing
+beh-5388,This plot is enjoyable.,1,typo_noun,INV,typo_noun-69,original,True,enjoyable
+beh-5389,This polt is enjoyable.,1,typo_noun,INV,typo_noun-69,perturbed,True,enjoyable
+beh-5390,This plot is charming.,1,typo_noun,INV,typo_noun-70,original,True,charming
+beh-5391,This plt is charming.,1,typo_noun,INV,typo_noun-70,perturbed,True,charming
+beh-5392,This plot is beautiful.,1,typo_noun,INV,typo_noun-71,original,True,beautiful
+beh-5393,This polt is beautiful.,1,typo_noun,INV,typo_noun-71,perturbed,True,beautiful
+beh-5394,This acting is excellent.,1,typo_noun,INV,typo_noun-72,original,True,excellent
+beh-5395,This actng is excellent.,1,typo_noun,INV,typo_noun-72,perturbed,True,excellent
+beh-5396,This acting is impressive.,1,typo_noun,INV,typo_noun-73,original,True,impressive
+beh-5397,This actig is impressive.,1,typo_noun,INV,typo_noun-73,perturbed,True,impressive
+beh-5398,This acting is perfect.,1,typo_noun,INV,typo_noun-74,original,True,perfect
+beh-5399,This ating is perfect.,1,typo_noun,INV,typo_noun-74,perturbed,True,perfect
+beh-5400,This acting is terrific.,1,typo_noun,INV,typo_noun-75,original,True,terrific
+beh-5401,This acitng is terrific.,1,typo_noun,INV,typo_noun-75,perturbed,True,terrific
+beh-5402,This acting is beautiful.,1,typo_noun,INV,typo_noun-76,original,True,beautiful
+beh-5403,This actnig is beautiful.,1,typo_noun,INV,typo_noun-76,perturbed,True,beautiful
+beh-5404,This story is wonderful.,1,typo_noun,INV,typo_noun-77,original,True,wonderful
+beh-5405,This sotry is wonderful.,1,typo_noun,INV,typo_noun-77,perturbed,True,wonderful
+beh-5406,This story is impressive.,1,typo_noun,INV,typo_noun-78,original,True,impressive
+beh-5407,This sotry is impressive.,1,typo_noun,INV,typo_noun-78,perturbed,True,impressive
+beh-5408,This story is perfect.,1,typo_noun,INV,typo_noun-79,original,True,perfect
+beh-5409,This sory is perfect.,1,typo_noun,INV,typo_noun-79,perturbed,True,perfect
+beh-5410,This story is terrific.,1,typo_noun,INV,typo_noun-80,original,True,terrific
+beh-5411,This sotry is terrific.,1,typo_noun,INV,typo_noun-80,perturbed,True,terrific
+beh-5412,This story is memorable.,1,typo_noun,INV,typo_noun-81,original,True,memorable
+beh-5413,This stry is memorable.,1,typo_noun,INV,typo_noun-81,perturbed,True,memorable
+beh-5414,This story is fun.,1,typo_noun,INV,typo_noun-82,original,True,fun
+beh-5415,This stoy is fun.,1,typo_noun,INV,typo_noun-82,perturbed,True,fun
+beh-5416,This script is superb.,1,typo_noun,INV,typo_noun-83,original,True,superb
+beh-5417,This scirpt is superb.,1,typo_noun,INV,typo_noun-83,perturbed,True,superb
+beh-5418,This script is lovely.,1,typo_noun,INV,typo_noun-84,original,True,lovely
+beh-5419,This srcipt is lovely.,1,typo_noun,INV,typo_noun-84,perturbed,True,lovely
+beh-5420,This script is charming.,1,typo_noun,INV,typo_noun-85,original,True,charming
+beh-5421,This sript is charming.,1,typo_noun,INV,typo_noun-85,perturbed,True,charming
+beh-5422,This script is impressive.,1,typo_noun,INV,typo_noun-86,original,True,impressive
+beh-5423,This scrpt is impressive.,1,typo_noun,INV,typo_noun-86,perturbed,True,impressive
+beh-5424,This ending is amazing.,1,typo_noun,INV,typo_noun-87,original,True,amazing
+beh-5425,This endng is amazing.,1,typo_noun,INV,typo_noun-87,perturbed,True,amazing
+beh-5426,This ending is memorable.,1,typo_noun,INV,typo_noun-88,original,True,memorable
+beh-5427,This eding is memorable.,1,typo_noun,INV,typo_noun-88,perturbed,True,memorable
+beh-5428,This soundtrack is great.,1,typo_noun,INV,typo_noun-89,original,True,great
+beh-5429,This soundtarck is great.,1,typo_noun,INV,typo_noun-89,perturbed,True,great
+beh-5430,This soundtrack is terrific.,1,typo_noun,INV,typo_noun-90,original,True,terrific
+beh-5431,This suondtrack is terrific.,1,typo_noun,INV,typo_noun-90,perturbed,True,terrific
+beh-5432,This soundtrack is memorable.,1,typo_noun,INV,typo_noun-91,original,True,memorable
+beh-5433,This soundtrcak is memorable.,1,typo_noun,INV,typo_noun-91,perturbed,True,memorable
+beh-5434,This cast is impressive.,1,typo_noun,INV,typo_noun-92,original,True,impressive
+beh-5435,This csat is impressive.,1,typo_noun,INV,typo_noun-92,perturbed,True,impressive
+beh-5436,This cast is beautiful.,1,typo_noun,INV,typo_noun-93,original,True,beautiful
+beh-5437,This cat is beautiful.,1,typo_noun,INV,typo_noun-93,perturbed,True,beautiful
+beh-5438,This cast is outstanding.,1,typo_noun,INV,typo_noun-94,original,True,outstanding
+beh-5439,This cst is outstanding.,1,typo_noun,INV,typo_noun-94,perturbed,True,outstanding
+beh-5440,This dialogue is amazing.,1,typo_noun,INV,typo_noun-95,original,True,amazing
+beh-5441,This dialoue is amazing.,1,typo_noun,INV,typo_noun-95,perturbed,True,amazing
+beh-5442,This dialogue is enjoyable.,1,typo_noun,INV,typo_noun-96,original,True,enjoyable
+beh-5443,This dialouge is enjoyable.,1,typo_noun,INV,typo_noun-96,perturbed,True,enjoyable
+beh-5444,This dialogue is charming.,1,typo_noun,INV,typo_noun-97,original,True,charming
+beh-5445,This dilaogue is charming.,1,typo_noun,INV,typo_noun-97,perturbed,True,charming
+beh-5446,This dialogue is outstanding.,1,typo_noun,INV,typo_noun-98,original,True,outstanding
+beh-5447,This diaolgue is outstanding.,1,typo_noun,INV,typo_noun-98,perturbed,True,outstanding
+beh-5448,This dialogue is beautiful.,1,typo_noun,INV,typo_noun-99,original,True,beautiful
+beh-5449,This dialouge is beautiful.,1,typo_noun,INV,typo_noun-99,perturbed,True,beautiful
+beh-5450,This dialogue is memorable.,1,typo_noun,INV,typo_noun-100,original,True,memorable
+beh-5451,This dialouge is memorable.,1,typo_noun,INV,typo_noun-100,perturbed,True,memorable
+beh-5452,This performance is fantastic.,1,typo_noun,INV,typo_noun-101,original,True,fantastic
+beh-5453,This pefrormance is fantastic.,1,typo_noun,INV,typo_noun-101,perturbed,True,fantastic
+beh-5454,This performance is delightful.,1,typo_noun,INV,typo_noun-102,original,True,delightful
+beh-5455,This perfrmance is delightful.,1,typo_noun,INV,typo_noun-102,perturbed,True,delightful
+beh-5456,This performance is memorable.,1,typo_noun,INV,typo_noun-103,original,True,memorable
+beh-5457,This perormance is memorable.,1,typo_noun,INV,typo_noun-103,perturbed,True,memorable
+beh-5458,This direction is good.,1,typo_noun,INV,typo_noun-104,original,True,good
+beh-5459,This direcion is good.,1,typo_noun,INV,typo_noun-104,perturbed,True,good
+beh-5460,This direction is excellent.,1,typo_noun,INV,typo_noun-105,original,True,excellent
+beh-5461,This direciton is excellent.,1,typo_noun,INV,typo_noun-105,perturbed,True,excellent
+beh-5462,This direction is amazing.,1,typo_noun,INV,typo_noun-106,original,True,amazing
+beh-5463,This direcion is amazing.,1,typo_noun,INV,typo_noun-106,perturbed,True,amazing
+beh-5464,This direction is lovely.,1,typo_noun,INV,typo_noun-107,original,True,lovely
+beh-5465,This driection is lovely.,1,typo_noun,INV,typo_noun-107,perturbed,True,lovely
+beh-5466,This direction is perfect.,1,typo_noun,INV,typo_noun-108,original,True,perfect
+beh-5467,This directin is perfect.,1,typo_noun,INV,typo_noun-108,perturbed,True,perfect
+beh-5468,This experience is great.,1,typo_noun,INV,typo_noun-109,original,True,great
+beh-5469,This expereince is great.,1,typo_noun,INV,typo_noun-109,perturbed,True,great
+beh-5470,This experience is amazing.,1,typo_noun,INV,typo_noun-110,original,True,amazing
+beh-5471,This expeience is amazing.,1,typo_noun,INV,typo_noun-110,perturbed,True,amazing
+beh-5472,This experience is delightful.,1,typo_noun,INV,typo_noun-111,original,True,delightful
+beh-5473,This eperience is delightful.,1,typo_noun,INV,typo_noun-111,perturbed,True,delightful
+beh-5474,This experience is terrific.,1,typo_noun,INV,typo_noun-112,original,True,terrific
+beh-5475,This experiene is terrific.,1,typo_noun,INV,typo_noun-112,perturbed,True,terrific
+beh-5476,This experience is memorable.,1,typo_noun,INV,typo_noun-113,original,True,memorable
+beh-5477,This experence is memorable.,1,typo_noun,INV,typo_noun-113,perturbed,True,memorable
+beh-5478,This show is great.,1,typo_noun,INV,typo_noun-114,original,True,great
+beh-5479,This sow is great.,1,typo_noun,INV,typo_noun-114,perturbed,True,great
+beh-5480,This show is beautiful.,1,typo_noun,INV,typo_noun-115,original,True,beautiful
+beh-5481,This shw is beautiful.,1,typo_noun,INV,typo_noun-115,perturbed,True,beautiful
+beh-5482,This sequel is good.,1,typo_noun,INV,typo_noun-116,original,True,good
+beh-5483,This seqel is good.,1,typo_noun,INV,typo_noun-116,perturbed,True,good
+beh-5484,This sequel is amazing.,1,typo_noun,INV,typo_noun-117,original,True,amazing
+beh-5485,This squel is amazing.,1,typo_noun,INV,typo_noun-117,perturbed,True,amazing
+beh-5486,This sequel is enjoyable.,1,typo_noun,INV,typo_noun-118,original,True,enjoyable
+beh-5487,This seqeul is enjoyable.,1,typo_noun,INV,typo_noun-118,perturbed,True,enjoyable
+beh-5488,I thought the movie was enjoyable.,1,typo_noun,INV,typo_noun-119,original,True,enjoyable
+beh-5489,I thought the moive was enjoyable.,1,typo_noun,INV,typo_noun-119,perturbed,True,enjoyable
+beh-5490,I thought the movie was outstanding.,1,typo_noun,INV,typo_noun-120,original,True,outstanding
+beh-5491,I thought the mvoie was outstanding.,1,typo_noun,INV,typo_noun-120,perturbed,True,outstanding
+beh-5492,I thought the film was brilliant.,1,typo_noun,INV,typo_noun-121,original,True,brilliant
+beh-5493,I thought the flim was brilliant.,1,typo_noun,INV,typo_noun-121,perturbed,True,brilliant
+beh-5494,I thought the film was superb.,1,typo_noun,INV,typo_noun-122,original,True,superb
+beh-5495,I thought the flim was superb.,1,typo_noun,INV,typo_noun-122,perturbed,True,superb
+beh-5496,I thought the film was lovely.,1,typo_noun,INV,typo_noun-123,original,True,lovely
+beh-5497,I thought the fim was lovely.,1,typo_noun,INV,typo_noun-123,perturbed,True,lovely
+beh-5498,I thought the film was delightful.,1,typo_noun,INV,typo_noun-124,original,True,delightful
+beh-5499,I thought the flim was delightful.,1,typo_noun,INV,typo_noun-124,perturbed,True,delightful
+beh-5500,I thought the film was perfect.,1,typo_noun,INV,typo_noun-125,original,True,perfect
+beh-5501,I thought the flim was perfect.,1,typo_noun,INV,typo_noun-125,perturbed,True,perfect
+beh-5502,I thought the film was memorable.,1,typo_noun,INV,typo_noun-126,original,True,memorable
+beh-5503,I thought the flim was memorable.,1,typo_noun,INV,typo_noun-126,perturbed,True,memorable
+beh-5504,I thought the film was fun.,1,typo_noun,INV,typo_noun-127,original,True,fun
+beh-5505,I thought the flim was fun.,1,typo_noun,INV,typo_noun-127,perturbed,True,fun
+beh-5506,I thought the plot was excellent.,1,typo_noun,INV,typo_noun-128,original,True,excellent
+beh-5507,I thought the polt was excellent.,1,typo_noun,INV,typo_noun-128,perturbed,True,excellent
+beh-5508,I thought the plot was brilliant.,1,typo_noun,INV,typo_noun-129,original,True,brilliant
+beh-5509,I thought the polt was brilliant.,1,typo_noun,INV,typo_noun-129,perturbed,True,brilliant
+beh-5510,I thought the plot was terrific.,1,typo_noun,INV,typo_noun-130,original,True,terrific
+beh-5511,I thought the polt was terrific.,1,typo_noun,INV,typo_noun-130,perturbed,True,terrific
+beh-5512,I thought the acting was excellent.,1,typo_noun,INV,typo_noun-131,original,True,excellent
+beh-5513,I thought the acitng was excellent.,1,typo_noun,INV,typo_noun-131,perturbed,True,excellent
+beh-5514,I thought the acting was fantastic.,1,typo_noun,INV,typo_noun-132,original,True,fantastic
+beh-5515,I thought the ating was fantastic.,1,typo_noun,INV,typo_noun-132,perturbed,True,fantastic
+beh-5516,I thought the acting was superb.,1,typo_noun,INV,typo_noun-133,original,True,superb
+beh-5517,I thought the actig was superb.,1,typo_noun,INV,typo_noun-133,perturbed,True,superb
+beh-5518,I thought the acting was delightful.,1,typo_noun,INV,typo_noun-134,original,True,delightful
+beh-5519,I thought the atcing was delightful.,1,typo_noun,INV,typo_noun-134,perturbed,True,delightful
+beh-5520,I thought the acting was outstanding.,1,typo_noun,INV,typo_noun-135,original,True,outstanding
+beh-5521,I thought the actig was outstanding.,1,typo_noun,INV,typo_noun-135,perturbed,True,outstanding
+beh-5522,I thought the acting was fun.,1,typo_noun,INV,typo_noun-136,original,True,fun
+beh-5523,I thought the acitng was fun.,1,typo_noun,INV,typo_noun-136,perturbed,True,fun
+beh-5524,I thought the story was wonderful.,1,typo_noun,INV,typo_noun-137,original,True,wonderful
+beh-5525,I thought the stroy was wonderful.,1,typo_noun,INV,typo_noun-137,perturbed,True,wonderful
+beh-5526,I thought the story was beautiful.,1,typo_noun,INV,typo_noun-138,original,True,beautiful
+beh-5527,I thought the sory was beautiful.,1,typo_noun,INV,typo_noun-138,perturbed,True,beautiful
+beh-5528,I thought the story was perfect.,1,typo_noun,INV,typo_noun-139,original,True,perfect
+beh-5529,I thought the sory was perfect.,1,typo_noun,INV,typo_noun-139,perturbed,True,perfect
+beh-5530,I thought the story was beautiful.,1,typo_noun,INV,typo_noun-140,original,True,beautiful
+beh-5531,I thought the stroy was beautiful.,1,typo_noun,INV,typo_noun-140,perturbed,True,beautiful
+beh-5532,I thought the script was fantastic.,1,typo_noun,INV,typo_noun-141,original,True,fantastic
+beh-5533,I thought the scrpit was fantastic.,1,typo_noun,INV,typo_noun-141,perturbed,True,fantastic
+beh-5534,I thought the script was enjoyable.,1,typo_noun,INV,typo_noun-142,original,True,enjoyable
+beh-5535,I thought the srcipt was enjoyable.,1,typo_noun,INV,typo_noun-142,perturbed,True,enjoyable
+beh-5536,I thought the script was delightful.,1,typo_noun,INV,typo_noun-143,original,True,delightful
+beh-5537,I thought the scirpt was delightful.,1,typo_noun,INV,typo_noun-143,perturbed,True,delightful
+beh-5538,I thought the ending was memorable.,1,typo_noun,INV,typo_noun-144,original,True,memorable
+beh-5539,I thought the enidng was memorable.,1,typo_noun,INV,typo_noun-144,perturbed,True,memorable
+beh-5540,I thought the soundtrack was delightful.,1,typo_noun,INV,typo_noun-145,original,True,delightful
+beh-5541,I thought the soudtrack was delightful.,1,typo_noun,INV,typo_noun-145,perturbed,True,delightful
+beh-5542,I thought the soundtrack was perfect.,1,typo_noun,INV,typo_noun-146,original,True,perfect
+beh-5543,I thought the suondtrack was perfect.,1,typo_noun,INV,typo_noun-146,perturbed,True,perfect
+beh-5544,I thought the soundtrack was terrific.,1,typo_noun,INV,typo_noun-147,original,True,terrific
+beh-5545,I thought the soudtrack was terrific.,1,typo_noun,INV,typo_noun-147,perturbed,True,terrific
+beh-5546,I thought the soundtrack was fun.,1,typo_noun,INV,typo_noun-148,original,True,fun
+beh-5547,I thought the soundrtack was fun.,1,typo_noun,INV,typo_noun-148,perturbed,True,fun
+beh-5548,I thought the cast was great.,1,typo_noun,INV,typo_noun-149,original,True,great
+beh-5549,I thought the cst was great.,1,typo_noun,INV,typo_noun-149,perturbed,True,great
+beh-5550,I thought the cast was excellent.,1,typo_noun,INV,typo_noun-150,original,True,excellent
+beh-5551,I thought the csat was excellent.,1,typo_noun,INV,typo_noun-150,perturbed,True,excellent
+beh-5552,I thought the cast was fantastic.,1,typo_noun,INV,typo_noun-151,original,True,fantastic
+beh-5553,I thought the csat was fantastic.,1,typo_noun,INV,typo_noun-151,perturbed,True,fantastic
+beh-5554,I thought the cast was impressive.,1,typo_noun,INV,typo_noun-152,original,True,impressive
+beh-5555,I thought the csat was impressive.,1,typo_noun,INV,typo_noun-152,perturbed,True,impressive
+beh-5556,I thought the cast was terrific.,1,typo_noun,INV,typo_noun-153,original,True,terrific
+beh-5557,I thought the cst was terrific.,1,typo_noun,INV,typo_noun-153,perturbed,True,terrific
+beh-5558,I thought the dialogue was excellent.,1,typo_noun,INV,typo_noun-154,original,True,excellent
+beh-5559,I thought the diaolgue was excellent.,1,typo_noun,INV,typo_noun-154,perturbed,True,excellent
+beh-5560,I thought the dialogue was enjoyable.,1,typo_noun,INV,typo_noun-155,original,True,enjoyable
+beh-5561,I thought the dialgue was enjoyable.,1,typo_noun,INV,typo_noun-155,perturbed,True,enjoyable
+beh-5562,I thought the dialogue was beautiful.,1,typo_noun,INV,typo_noun-156,original,True,beautiful
+beh-5563,I thought the dialouge was beautiful.,1,typo_noun,INV,typo_noun-156,perturbed,True,beautiful
+beh-5564,I thought the dialogue was memorable.,1,typo_noun,INV,typo_noun-157,original,True,memorable
+beh-5565,I thought the dailogue was memorable.,1,typo_noun,INV,typo_noun-157,perturbed,True,memorable
+beh-5566,I thought the dialogue was fun.,1,typo_noun,INV,typo_noun-158,original,True,fun
+beh-5567,I thought the dialoue was fun.,1,typo_noun,INV,typo_noun-158,perturbed,True,fun
+beh-5568,I thought the performance was fantastic.,1,typo_noun,INV,typo_noun-159,original,True,fantastic
+beh-5569,I thought the perforance was fantastic.,1,typo_noun,INV,typo_noun-159,perturbed,True,fantastic
+beh-5570,I thought the performance was lovely.,1,typo_noun,INV,typo_noun-160,original,True,lovely
+beh-5571,I thought the pefrormance was lovely.,1,typo_noun,INV,typo_noun-160,perturbed,True,lovely
+beh-5572,I thought the performance was memorable.,1,typo_noun,INV,typo_noun-161,original,True,memorable
+beh-5573,I thought the perormance was memorable.,1,typo_noun,INV,typo_noun-161,perturbed,True,memorable
+beh-5574,I thought the direction was lovely.,1,typo_noun,INV,typo_noun-162,original,True,lovely
+beh-5575,I thought the directoin was lovely.,1,typo_noun,INV,typo_noun-162,perturbed,True,lovely
+beh-5576,I thought the direction was charming.,1,typo_noun,INV,typo_noun-163,original,True,charming
+beh-5577,I thought the direciton was charming.,1,typo_noun,INV,typo_noun-163,perturbed,True,charming
+beh-5578,I thought the experience was wonderful.,1,typo_noun,INV,typo_noun-164,original,True,wonderful
+beh-5579,I thought the experinece was wonderful.,1,typo_noun,INV,typo_noun-164,perturbed,True,wonderful
+beh-5580,I thought the experience was superb.,1,typo_noun,INV,typo_noun-165,original,True,superb
+beh-5581,I thought the expeirence was superb.,1,typo_noun,INV,typo_noun-165,perturbed,True,superb
+beh-5582,I thought the experience was lovely.,1,typo_noun,INV,typo_noun-166,original,True,lovely
+beh-5583,I thought the experiene was lovely.,1,typo_noun,INV,typo_noun-166,perturbed,True,lovely
+beh-5584,I thought the experience was outstanding.,1,typo_noun,INV,typo_noun-167,original,True,outstanding
+beh-5585,I thought the expeience was outstanding.,1,typo_noun,INV,typo_noun-167,perturbed,True,outstanding
+beh-5586,I thought the show was charming.,1,typo_noun,INV,typo_noun-168,original,True,charming
+beh-5587,I thought the shw was charming.,1,typo_noun,INV,typo_noun-168,perturbed,True,charming
+beh-5588,I thought the show was impressive.,1,typo_noun,INV,typo_noun-169,original,True,impressive
+beh-5589,I thought the shw was impressive.,1,typo_noun,INV,typo_noun-169,perturbed,True,impressive
+beh-5590,I thought the sequel was superb.,1,typo_noun,INV,typo_noun-170,original,True,superb
+beh-5591,I thought the seuel was superb.,1,typo_noun,INV,typo_noun-170,perturbed,True,superb
+beh-5592,I thought the sequel was terrific.,1,typo_noun,INV,typo_noun-171,original,True,terrific
+beh-5593,I thought the seuqel was terrific.,1,typo_noun,INV,typo_noun-171,perturbed,True,terrific
+beh-5594,"Honestly, the movie is good.",1,typo_noun,INV,typo_noun-172,original,True,good
+beh-5595,"Honestly, the moive is good.",1,typo_noun,INV,typo_noun-172,perturbed,True,good
+beh-5596,"Honestly, the movie is amazing.",1,typo_noun,INV,typo_noun-173,original,True,amazing
+beh-5597,"Honestly, the moive is amazing.",1,typo_noun,INV,typo_noun-173,perturbed,True,amazing
+beh-5598,"Honestly, the movie is lovely.",1,typo_noun,INV,typo_noun-174,original,True,lovely
+beh-5599,"Honestly, the moive is lovely.",1,typo_noun,INV,typo_noun-174,perturbed,True,lovely
+beh-5600,"Honestly, the movie is impressive.",1,typo_noun,INV,typo_noun-175,original,True,impressive
+beh-5601,"Honestly, the moive is impressive.",1,typo_noun,INV,typo_noun-175,perturbed,True,impressive
+beh-5602,"Honestly, the movie is beautiful.",1,typo_noun,INV,typo_noun-176,original,True,beautiful
+beh-5603,"Honestly, the mvie is beautiful.",1,typo_noun,INV,typo_noun-176,perturbed,True,beautiful
+beh-5604,"Honestly, the film is great.",1,typo_noun,INV,typo_noun-177,original,True,great
+beh-5605,"Honestly, the flim is great.",1,typo_noun,INV,typo_noun-177,perturbed,True,great
+beh-5606,"Honestly, the film is charming.",1,typo_noun,INV,typo_noun-178,original,True,charming
+beh-5607,"Honestly, the fim is charming.",1,typo_noun,INV,typo_noun-178,perturbed,True,charming
+beh-5608,"Honestly, the film is impressive.",1,typo_noun,INV,typo_noun-179,original,True,impressive
+beh-5609,"Honestly, the flim is impressive.",1,typo_noun,INV,typo_noun-179,perturbed,True,impressive
+beh-5610,"Honestly, the film is terrific.",1,typo_noun,INV,typo_noun-180,original,True,terrific
+beh-5611,"Honestly, the fim is terrific.",1,typo_noun,INV,typo_noun-180,perturbed,True,terrific
+beh-5612,"Honestly, the film is fun.",1,typo_noun,INV,typo_noun-181,original,True,fun
+beh-5613,"Honestly, the flim is fun.",1,typo_noun,INV,typo_noun-181,perturbed,True,fun
+beh-5614,"Honestly, the plot is lovely.",1,typo_noun,INV,typo_noun-182,original,True,lovely
+beh-5615,"Honestly, the polt is lovely.",1,typo_noun,INV,typo_noun-182,perturbed,True,lovely
+beh-5616,"Honestly, the acting is brilliant.",1,typo_noun,INV,typo_noun-183,original,True,brilliant
+beh-5617,"Honestly, the actnig is brilliant.",1,typo_noun,INV,typo_noun-183,perturbed,True,brilliant
+beh-5618,"Honestly, the acting is delightful.",1,typo_noun,INV,typo_noun-184,original,True,delightful
+beh-5619,"Honestly, the acitng is delightful.",1,typo_noun,INV,typo_noun-184,perturbed,True,delightful
+beh-5620,"Honestly, the acting is beautiful.",1,typo_noun,INV,typo_noun-185,original,True,beautiful
+beh-5621,"Honestly, the ating is beautiful.",1,typo_noun,INV,typo_noun-185,perturbed,True,beautiful
+beh-5622,"Honestly, the story is excellent.",1,typo_noun,INV,typo_noun-186,original,True,excellent
+beh-5623,"Honestly, the stroy is excellent.",1,typo_noun,INV,typo_noun-186,perturbed,True,excellent
+beh-5624,"Honestly, the story is wonderful.",1,typo_noun,INV,typo_noun-187,original,True,wonderful
+beh-5625,"Honestly, the stroy is wonderful.",1,typo_noun,INV,typo_noun-187,perturbed,True,wonderful
+beh-5626,"Honestly, the story is delightful.",1,typo_noun,INV,typo_noun-188,original,True,delightful
+beh-5627,"Honestly, the stoy is delightful.",1,typo_noun,INV,typo_noun-188,perturbed,True,delightful
+beh-5628,"Honestly, the story is perfect.",1,typo_noun,INV,typo_noun-189,original,True,perfect
+beh-5629,"Honestly, the sotry is perfect.",1,typo_noun,INV,typo_noun-189,perturbed,True,perfect
+beh-5630,"Honestly, the story is outstanding.",1,typo_noun,INV,typo_noun-190,original,True,outstanding
+beh-5631,"Honestly, the stoy is outstanding.",1,typo_noun,INV,typo_noun-190,perturbed,True,outstanding
+beh-5632,"Honestly, the script is wonderful.",1,typo_noun,INV,typo_noun-191,original,True,wonderful
+beh-5633,"Honestly, the sript is wonderful.",1,typo_noun,INV,typo_noun-191,perturbed,True,wonderful
+beh-5634,"Honestly, the script is brilliant.",1,typo_noun,INV,typo_noun-192,original,True,brilliant
+beh-5635,"Honestly, the srcipt is brilliant.",1,typo_noun,INV,typo_noun-192,perturbed,True,brilliant
+beh-5636,"Honestly, the script is charming.",1,typo_noun,INV,typo_noun-193,original,True,charming
+beh-5637,"Honestly, the scrpt is charming.",1,typo_noun,INV,typo_noun-193,perturbed,True,charming
+beh-5638,"Honestly, the script is outstanding.",1,typo_noun,INV,typo_noun-194,original,True,outstanding
+beh-5639,"Honestly, the scrpt is outstanding.",1,typo_noun,INV,typo_noun-194,perturbed,True,outstanding
+beh-5640,"Honestly, the script is memorable.",1,typo_noun,INV,typo_noun-195,original,True,memorable
+beh-5641,"Honestly, the srcipt is memorable.",1,typo_noun,INV,typo_noun-195,perturbed,True,memorable
+beh-5642,"Honestly, the script is fun.",1,typo_noun,INV,typo_noun-196,original,True,fun
+beh-5643,"Honestly, the scrpit is fun.",1,typo_noun,INV,typo_noun-196,perturbed,True,fun
+beh-5644,"Honestly, the ending is great.",1,typo_noun,INV,typo_noun-197,original,True,great
+beh-5645,"Honestly, the edning is great.",1,typo_noun,INV,typo_noun-197,perturbed,True,great
+beh-5646,"Honestly, the ending is superb.",1,typo_noun,INV,typo_noun-198,original,True,superb
+beh-5647,"Honestly, the ening is superb.",1,typo_noun,INV,typo_noun-198,perturbed,True,superb
+beh-5648,"Honestly, the ending is lovely.",1,typo_noun,INV,typo_noun-199,original,True,lovely
+beh-5649,"Honestly, the endng is lovely.",1,typo_noun,INV,typo_noun-199,perturbed,True,lovely
+beh-5650,"Honestly, the soundtrack is great.",1,typo_noun,INV,typo_noun-200,original,True,great
+beh-5651,"Honestly, the soudntrack is great.",1,typo_noun,INV,typo_noun-200,perturbed,True,great
+beh-5652,"Honestly, the soundtrack is beautiful.",1,typo_noun,INV,typo_noun-201,original,True,beautiful
+beh-5653,"Honestly, the soudtrack is beautiful.",1,typo_noun,INV,typo_noun-201,perturbed,True,beautiful
+beh-5654,"Honestly, the soundtrack is perfect.",1,typo_noun,INV,typo_noun-202,original,True,perfect
+beh-5655,"Honestly, the soudntrack is perfect.",1,typo_noun,INV,typo_noun-202,perturbed,True,perfect
+beh-5656,"Honestly, the soundtrack is outstanding.",1,typo_noun,INV,typo_noun-203,original,True,outstanding
+beh-5657,"Honestly, the soudntrack is outstanding.",1,typo_noun,INV,typo_noun-203,perturbed,True,outstanding
+beh-5658,"Honestly, the soundtrack is beautiful.",1,typo_noun,INV,typo_noun-204,original,True,beautiful
+beh-5659,"Honestly, the soundrack is beautiful.",1,typo_noun,INV,typo_noun-204,perturbed,True,beautiful
+beh-5660,"Honestly, the cast is great.",1,typo_noun,INV,typo_noun-205,original,True,great
+beh-5661,"Honestly, the csat is great.",1,typo_noun,INV,typo_noun-205,perturbed,True,great
+beh-5662,"Honestly, the cast is excellent.",1,typo_noun,INV,typo_noun-206,original,True,excellent
+beh-5663,"Honestly, the csat is excellent.",1,typo_noun,INV,typo_noun-206,perturbed,True,excellent
+beh-5664,"Honestly, the cast is amazing.",1,typo_noun,INV,typo_noun-207,original,True,amazing
+beh-5665,"Honestly, the csat is amazing.",1,typo_noun,INV,typo_noun-207,perturbed,True,amazing
+beh-5666,"Honestly, the cast is terrific.",1,typo_noun,INV,typo_noun-208,original,True,terrific
+beh-5667,"Honestly, the csat is terrific.",1,typo_noun,INV,typo_noun-208,perturbed,True,terrific
+beh-5668,"Honestly, the cast is beautiful.",1,typo_noun,INV,typo_noun-209,original,True,beautiful
+beh-5669,"Honestly, the cat is beautiful.",1,typo_noun,INV,typo_noun-209,perturbed,True,beautiful
+beh-5670,"Honestly, the dialogue is amazing.",1,typo_noun,INV,typo_noun-210,original,True,amazing
+beh-5671,"Honestly, the diaolgue is amazing.",1,typo_noun,INV,typo_noun-210,perturbed,True,amazing
+beh-5672,"Honestly, the dialogue is brilliant.",1,typo_noun,INV,typo_noun-211,original,True,brilliant
+beh-5673,"Honestly, the diaolgue is brilliant.",1,typo_noun,INV,typo_noun-211,perturbed,True,brilliant
+beh-5674,"Honestly, the dialogue is lovely.",1,typo_noun,INV,typo_noun-212,original,True,lovely
+beh-5675,"Honestly, the dialouge is lovely.",1,typo_noun,INV,typo_noun-212,perturbed,True,lovely
+beh-5676,"Honestly, the dialogue is delightful.",1,typo_noun,INV,typo_noun-213,original,True,delightful
+beh-5677,"Honestly, the dialouge is delightful.",1,typo_noun,INV,typo_noun-213,perturbed,True,delightful
+beh-5678,"Honestly, the dialogue is beautiful.",1,typo_noun,INV,typo_noun-214,original,True,beautiful
+beh-5679,"Honestly, the dialoge is beautiful.",1,typo_noun,INV,typo_noun-214,perturbed,True,beautiful
+beh-5680,"Honestly, the dialogue is fun.",1,typo_noun,INV,typo_noun-215,original,True,fun
+beh-5681,"Honestly, the diaogue is fun.",1,typo_noun,INV,typo_noun-215,perturbed,True,fun
+beh-5682,"Honestly, the performance is great.",1,typo_noun,INV,typo_noun-216,original,True,great
+beh-5683,"Honestly, the performnace is great.",1,typo_noun,INV,typo_noun-216,perturbed,True,great
+beh-5684,"Honestly, the performance is amazing.",1,typo_noun,INV,typo_noun-217,original,True,amazing
+beh-5685,"Honestly, the perfrmance is amazing.",1,typo_noun,INV,typo_noun-217,perturbed,True,amazing
+beh-5686,"Honestly, the performance is enjoyable.",1,typo_noun,INV,typo_noun-218,original,True,enjoyable
+beh-5687,"Honestly, the perfromance is enjoyable.",1,typo_noun,INV,typo_noun-218,perturbed,True,enjoyable
+beh-5688,"Honestly, the performance is beautiful.",1,typo_noun,INV,typo_noun-219,original,True,beautiful
+beh-5689,"Honestly, the perfrmance is beautiful.",1,typo_noun,INV,typo_noun-219,perturbed,True,beautiful
+beh-5690,"Honestly, the performance is perfect.",1,typo_noun,INV,typo_noun-220,original,True,perfect
+beh-5691,"Honestly, the prformance is perfect.",1,typo_noun,INV,typo_noun-220,perturbed,True,perfect
+beh-5692,"Honestly, the direction is great.",1,typo_noun,INV,typo_noun-221,original,True,great
+beh-5693,"Honestly, the direcion is great.",1,typo_noun,INV,typo_noun-221,perturbed,True,great
+beh-5694,"Honestly, the direction is charming.",1,typo_noun,INV,typo_noun-222,original,True,charming
+beh-5695,"Honestly, the directin is charming.",1,typo_noun,INV,typo_noun-222,perturbed,True,charming
+beh-5696,"Honestly, the direction is impressive.",1,typo_noun,INV,typo_noun-223,original,True,impressive
+beh-5697,"Honestly, the directin is impressive.",1,typo_noun,INV,typo_noun-223,perturbed,True,impressive
+beh-5698,"Honestly, the direction is outstanding.",1,typo_noun,INV,typo_noun-224,original,True,outstanding
+beh-5699,"Honestly, the direciton is outstanding.",1,typo_noun,INV,typo_noun-224,perturbed,True,outstanding
+beh-5700,"Honestly, the experience is superb.",1,typo_noun,INV,typo_noun-225,original,True,superb
+beh-5701,"Honestly, the eperience is superb.",1,typo_noun,INV,typo_noun-225,perturbed,True,superb
+beh-5702,"Honestly, the experience is enjoyable.",1,typo_noun,INV,typo_noun-226,original,True,enjoyable
+beh-5703,"Honestly, the exerience is enjoyable.",1,typo_noun,INV,typo_noun-226,perturbed,True,enjoyable
+beh-5704,"Honestly, the experience is terrific.",1,typo_noun,INV,typo_noun-227,original,True,terrific
+beh-5705,"Honestly, the expeirence is terrific.",1,typo_noun,INV,typo_noun-227,perturbed,True,terrific
+beh-5706,"Honestly, the experience is outstanding.",1,typo_noun,INV,typo_noun-228,original,True,outstanding
+beh-5707,"Honestly, the expereince is outstanding.",1,typo_noun,INV,typo_noun-228,perturbed,True,outstanding
+beh-5708,"Honestly, the experience is memorable.",1,typo_noun,INV,typo_noun-229,original,True,memorable
+beh-5709,"Honestly, the experence is memorable.",1,typo_noun,INV,typo_noun-229,perturbed,True,memorable
+beh-5710,"Honestly, the show is good.",1,typo_noun,INV,typo_noun-230,original,True,good
+beh-5711,"Honestly, the sohw is good.",1,typo_noun,INV,typo_noun-230,perturbed,True,good
+beh-5712,"Honestly, the show is wonderful.",1,typo_noun,INV,typo_noun-231,original,True,wonderful
+beh-5713,"Honestly, the shw is wonderful.",1,typo_noun,INV,typo_noun-231,perturbed,True,wonderful
+beh-5714,"Honestly, the show is charming.",1,typo_noun,INV,typo_noun-232,original,True,charming
+beh-5715,"Honestly, the shw is charming.",1,typo_noun,INV,typo_noun-232,perturbed,True,charming
+beh-5716,"Honestly, the sequel is great.",1,typo_noun,INV,typo_noun-233,original,True,great
+beh-5717,"Honestly, the sqeuel is great.",1,typo_noun,INV,typo_noun-233,perturbed,True,great
+beh-5718,"Honestly, the sequel is wonderful.",1,typo_noun,INV,typo_noun-234,original,True,wonderful
+beh-5719,"Honestly, the sequl is wonderful.",1,typo_noun,INV,typo_noun-234,perturbed,True,wonderful
+beh-5720,"Honestly, the sequel is superb.",1,typo_noun,INV,typo_noun-235,original,True,superb
+beh-5721,"Honestly, the sequl is superb.",1,typo_noun,INV,typo_noun-235,perturbed,True,superb
+beh-5722,"Honestly, the sequel is terrific.",1,typo_noun,INV,typo_noun-236,original,True,terrific
+beh-5723,"Honestly, the squel is terrific.",1,typo_noun,INV,typo_noun-236,perturbed,True,terrific
+beh-5724,The movie was lousy.,0,typo_noun,INV,typo_noun-237,original,True,lousy
+beh-5725,The moie was lousy.,0,typo_noun,INV,typo_noun-237,perturbed,True,lousy
+beh-5726,The movie was pathetic.,0,typo_noun,INV,typo_noun-238,original,True,pathetic
+beh-5727,The mvoie was pathetic.,0,typo_noun,INV,typo_noun-238,perturbed,True,pathetic
+beh-5728,The movie was unpleasant.,0,typo_noun,INV,typo_noun-239,original,True,unpleasant
+beh-5729,The move was unpleasant.,0,typo_noun,INV,typo_noun-239,perturbed,True,unpleasant
+beh-5730,The film was horrible.,0,typo_noun,INV,typo_noun-240,original,True,horrible
+beh-5731,The flim was horrible.,0,typo_noun,INV,typo_noun-240,perturbed,True,horrible
+beh-5732,The film was boring.,0,typo_noun,INV,typo_noun-241,original,True,boring
+beh-5733,The flim was boring.,0,typo_noun,INV,typo_noun-241,perturbed,True,boring
+beh-5734,The film was poor.,0,typo_noun,INV,typo_noun-242,original,True,poor
+beh-5735,The flim was poor.,0,typo_noun,INV,typo_noun-242,perturbed,True,poor
+beh-5736,The film was weak.,0,typo_noun,INV,typo_noun-243,original,True,weak
+beh-5737,The fim was weak.,0,typo_noun,INV,typo_noun-243,perturbed,True,weak
+beh-5738,The film was painful.,0,typo_noun,INV,typo_noun-244,original,True,painful
+beh-5739,The flm was painful.,0,typo_noun,INV,typo_noun-244,perturbed,True,painful
+beh-5740,The film was tedious.,0,typo_noun,INV,typo_noun-245,original,True,tedious
+beh-5741,The flim was tedious.,0,typo_noun,INV,typo_noun-245,perturbed,True,tedious
+beh-5742,The film was unpleasant.,0,typo_noun,INV,typo_noun-246,original,True,unpleasant
+beh-5743,The flim was unpleasant.,0,typo_noun,INV,typo_noun-246,perturbed,True,unpleasant
+beh-5744,The plot was boring.,0,typo_noun,INV,typo_noun-247,original,True,boring
+beh-5745,The polt was boring.,0,typo_noun,INV,typo_noun-247,perturbed,True,boring
+beh-5746,The plot was disappointing.,0,typo_noun,INV,typo_noun-248,original,True,disappointing
+beh-5747,The pot was disappointing.,0,typo_noun,INV,typo_noun-248,perturbed,True,disappointing
+beh-5748,The plot was mediocre.,0,typo_noun,INV,typo_noun-249,original,True,mediocre
+beh-5749,The plt was mediocre.,0,typo_noun,INV,typo_noun-249,perturbed,True,mediocre
+beh-5750,The acting was disappointing.,0,typo_noun,INV,typo_noun-250,original,True,disappointing
+beh-5751,The atcing was disappointing.,0,typo_noun,INV,typo_noun-250,perturbed,True,disappointing
+beh-5752,The acting was tedious.,0,typo_noun,INV,typo_noun-251,original,True,tedious
+beh-5753,The acitng was tedious.,0,typo_noun,INV,typo_noun-251,perturbed,True,tedious
+beh-5754,The acting was forgettable.,0,typo_noun,INV,typo_noun-252,original,True,forgettable
+beh-5755,The actig was forgettable.,0,typo_noun,INV,typo_noun-252,perturbed,True,forgettable
+beh-5756,The acting was unpleasant.,0,typo_noun,INV,typo_noun-253,original,True,unpleasant
+beh-5757,The actng was unpleasant.,0,typo_noun,INV,typo_noun-253,perturbed,True,unpleasant
+beh-5758,The story was poor.,0,typo_noun,INV,typo_noun-254,original,True,poor
+beh-5759,The sory was poor.,0,typo_noun,INV,typo_noun-254,perturbed,True,poor
+beh-5760,The story was mediocre.,0,typo_noun,INV,typo_noun-255,original,True,mediocre
+beh-5761,The sotry was mediocre.,0,typo_noun,INV,typo_noun-255,perturbed,True,mediocre
+beh-5762,The story was painful.,0,typo_noun,INV,typo_noun-256,original,True,painful
+beh-5763,The stoy was painful.,0,typo_noun,INV,typo_noun-256,perturbed,True,painful
+beh-5764,The script was terrible.,0,typo_noun,INV,typo_noun-257,original,True,terrible
+beh-5765,The scirpt was terrible.,0,typo_noun,INV,typo_noun-257,perturbed,True,terrible
+beh-5766,The script was painful.,0,typo_noun,INV,typo_noun-258,original,True,painful
+beh-5767,The scrpit was painful.,0,typo_noun,INV,typo_noun-258,perturbed,True,painful
+beh-5768,The script was unpleasant.,0,typo_noun,INV,typo_noun-259,original,True,unpleasant
+beh-5769,The sript was unpleasant.,0,typo_noun,INV,typo_noun-259,perturbed,True,unpleasant
+beh-5770,The ending was weak.,0,typo_noun,INV,typo_noun-260,original,True,weak
+beh-5771,The edning was weak.,0,typo_noun,INV,typo_noun-260,perturbed,True,weak
+beh-5772,The ending was mediocre.,0,typo_noun,INV,typo_noun-261,original,True,mediocre
+beh-5773,The edning was mediocre.,0,typo_noun,INV,typo_noun-261,perturbed,True,mediocre
+beh-5774,The ending was forgettable.,0,typo_noun,INV,typo_noun-262,original,True,forgettable
+beh-5775,The edning was forgettable.,0,typo_noun,INV,typo_noun-262,perturbed,True,forgettable
+beh-5776,The soundtrack was boring.,0,typo_noun,INV,typo_noun-263,original,True,boring
+beh-5777,The sountdrack was boring.,0,typo_noun,INV,typo_noun-263,perturbed,True,boring
+beh-5778,The soundtrack was dull.,0,typo_noun,INV,typo_noun-264,original,True,dull
+beh-5779,The soundrtack was dull.,0,typo_noun,INV,typo_noun-264,perturbed,True,dull
+beh-5780,The soundtrack was painful.,0,typo_noun,INV,typo_noun-265,original,True,painful
+beh-5781,The soundtrcak was painful.,0,typo_noun,INV,typo_noun-265,perturbed,True,painful
+beh-5782,The soundtrack was forgettable.,0,typo_noun,INV,typo_noun-266,original,True,forgettable
+beh-5783,The soundtrak was forgettable.,0,typo_noun,INV,typo_noun-266,perturbed,True,forgettable
+beh-5784,The soundtrack was unpleasant.,0,typo_noun,INV,typo_noun-267,original,True,unpleasant
+beh-5785,The soundtrcak was unpleasant.,0,typo_noun,INV,typo_noun-267,perturbed,True,unpleasant
+beh-5786,The soundtrack was sloppy.,0,typo_noun,INV,typo_noun-268,original,True,sloppy
+beh-5787,The sountrack was sloppy.,0,typo_noun,INV,typo_noun-268,perturbed,True,sloppy
+beh-5788,The cast was forgettable.,0,typo_noun,INV,typo_noun-269,original,True,forgettable
+beh-5789,The cat was forgettable.,0,typo_noun,INV,typo_noun-269,perturbed,True,forgettable
+beh-5790,The dialogue was awful.,0,typo_noun,INV,typo_noun-270,original,True,awful
+beh-5791,The diaogue was awful.,0,typo_noun,INV,typo_noun-270,perturbed,True,awful
+beh-5792,The dialogue was dull.,0,typo_noun,INV,typo_noun-271,original,True,dull
+beh-5793,The dialouge was dull.,0,typo_noun,INV,typo_noun-271,perturbed,True,dull
+beh-5794,The dialogue was poor.,0,typo_noun,INV,typo_noun-272,original,True,poor
+beh-5795,The dilogue was poor.,0,typo_noun,INV,typo_noun-272,perturbed,True,poor
+beh-5796,The dialogue was tedious.,0,typo_noun,INV,typo_noun-273,original,True,tedious
+beh-5797,The dialoue was tedious.,0,typo_noun,INV,typo_noun-273,perturbed,True,tedious
+beh-5798,The dialogue was pathetic.,0,typo_noun,INV,typo_noun-274,original,True,pathetic
+beh-5799,The dialouge was pathetic.,0,typo_noun,INV,typo_noun-274,perturbed,True,pathetic
+beh-5800,The performance was bad.,0,typo_noun,INV,typo_noun-275,original,True,bad
+beh-5801,The performacne was bad.,0,typo_noun,INV,typo_noun-275,perturbed,True,bad
+beh-5802,The performance was mediocre.,0,typo_noun,INV,typo_noun-276,original,True,mediocre
+beh-5803,The preformance was mediocre.,0,typo_noun,INV,typo_noun-276,perturbed,True,mediocre
+beh-5804,The performance was tedious.,0,typo_noun,INV,typo_noun-277,original,True,tedious
+beh-5805,The preformance was tedious.,0,typo_noun,INV,typo_noun-277,perturbed,True,tedious
+beh-5806,The performance was pathetic.,0,typo_noun,INV,typo_noun-278,original,True,pathetic
+beh-5807,The perfomance was pathetic.,0,typo_noun,INV,typo_noun-278,perturbed,True,pathetic
+beh-5808,The performance was bland.,0,typo_noun,INV,typo_noun-279,original,True,bland
+beh-5809,The perfomance was bland.,0,typo_noun,INV,typo_noun-279,perturbed,True,bland
+beh-5810,The direction was tedious.,0,typo_noun,INV,typo_noun-280,original,True,tedious
+beh-5811,The dircetion was tedious.,0,typo_noun,INV,typo_noun-280,perturbed,True,tedious
+beh-5812,The experience was dull.,0,typo_noun,INV,typo_noun-281,original,True,dull
+beh-5813,The exprience was dull.,0,typo_noun,INV,typo_noun-281,perturbed,True,dull
+beh-5814,The experience was annoying.,0,typo_noun,INV,typo_noun-282,original,True,annoying
+beh-5815,The eperience was annoying.,0,typo_noun,INV,typo_noun-282,perturbed,True,annoying
+beh-5816,The experience was bland.,0,typo_noun,INV,typo_noun-283,original,True,bland
+beh-5817,The experinece was bland.,0,typo_noun,INV,typo_noun-283,perturbed,True,bland
+beh-5818,The show was bad.,0,typo_noun,INV,typo_noun-284,original,True,bad
+beh-5819,The shw was bad.,0,typo_noun,INV,typo_noun-284,perturbed,True,bad
+beh-5820,The show was awful.,0,typo_noun,INV,typo_noun-285,original,True,awful
+beh-5821,The shw was awful.,0,typo_noun,INV,typo_noun-285,perturbed,True,awful
+beh-5822,The show was dull.,0,typo_noun,INV,typo_noun-286,original,True,dull
+beh-5823,The shw was dull.,0,typo_noun,INV,typo_noun-286,perturbed,True,dull
+beh-5824,The show was mediocre.,0,typo_noun,INV,typo_noun-287,original,True,mediocre
+beh-5825,The sohw was mediocre.,0,typo_noun,INV,typo_noun-287,perturbed,True,mediocre
+beh-5826,The show was tedious.,0,typo_noun,INV,typo_noun-288,original,True,tedious
+beh-5827,The sow was tedious.,0,typo_noun,INV,typo_noun-288,perturbed,True,tedious
+beh-5828,The show was pathetic.,0,typo_noun,INV,typo_noun-289,original,True,pathetic
+beh-5829,The shw was pathetic.,0,typo_noun,INV,typo_noun-289,perturbed,True,pathetic
+beh-5830,The show was forgettable.,0,typo_noun,INV,typo_noun-290,original,True,forgettable
+beh-5831,The sohw was forgettable.,0,typo_noun,INV,typo_noun-290,perturbed,True,forgettable
+beh-5832,The show was sloppy.,0,typo_noun,INV,typo_noun-291,original,True,sloppy
+beh-5833,The sohw was sloppy.,0,typo_noun,INV,typo_noun-291,perturbed,True,sloppy
+beh-5834,The sequel was awful.,0,typo_noun,INV,typo_noun-292,original,True,awful
+beh-5835,The squel was awful.,0,typo_noun,INV,typo_noun-292,perturbed,True,awful
+beh-5836,The sequel was dreadful.,0,typo_noun,INV,typo_noun-293,original,True,dreadful
+beh-5837,The seuqel was dreadful.,0,typo_noun,INV,typo_noun-293,perturbed,True,dreadful
+beh-5838,The sequel was tedious.,0,typo_noun,INV,typo_noun-294,original,True,tedious
+beh-5839,The seqeul was tedious.,0,typo_noun,INV,typo_noun-294,perturbed,True,tedious
+beh-5840,The sequel was pathetic.,0,typo_noun,INV,typo_noun-295,original,True,pathetic
+beh-5841,The sqeuel was pathetic.,0,typo_noun,INV,typo_noun-295,perturbed,True,pathetic
+beh-5842,The sequel was bland.,0,typo_noun,INV,typo_noun-296,original,True,bland
+beh-5843,The seuqel was bland.,0,typo_noun,INV,typo_noun-296,perturbed,True,bland
+beh-5844,This movie is dull.,0,typo_noun,INV,typo_noun-297,original,True,dull
+beh-5845,This mvoie is dull.,0,typo_noun,INV,typo_noun-297,perturbed,True,dull
+beh-5846,This movie is poor.,0,typo_noun,INV,typo_noun-298,original,True,poor
+beh-5847,This mvie is poor.,0,typo_noun,INV,typo_noun-298,perturbed,True,poor
+beh-5848,This movie is weak.,0,typo_noun,INV,typo_noun-299,original,True,weak
+beh-5849,This mvoie is weak.,0,typo_noun,INV,typo_noun-299,perturbed,True,weak
+beh-5850,This movie is pathetic.,0,typo_noun,INV,typo_noun-300,original,True,pathetic
+beh-5851,This moive is pathetic.,0,typo_noun,INV,typo_noun-300,perturbed,True,pathetic
+beh-5852,This movie is sloppy.,0,typo_noun,INV,typo_noun-301,original,True,sloppy
+beh-5853,This mvie is sloppy.,0,typo_noun,INV,typo_noun-301,perturbed,True,sloppy
+beh-5854,This film is terrible.,0,typo_noun,INV,typo_noun-302,original,True,terrible
+beh-5855,This flm is terrible.,0,typo_noun,INV,typo_noun-302,perturbed,True,terrible
+beh-5856,This film is awful.,0,typo_noun,INV,typo_noun-303,original,True,awful
+beh-5857,This flim is awful.,0,typo_noun,INV,typo_noun-303,perturbed,True,awful
+beh-5858,This film is boring.,0,typo_noun,INV,typo_noun-304,original,True,boring
+beh-5859,This flim is boring.,0,typo_noun,INV,typo_noun-304,perturbed,True,boring
+beh-5860,This film is disappointing.,0,typo_noun,INV,typo_noun-305,original,True,disappointing
+beh-5861,This flim is disappointing.,0,typo_noun,INV,typo_noun-305,perturbed,True,disappointing
+beh-5862,This film is dreadful.,0,typo_noun,INV,typo_noun-306,original,True,dreadful
+beh-5863,This flim is dreadful.,0,typo_noun,INV,typo_noun-306,perturbed,True,dreadful
+beh-5864,This film is annoying.,0,typo_noun,INV,typo_noun-307,original,True,annoying
+beh-5865,This flim is annoying.,0,typo_noun,INV,typo_noun-307,perturbed,True,annoying
+beh-5866,This film is lousy.,0,typo_noun,INV,typo_noun-308,original,True,lousy
+beh-5867,This flim is lousy.,0,typo_noun,INV,typo_noun-308,perturbed,True,lousy
+beh-5868,This film is pathetic.,0,typo_noun,INV,typo_noun-309,original,True,pathetic
+beh-5869,This flm is pathetic.,0,typo_noun,INV,typo_noun-309,perturbed,True,pathetic
+beh-5870,This plot is bad.,0,typo_noun,INV,typo_noun-310,original,True,bad
+beh-5871,This polt is bad.,0,typo_noun,INV,typo_noun-310,perturbed,True,bad
+beh-5872,This plot is mediocre.,0,typo_noun,INV,typo_noun-311,original,True,mediocre
+beh-5873,This polt is mediocre.,0,typo_noun,INV,typo_noun-311,perturbed,True,mediocre
+beh-5874,This plot is annoying.,0,typo_noun,INV,typo_noun-312,original,True,annoying
+beh-5875,This polt is annoying.,0,typo_noun,INV,typo_noun-312,perturbed,True,annoying
+beh-5876,This plot is tedious.,0,typo_noun,INV,typo_noun-313,original,True,tedious
+beh-5877,This polt is tedious.,0,typo_noun,INV,typo_noun-313,perturbed,True,tedious
+beh-5878,This plot is forgettable.,0,typo_noun,INV,typo_noun-314,original,True,forgettable
+beh-5879,This polt is forgettable.,0,typo_noun,INV,typo_noun-314,perturbed,True,forgettable
+beh-5880,This acting is bad.,0,typo_noun,INV,typo_noun-315,original,True,bad
+beh-5881,This acitng is bad.,0,typo_noun,INV,typo_noun-315,perturbed,True,bad
+beh-5882,This acting is dreadful.,0,typo_noun,INV,typo_noun-316,original,True,dreadful
+beh-5883,This atcing is dreadful.,0,typo_noun,INV,typo_noun-316,perturbed,True,dreadful
+beh-5884,This acting is annoying.,0,typo_noun,INV,typo_noun-317,original,True,annoying
+beh-5885,This ating is annoying.,0,typo_noun,INV,typo_noun-317,perturbed,True,annoying
+beh-5886,This story is dull.,0,typo_noun,INV,typo_noun-318,original,True,dull
+beh-5887,This stroy is dull.,0,typo_noun,INV,typo_noun-318,perturbed,True,dull
+beh-5888,This story is poor.,0,typo_noun,INV,typo_noun-319,original,True,poor
+beh-5889,This stroy is poor.,0,typo_noun,INV,typo_noun-319,perturbed,True,poor
+beh-5890,This story is lousy.,0,typo_noun,INV,typo_noun-320,original,True,lousy
+beh-5891,This stoy is lousy.,0,typo_noun,INV,typo_noun-320,perturbed,True,lousy
+beh-5892,This story is bland.,0,typo_noun,INV,typo_noun-321,original,True,bland
+beh-5893,This sotry is bland.,0,typo_noun,INV,typo_noun-321,perturbed,True,bland
+beh-5894,This script is bad.,0,typo_noun,INV,typo_noun-322,original,True,bad
+beh-5895,This srcipt is bad.,0,typo_noun,INV,typo_noun-322,perturbed,True,bad
+beh-5896,This script is awful.,0,typo_noun,INV,typo_noun-323,original,True,awful
+beh-5897,This scipt is awful.,0,typo_noun,INV,typo_noun-323,perturbed,True,awful
+beh-5898,This script is poor.,0,typo_noun,INV,typo_noun-324,original,True,poor
+beh-5899,This srcipt is poor.,0,typo_noun,INV,typo_noun-324,perturbed,True,poor
+beh-5900,This script is dreadful.,0,typo_noun,INV,typo_noun-325,original,True,dreadful
+beh-5901,This scrpit is dreadful.,0,typo_noun,INV,typo_noun-325,perturbed,True,dreadful
+beh-5902,This script is weak.,0,typo_noun,INV,typo_noun-326,original,True,weak
+beh-5903,This srcipt is weak.,0,typo_noun,INV,typo_noun-326,perturbed,True,weak
+beh-5904,This script is tedious.,0,typo_noun,INV,typo_noun-327,original,True,tedious
+beh-5905,This sript is tedious.,0,typo_noun,INV,typo_noun-327,perturbed,True,tedious
+beh-5906,This script is sloppy.,0,typo_noun,INV,typo_noun-328,original,True,sloppy
+beh-5907,This scirpt is sloppy.,0,typo_noun,INV,typo_noun-328,perturbed,True,sloppy
+beh-5908,This ending is poor.,0,typo_noun,INV,typo_noun-329,original,True,poor
+beh-5909,This endnig is poor.,0,typo_noun,INV,typo_noun-329,perturbed,True,poor
+beh-5910,This ending is disappointing.,0,typo_noun,INV,typo_noun-330,original,True,disappointing
+beh-5911,This endnig is disappointing.,0,typo_noun,INV,typo_noun-330,perturbed,True,disappointing
+beh-5912,This ending is painful.,0,typo_noun,INV,typo_noun-331,original,True,painful
+beh-5913,This enidng is painful.,0,typo_noun,INV,typo_noun-331,perturbed,True,painful
+beh-5914,This ending is forgettable.,0,typo_noun,INV,typo_noun-332,original,True,forgettable
+beh-5915,This ening is forgettable.,0,typo_noun,INV,typo_noun-332,perturbed,True,forgettable
+beh-5916,This ending is unpleasant.,0,typo_noun,INV,typo_noun-333,original,True,unpleasant
+beh-5917,This endng is unpleasant.,0,typo_noun,INV,typo_noun-333,perturbed,True,unpleasant
+beh-5918,This soundtrack is awful.,0,typo_noun,INV,typo_noun-334,original,True,awful
+beh-5919,This soundtrak is awful.,0,typo_noun,INV,typo_noun-334,perturbed,True,awful
+beh-5920,This soundtrack is boring.,0,typo_noun,INV,typo_noun-335,original,True,boring
+beh-5921,This soundtarck is boring.,0,typo_noun,INV,typo_noun-335,perturbed,True,boring
+beh-5922,This soundtrack is pathetic.,0,typo_noun,INV,typo_noun-336,original,True,pathetic
+beh-5923,This soudntrack is pathetic.,0,typo_noun,INV,typo_noun-336,perturbed,True,pathetic
+beh-5924,This soundtrack is sloppy.,0,typo_noun,INV,typo_noun-337,original,True,sloppy
+beh-5925,This soudtrack is sloppy.,0,typo_noun,INV,typo_noun-337,perturbed,True,sloppy
+beh-5926,This cast is awful.,0,typo_noun,INV,typo_noun-338,original,True,awful
+beh-5927,This csat is awful.,0,typo_noun,INV,typo_noun-338,perturbed,True,awful
+beh-5928,This cast is annoying.,0,typo_noun,INV,typo_noun-339,original,True,annoying
+beh-5929,This cat is annoying.,0,typo_noun,INV,typo_noun-339,perturbed,True,annoying
+beh-5930,This cast is unpleasant.,0,typo_noun,INV,typo_noun-340,original,True,unpleasant
+beh-5931,This csat is unpleasant.,0,typo_noun,INV,typo_noun-340,perturbed,True,unpleasant
+beh-5932,This dialogue is terrible.,0,typo_noun,INV,typo_noun-341,original,True,terrible
+beh-5933,This dialgoue is terrible.,0,typo_noun,INV,typo_noun-341,perturbed,True,terrible
+beh-5934,This dialogue is awful.,0,typo_noun,INV,typo_noun-342,original,True,awful
+beh-5935,This dilogue is awful.,0,typo_noun,INV,typo_noun-342,perturbed,True,awful
+beh-5936,This dialogue is annoying.,0,typo_noun,INV,typo_noun-343,original,True,annoying
+beh-5937,This dalogue is annoying.,0,typo_noun,INV,typo_noun-343,perturbed,True,annoying
+beh-5938,This performance is awful.,0,typo_noun,INV,typo_noun-344,original,True,awful
+beh-5939,This perfomance is awful.,0,typo_noun,INV,typo_noun-344,perturbed,True,awful
+beh-5940,This performance is dull.,0,typo_noun,INV,typo_noun-345,original,True,dull
+beh-5941,This perforance is dull.,0,typo_noun,INV,typo_noun-345,perturbed,True,dull
+beh-5942,This performance is sloppy.,0,typo_noun,INV,typo_noun-346,original,True,sloppy
+beh-5943,This performace is sloppy.,0,typo_noun,INV,typo_noun-346,perturbed,True,sloppy
+beh-5944,This direction is awful.,0,typo_noun,INV,typo_noun-347,original,True,awful
+beh-5945,This directoin is awful.,0,typo_noun,INV,typo_noun-347,perturbed,True,awful
+beh-5946,This direction is boring.,0,typo_noun,INV,typo_noun-348,original,True,boring
+beh-5947,This directon is boring.,0,typo_noun,INV,typo_noun-348,perturbed,True,boring
+beh-5948,This direction is disappointing.,0,typo_noun,INV,typo_noun-349,original,True,disappointing
+beh-5949,This directon is disappointing.,0,typo_noun,INV,typo_noun-349,perturbed,True,disappointing
+beh-5950,This direction is weak.,0,typo_noun,INV,typo_noun-350,original,True,weak
+beh-5951,This diection is weak.,0,typo_noun,INV,typo_noun-350,perturbed,True,weak
+beh-5952,This direction is lousy.,0,typo_noun,INV,typo_noun-351,original,True,lousy
+beh-5953,This dirction is lousy.,0,typo_noun,INV,typo_noun-351,perturbed,True,lousy
+beh-5954,This direction is bland.,0,typo_noun,INV,typo_noun-352,original,True,bland
+beh-5955,This dirction is bland.,0,typo_noun,INV,typo_noun-352,perturbed,True,bland
+beh-5956,This experience is bad.,0,typo_noun,INV,typo_noun-353,original,True,bad
+beh-5957,This experiecne is bad.,0,typo_noun,INV,typo_noun-353,perturbed,True,bad
+beh-5958,This experience is poor.,0,typo_noun,INV,typo_noun-354,original,True,poor
+beh-5959,This exeprience is poor.,0,typo_noun,INV,typo_noun-354,perturbed,True,poor
+beh-5960,This experience is mediocre.,0,typo_noun,INV,typo_noun-355,original,True,mediocre
+beh-5961,This experence is mediocre.,0,typo_noun,INV,typo_noun-355,perturbed,True,mediocre
+beh-5962,This experience is forgettable.,0,typo_noun,INV,typo_noun-356,original,True,forgettable
+beh-5963,This expeirence is forgettable.,0,typo_noun,INV,typo_noun-356,perturbed,True,forgettable
+beh-5964,This experience is sloppy.,0,typo_noun,INV,typo_noun-357,original,True,sloppy
+beh-5965,This experince is sloppy.,0,typo_noun,INV,typo_noun-357,perturbed,True,sloppy
+beh-5966,This show is dull.,0,typo_noun,INV,typo_noun-358,original,True,dull
+beh-5967,This sohw is dull.,0,typo_noun,INV,typo_noun-358,perturbed,True,dull
+beh-5968,This show is poor.,0,typo_noun,INV,typo_noun-359,original,True,poor
+beh-5969,This sow is poor.,0,typo_noun,INV,typo_noun-359,perturbed,True,poor
+beh-5970,This show is dreadful.,0,typo_noun,INV,typo_noun-360,original,True,dreadful
+beh-5971,This shw is dreadful.,0,typo_noun,INV,typo_noun-360,perturbed,True,dreadful
+beh-5972,This show is weak.,0,typo_noun,INV,typo_noun-361,original,True,weak
+beh-5973,This shw is weak.,0,typo_noun,INV,typo_noun-361,perturbed,True,weak
+beh-5974,This show is tedious.,0,typo_noun,INV,typo_noun-362,original,True,tedious
+beh-5975,This shw is tedious.,0,typo_noun,INV,typo_noun-362,perturbed,True,tedious
+beh-5976,This show is forgettable.,0,typo_noun,INV,typo_noun-363,original,True,forgettable
+beh-5977,This sohw is forgettable.,0,typo_noun,INV,typo_noun-363,perturbed,True,forgettable
+beh-5978,This show is unpleasant.,0,typo_noun,INV,typo_noun-364,original,True,unpleasant
+beh-5979,This sohw is unpleasant.,0,typo_noun,INV,typo_noun-364,perturbed,True,unpleasant
+beh-5980,This show is bland.,0,typo_noun,INV,typo_noun-365,original,True,bland
+beh-5981,This sow is bland.,0,typo_noun,INV,typo_noun-365,perturbed,True,bland
+beh-5982,This sequel is weak.,0,typo_noun,INV,typo_noun-366,original,True,weak
+beh-5983,This sequl is weak.,0,typo_noun,INV,typo_noun-366,perturbed,True,weak
+beh-5984,This sequel is forgettable.,0,typo_noun,INV,typo_noun-367,original,True,forgettable
+beh-5985,This seqeul is forgettable.,0,typo_noun,INV,typo_noun-367,perturbed,True,forgettable
+beh-5986,I thought the movie was terrible.,0,typo_noun,INV,typo_noun-368,original,True,terrible
+beh-5987,I thought the mvoie was terrible.,0,typo_noun,INV,typo_noun-368,perturbed,True,terrible
+beh-5988,I thought the movie was horrible.,0,typo_noun,INV,typo_noun-369,original,True,horrible
+beh-5989,I thought the moie was horrible.,0,typo_noun,INV,typo_noun-369,perturbed,True,horrible
+beh-5990,I thought the movie was poor.,0,typo_noun,INV,typo_noun-370,original,True,poor
+beh-5991,I thought the moive was poor.,0,typo_noun,INV,typo_noun-370,perturbed,True,poor
+beh-5992,I thought the movie was dreadful.,0,typo_noun,INV,typo_noun-371,original,True,dreadful
+beh-5993,I thought the mvoie was dreadful.,0,typo_noun,INV,typo_noun-371,perturbed,True,dreadful
+beh-5994,I thought the movie was forgettable.,0,typo_noun,INV,typo_noun-372,original,True,forgettable
+beh-5995,I thought the moive was forgettable.,0,typo_noun,INV,typo_noun-372,perturbed,True,forgettable
+beh-5996,I thought the film was awful.,0,typo_noun,INV,typo_noun-373,original,True,awful
+beh-5997,I thought the flim was awful.,0,typo_noun,INV,typo_noun-373,perturbed,True,awful
+beh-5998,I thought the film was boring.,0,typo_noun,INV,typo_noun-374,original,True,boring
+beh-5999,I thought the flm was boring.,0,typo_noun,INV,typo_noun-374,perturbed,True,boring
+beh-6000,I thought the film was disappointing.,0,typo_noun,INV,typo_noun-375,original,True,disappointing
+beh-6001,I thought the flim was disappointing.,0,typo_noun,INV,typo_noun-375,perturbed,True,disappointing
+beh-6002,I thought the film was dreadful.,0,typo_noun,INV,typo_noun-376,original,True,dreadful
+beh-6003,I thought the flim was dreadful.,0,typo_noun,INV,typo_noun-376,perturbed,True,dreadful
+beh-6004,I thought the film was painful.,0,typo_noun,INV,typo_noun-377,original,True,painful
+beh-6005,I thought the flim was painful.,0,typo_noun,INV,typo_noun-377,perturbed,True,painful
+beh-6006,I thought the film was tedious.,0,typo_noun,INV,typo_noun-378,original,True,tedious
+beh-6007,I thought the flm was tedious.,0,typo_noun,INV,typo_noun-378,perturbed,True,tedious
+beh-6008,I thought the film was forgettable.,0,typo_noun,INV,typo_noun-379,original,True,forgettable
+beh-6009,I thought the flim was forgettable.,0,typo_noun,INV,typo_noun-379,perturbed,True,forgettable
+beh-6010,I thought the film was unpleasant.,0,typo_noun,INV,typo_noun-380,original,True,unpleasant
+beh-6011,I thought the flim was unpleasant.,0,typo_noun,INV,typo_noun-380,perturbed,True,unpleasant
+beh-6012,I thought the film was sloppy.,0,typo_noun,INV,typo_noun-381,original,True,sloppy
+beh-6013,I thought the flm was sloppy.,0,typo_noun,INV,typo_noun-381,perturbed,True,sloppy
+beh-6014,I thought the plot was terrible.,0,typo_noun,INV,typo_noun-382,original,True,terrible
+beh-6015,I thought the pot was terrible.,0,typo_noun,INV,typo_noun-382,perturbed,True,terrible
+beh-6016,I thought the plot was boring.,0,typo_noun,INV,typo_noun-383,original,True,boring
+beh-6017,I thought the polt was boring.,0,typo_noun,INV,typo_noun-383,perturbed,True,boring
+beh-6018,I thought the plot was forgettable.,0,typo_noun,INV,typo_noun-384,original,True,forgettable
+beh-6019,I thought the polt was forgettable.,0,typo_noun,INV,typo_noun-384,perturbed,True,forgettable
+beh-6020,I thought the acting was awful.,0,typo_noun,INV,typo_noun-385,original,True,awful
+beh-6021,I thought the ating was awful.,0,typo_noun,INV,typo_noun-385,perturbed,True,awful
+beh-6022,I thought the acting was tedious.,0,typo_noun,INV,typo_noun-386,original,True,tedious
+beh-6023,I thought the actig was tedious.,0,typo_noun,INV,typo_noun-386,perturbed,True,tedious
+beh-6024,I thought the acting was pathetic.,0,typo_noun,INV,typo_noun-387,original,True,pathetic
+beh-6025,I thought the acitng was pathetic.,0,typo_noun,INV,typo_noun-387,perturbed,True,pathetic
+beh-6026,I thought the acting was forgettable.,0,typo_noun,INV,typo_noun-388,original,True,forgettable
+beh-6027,I thought the acing was forgettable.,0,typo_noun,INV,typo_noun-388,perturbed,True,forgettable
+beh-6028,I thought the story was terrible.,0,typo_noun,INV,typo_noun-389,original,True,terrible
+beh-6029,I thought the stroy was terrible.,0,typo_noun,INV,typo_noun-389,perturbed,True,terrible
+beh-6030,I thought the story was unpleasant.,0,typo_noun,INV,typo_noun-390,original,True,unpleasant
+beh-6031,I thought the sotry was unpleasant.,0,typo_noun,INV,typo_noun-390,perturbed,True,unpleasant
+beh-6032,I thought the story was sloppy.,0,typo_noun,INV,typo_noun-391,original,True,sloppy
+beh-6033,I thought the stry was sloppy.,0,typo_noun,INV,typo_noun-391,perturbed,True,sloppy
+beh-6034,I thought the script was awful.,0,typo_noun,INV,typo_noun-392,original,True,awful
+beh-6035,I thought the scrpt was awful.,0,typo_noun,INV,typo_noun-392,perturbed,True,awful
+beh-6036,I thought the script was lousy.,0,typo_noun,INV,typo_noun-393,original,True,lousy
+beh-6037,I thought the scrpt was lousy.,0,typo_noun,INV,typo_noun-393,perturbed,True,lousy
+beh-6038,I thought the script was forgettable.,0,typo_noun,INV,typo_noun-394,original,True,forgettable
+beh-6039,I thought the scrpit was forgettable.,0,typo_noun,INV,typo_noun-394,perturbed,True,forgettable
+beh-6040,I thought the ending was awful.,0,typo_noun,INV,typo_noun-395,original,True,awful
+beh-6041,I thought the enidng was awful.,0,typo_noun,INV,typo_noun-395,perturbed,True,awful
+beh-6042,I thought the ending was boring.,0,typo_noun,INV,typo_noun-396,original,True,boring
+beh-6043,I thought the endng was boring.,0,typo_noun,INV,typo_noun-396,perturbed,True,boring
+beh-6044,I thought the ending was dull.,0,typo_noun,INV,typo_noun-397,original,True,dull
+beh-6045,I thought the enidng was dull.,0,typo_noun,INV,typo_noun-397,perturbed,True,dull
+beh-6046,I thought the ending was painful.,0,typo_noun,INV,typo_noun-398,original,True,painful
+beh-6047,I thought the endnig was painful.,0,typo_noun,INV,typo_noun-398,perturbed,True,painful
+beh-6048,I thought the soundtrack was bad.,0,typo_noun,INV,typo_noun-399,original,True,bad
+beh-6049,I thought the soundtack was bad.,0,typo_noun,INV,typo_noun-399,perturbed,True,bad
+beh-6050,I thought the soundtrack was disappointing.,0,typo_noun,INV,typo_noun-400,original,True,disappointing
+beh-6051,I thought the soundtrck was disappointing.,0,typo_noun,INV,typo_noun-400,perturbed,True,disappointing
+beh-6052,I thought the soundtrack was dreadful.,0,typo_noun,INV,typo_noun-401,original,True,dreadful
+beh-6053,I thought the sondtrack was dreadful.,0,typo_noun,INV,typo_noun-401,perturbed,True,dreadful
+beh-6054,I thought the soundtrack was forgettable.,0,typo_noun,INV,typo_noun-402,original,True,forgettable
+beh-6055,I thought the soundrack was forgettable.,0,typo_noun,INV,typo_noun-402,perturbed,True,forgettable
+beh-6056,I thought the soundtrack was unpleasant.,0,typo_noun,INV,typo_noun-403,original,True,unpleasant
+beh-6057,I thought the soundtack was unpleasant.,0,typo_noun,INV,typo_noun-403,perturbed,True,unpleasant
+beh-6058,I thought the cast was weak.,0,typo_noun,INV,typo_noun-404,original,True,weak
+beh-6059,I thought the cst was weak.,0,typo_noun,INV,typo_noun-404,perturbed,True,weak
+beh-6060,I thought the cast was painful.,0,typo_noun,INV,typo_noun-405,original,True,painful
+beh-6061,I thought the cat was painful.,0,typo_noun,INV,typo_noun-405,perturbed,True,painful
+beh-6062,I thought the dialogue was bad.,0,typo_noun,INV,typo_noun-406,original,True,bad
+beh-6063,I thought the dialgoue was bad.,0,typo_noun,INV,typo_noun-406,perturbed,True,bad
+beh-6064,I thought the dialogue was dull.,0,typo_noun,INV,typo_noun-407,original,True,dull
+beh-6065,I thought the diaogue was dull.,0,typo_noun,INV,typo_noun-407,perturbed,True,dull
+beh-6066,I thought the dialogue was weak.,0,typo_noun,INV,typo_noun-408,original,True,weak
+beh-6067,I thought the dalogue was weak.,0,typo_noun,INV,typo_noun-408,perturbed,True,weak
+beh-6068,I thought the dialogue was lousy.,0,typo_noun,INV,typo_noun-409,original,True,lousy
+beh-6069,I thought the dailogue was lousy.,0,typo_noun,INV,typo_noun-409,perturbed,True,lousy
+beh-6070,I thought the dialogue was pathetic.,0,typo_noun,INV,typo_noun-410,original,True,pathetic
+beh-6071,I thought the diaogue was pathetic.,0,typo_noun,INV,typo_noun-410,perturbed,True,pathetic
+beh-6072,I thought the performance was poor.,0,typo_noun,INV,typo_noun-411,original,True,poor
+beh-6073,I thought the performace was poor.,0,typo_noun,INV,typo_noun-411,perturbed,True,poor
+beh-6074,I thought the performance was disappointing.,0,typo_noun,INV,typo_noun-412,original,True,disappointing
+beh-6075,I thought the perfromance was disappointing.,0,typo_noun,INV,typo_noun-412,perturbed,True,disappointing
+beh-6076,I thought the performance was dreadful.,0,typo_noun,INV,typo_noun-413,original,True,dreadful
+beh-6077,I thought the performace was dreadful.,0,typo_noun,INV,typo_noun-413,perturbed,True,dreadful
+beh-6078,I thought the performance was weak.,0,typo_noun,INV,typo_noun-414,original,True,weak
+beh-6079,I thought the perfomrance was weak.,0,typo_noun,INV,typo_noun-414,perturbed,True,weak
+beh-6080,I thought the performance was mediocre.,0,typo_noun,INV,typo_noun-415,original,True,mediocre
+beh-6081,I thought the peformance was mediocre.,0,typo_noun,INV,typo_noun-415,perturbed,True,mediocre
+beh-6082,I thought the performance was painful.,0,typo_noun,INV,typo_noun-416,original,True,painful
+beh-6083,I thought the perfomrance was painful.,0,typo_noun,INV,typo_noun-416,perturbed,True,painful
+beh-6084,I thought the performance was lousy.,0,typo_noun,INV,typo_noun-417,original,True,lousy
+beh-6085,I thought the perforance was lousy.,0,typo_noun,INV,typo_noun-417,perturbed,True,lousy
+beh-6086,I thought the performance was forgettable.,0,typo_noun,INV,typo_noun-418,original,True,forgettable
+beh-6087,I thought the perormance was forgettable.,0,typo_noun,INV,typo_noun-418,perturbed,True,forgettable
+beh-6088,I thought the performance was bland.,0,typo_noun,INV,typo_noun-419,original,True,bland
+beh-6089,I thought the perormance was bland.,0,typo_noun,INV,typo_noun-419,perturbed,True,bland
+beh-6090,I thought the direction was boring.,0,typo_noun,INV,typo_noun-420,original,True,boring
+beh-6091,I thought the diretcion was boring.,0,typo_noun,INV,typo_noun-420,perturbed,True,boring
+beh-6092,I thought the direction was dull.,0,typo_noun,INV,typo_noun-421,original,True,dull
+beh-6093,I thought the direciton was dull.,0,typo_noun,INV,typo_noun-421,perturbed,True,dull
+beh-6094,I thought the direction was dreadful.,0,typo_noun,INV,typo_noun-422,original,True,dreadful
+beh-6095,I thought the directin was dreadful.,0,typo_noun,INV,typo_noun-422,perturbed,True,dreadful
+beh-6096,I thought the direction was weak.,0,typo_noun,INV,typo_noun-423,original,True,weak
+beh-6097,I thought the direciton was weak.,0,typo_noun,INV,typo_noun-423,perturbed,True,weak
+beh-6098,I thought the direction was painful.,0,typo_noun,INV,typo_noun-424,original,True,painful
+beh-6099,I thought the driection was painful.,0,typo_noun,INV,typo_noun-424,perturbed,True,painful
+beh-6100,I thought the direction was tedious.,0,typo_noun,INV,typo_noun-425,original,True,tedious
+beh-6101,I thought the direciton was tedious.,0,typo_noun,INV,typo_noun-425,perturbed,True,tedious
+beh-6102,I thought the direction was lousy.,0,typo_noun,INV,typo_noun-426,original,True,lousy
+beh-6103,I thought the dircetion was lousy.,0,typo_noun,INV,typo_noun-426,perturbed,True,lousy
+beh-6104,I thought the direction was forgettable.,0,typo_noun,INV,typo_noun-427,original,True,forgettable
+beh-6105,I thought the diretion was forgettable.,0,typo_noun,INV,typo_noun-427,perturbed,True,forgettable
+beh-6106,I thought the experience was poor.,0,typo_noun,INV,typo_noun-428,original,True,poor
+beh-6107,I thought the expeience was poor.,0,typo_noun,INV,typo_noun-428,perturbed,True,poor
+beh-6108,I thought the experience was weak.,0,typo_noun,INV,typo_noun-429,original,True,weak
+beh-6109,I thought the expeience was weak.,0,typo_noun,INV,typo_noun-429,perturbed,True,weak
+beh-6110,I thought the experience was pathetic.,0,typo_noun,INV,typo_noun-430,original,True,pathetic
+beh-6111,I thought the epxerience was pathetic.,0,typo_noun,INV,typo_noun-430,perturbed,True,pathetic
+beh-6112,I thought the experience was forgettable.,0,typo_noun,INV,typo_noun-431,original,True,forgettable
+beh-6113,I thought the expeirence was forgettable.,0,typo_noun,INV,typo_noun-431,perturbed,True,forgettable
+beh-6114,I thought the experience was sloppy.,0,typo_noun,INV,typo_noun-432,original,True,sloppy
+beh-6115,I thought the expreience was sloppy.,0,typo_noun,INV,typo_noun-432,perturbed,True,sloppy
+beh-6116,I thought the show was disappointing.,0,typo_noun,INV,typo_noun-433,original,True,disappointing
+beh-6117,I thought the sow was disappointing.,0,typo_noun,INV,typo_noun-433,perturbed,True,disappointing
+beh-6118,I thought the show was dreadful.,0,typo_noun,INV,typo_noun-434,original,True,dreadful
+beh-6119,I thought the sohw was dreadful.,0,typo_noun,INV,typo_noun-434,perturbed,True,dreadful
+beh-6120,I thought the sequel was mediocre.,0,typo_noun,INV,typo_noun-435,original,True,mediocre
+beh-6121,I thought the seuel was mediocre.,0,typo_noun,INV,typo_noun-435,perturbed,True,mediocre
+beh-6122,I thought the sequel was annoying.,0,typo_noun,INV,typo_noun-436,original,True,annoying
+beh-6123,I thought the sqeuel was annoying.,0,typo_noun,INV,typo_noun-436,perturbed,True,annoying
+beh-6124,I thought the sequel was tedious.,0,typo_noun,INV,typo_noun-437,original,True,tedious
+beh-6125,I thought the sqeuel was tedious.,0,typo_noun,INV,typo_noun-437,perturbed,True,tedious
+beh-6126,I thought the sequel was pathetic.,0,typo_noun,INV,typo_noun-438,original,True,pathetic
+beh-6127,I thought the seqel was pathetic.,0,typo_noun,INV,typo_noun-438,perturbed,True,pathetic
+beh-6128,I thought the sequel was bland.,0,typo_noun,INV,typo_noun-439,original,True,bland
+beh-6129,I thought the sqeuel was bland.,0,typo_noun,INV,typo_noun-439,perturbed,True,bland
+beh-6130,"Honestly, the movie is bad.",0,typo_noun,INV,typo_noun-440,original,True,bad
+beh-6131,"Honestly, the mvoie is bad.",0,typo_noun,INV,typo_noun-440,perturbed,True,bad
+beh-6132,"Honestly, the movie is dreadful.",0,typo_noun,INV,typo_noun-441,original,True,dreadful
+beh-6133,"Honestly, the move is dreadful.",0,typo_noun,INV,typo_noun-441,perturbed,True,dreadful
+beh-6134,"Honestly, the movie is annoying.",0,typo_noun,INV,typo_noun-442,original,True,annoying
+beh-6135,"Honestly, the mvie is annoying.",0,typo_noun,INV,typo_noun-442,perturbed,True,annoying
+beh-6136,"Honestly, the movie is painful.",0,typo_noun,INV,typo_noun-443,original,True,painful
+beh-6137,"Honestly, the moive is painful.",0,typo_noun,INV,typo_noun-443,perturbed,True,painful
+beh-6138,"Honestly, the film is forgettable.",0,typo_noun,INV,typo_noun-444,original,True,forgettable
+beh-6139,"Honestly, the flm is forgettable.",0,typo_noun,INV,typo_noun-444,perturbed,True,forgettable
+beh-6140,"Honestly, the film is unpleasant.",0,typo_noun,INV,typo_noun-445,original,True,unpleasant
+beh-6141,"Honestly, the flim is unpleasant.",0,typo_noun,INV,typo_noun-445,perturbed,True,unpleasant
+beh-6142,"Honestly, the plot is mediocre.",0,typo_noun,INV,typo_noun-446,original,True,mediocre
+beh-6143,"Honestly, the polt is mediocre.",0,typo_noun,INV,typo_noun-446,perturbed,True,mediocre
+beh-6144,"Honestly, the plot is bland.",0,typo_noun,INV,typo_noun-447,original,True,bland
+beh-6145,"Honestly, the pot is bland.",0,typo_noun,INV,typo_noun-447,perturbed,True,bland
+beh-6146,"Honestly, the plot is sloppy.",0,typo_noun,INV,typo_noun-448,original,True,sloppy
+beh-6147,"Honestly, the polt is sloppy.",0,typo_noun,INV,typo_noun-448,perturbed,True,sloppy
+beh-6148,"Honestly, the acting is boring.",0,typo_noun,INV,typo_noun-449,original,True,boring
+beh-6149,"Honestly, the atcing is boring.",0,typo_noun,INV,typo_noun-449,perturbed,True,boring
+beh-6150,"Honestly, the acting is unpleasant.",0,typo_noun,INV,typo_noun-450,original,True,unpleasant
+beh-6151,"Honestly, the actnig is unpleasant.",0,typo_noun,INV,typo_noun-450,perturbed,True,unpleasant
+beh-6152,"Honestly, the story is awful.",0,typo_noun,INV,typo_noun-451,original,True,awful
+beh-6153,"Honestly, the stroy is awful.",0,typo_noun,INV,typo_noun-451,perturbed,True,awful
+beh-6154,"Honestly, the story is weak.",0,typo_noun,INV,typo_noun-452,original,True,weak
+beh-6155,"Honestly, the sory is weak.",0,typo_noun,INV,typo_noun-452,perturbed,True,weak
+beh-6156,"Honestly, the story is mediocre.",0,typo_noun,INV,typo_noun-453,original,True,mediocre
+beh-6157,"Honestly, the stry is mediocre.",0,typo_noun,INV,typo_noun-453,perturbed,True,mediocre
+beh-6158,"Honestly, the script is dull.",0,typo_noun,INV,typo_noun-454,original,True,dull
+beh-6159,"Honestly, the scrpt is dull.",0,typo_noun,INV,typo_noun-454,perturbed,True,dull
+beh-6160,"Honestly, the ending is terrible.",0,typo_noun,INV,typo_noun-455,original,True,terrible
+beh-6161,"Honestly, the endig is terrible.",0,typo_noun,INV,typo_noun-455,perturbed,True,terrible
+beh-6162,"Honestly, the ending is horrible.",0,typo_noun,INV,typo_noun-456,original,True,horrible
+beh-6163,"Honestly, the edning is horrible.",0,typo_noun,INV,typo_noun-456,perturbed,True,horrible
+beh-6164,"Honestly, the ending is tedious.",0,typo_noun,INV,typo_noun-457,original,True,tedious
+beh-6165,"Honestly, the ening is tedious.",0,typo_noun,INV,typo_noun-457,perturbed,True,tedious
+beh-6166,"Honestly, the ending is pathetic.",0,typo_noun,INV,typo_noun-458,original,True,pathetic
+beh-6167,"Honestly, the enidng is pathetic.",0,typo_noun,INV,typo_noun-458,perturbed,True,pathetic
+beh-6168,"Honestly, the ending is unpleasant.",0,typo_noun,INV,typo_noun-459,original,True,unpleasant
+beh-6169,"Honestly, the endnig is unpleasant.",0,typo_noun,INV,typo_noun-459,perturbed,True,unpleasant
+beh-6170,"Honestly, the soundtrack is horrible.",0,typo_noun,INV,typo_noun-460,original,True,horrible
+beh-6171,"Honestly, the sountrack is horrible.",0,typo_noun,INV,typo_noun-460,perturbed,True,horrible
+beh-6172,"Honestly, the soundtrack is dull.",0,typo_noun,INV,typo_noun-461,original,True,dull
+beh-6173,"Honestly, the sondtrack is dull.",0,typo_noun,INV,typo_noun-461,perturbed,True,dull
+beh-6174,"Honestly, the soundtrack is poor.",0,typo_noun,INV,typo_noun-462,original,True,poor
+beh-6175,"Honestly, the suondtrack is poor.",0,typo_noun,INV,typo_noun-462,perturbed,True,poor
+beh-6176,"Honestly, the soundtrack is annoying.",0,typo_noun,INV,typo_noun-463,original,True,annoying
+beh-6177,"Honestly, the sondtrack is annoying.",0,typo_noun,INV,typo_noun-463,perturbed,True,annoying
+beh-6178,"Honestly, the soundtrack is tedious.",0,typo_noun,INV,typo_noun-464,original,True,tedious
+beh-6179,"Honestly, the sundtrack is tedious.",0,typo_noun,INV,typo_noun-464,perturbed,True,tedious
+beh-6180,"Honestly, the soundtrack is lousy.",0,typo_noun,INV,typo_noun-465,original,True,lousy
+beh-6181,"Honestly, the soundtack is lousy.",0,typo_noun,INV,typo_noun-465,perturbed,True,lousy
+beh-6182,"Honestly, the soundtrack is unpleasant.",0,typo_noun,INV,typo_noun-466,original,True,unpleasant
+beh-6183,"Honestly, the sonudtrack is unpleasant.",0,typo_noun,INV,typo_noun-466,perturbed,True,unpleasant
+beh-6184,"Honestly, the soundtrack is sloppy.",0,typo_noun,INV,typo_noun-467,original,True,sloppy
+beh-6185,"Honestly, the soundtarck is sloppy.",0,typo_noun,INV,typo_noun-467,perturbed,True,sloppy
+beh-6186,"Honestly, the cast is poor.",0,typo_noun,INV,typo_noun-468,original,True,poor
+beh-6187,"Honestly, the cat is poor.",0,typo_noun,INV,typo_noun-468,perturbed,True,poor
+beh-6188,"Honestly, the cast is disappointing.",0,typo_noun,INV,typo_noun-469,original,True,disappointing
+beh-6189,"Honestly, the csat is disappointing.",0,typo_noun,INV,typo_noun-469,perturbed,True,disappointing
+beh-6190,"Honestly, the cast is mediocre.",0,typo_noun,INV,typo_noun-470,original,True,mediocre
+beh-6191,"Honestly, the cst is mediocre.",0,typo_noun,INV,typo_noun-470,perturbed,True,mediocre
+beh-6192,"Honestly, the cast is pathetic.",0,typo_noun,INV,typo_noun-471,original,True,pathetic
+beh-6193,"Honestly, the cat is pathetic.",0,typo_noun,INV,typo_noun-471,perturbed,True,pathetic
+beh-6194,"Honestly, the cast is bland.",0,typo_noun,INV,typo_noun-472,original,True,bland
+beh-6195,"Honestly, the cst is bland.",0,typo_noun,INV,typo_noun-472,perturbed,True,bland
+beh-6196,"Honestly, the dialogue is boring.",0,typo_noun,INV,typo_noun-473,original,True,boring
+beh-6197,"Honestly, the dilogue is boring.",0,typo_noun,INV,typo_noun-473,perturbed,True,boring
+beh-6198,"Honestly, the dialogue is dreadful.",0,typo_noun,INV,typo_noun-474,original,True,dreadful
+beh-6199,"Honestly, the dilogue is dreadful.",0,typo_noun,INV,typo_noun-474,perturbed,True,dreadful
+beh-6200,"Honestly, the dialogue is painful.",0,typo_noun,INV,typo_noun-475,original,True,painful
+beh-6201,"Honestly, the dailogue is painful.",0,typo_noun,INV,typo_noun-475,perturbed,True,painful
+beh-6202,"Honestly, the dialogue is bland.",0,typo_noun,INV,typo_noun-476,original,True,bland
+beh-6203,"Honestly, the dalogue is bland.",0,typo_noun,INV,typo_noun-476,perturbed,True,bland
+beh-6204,"Honestly, the dialogue is sloppy.",0,typo_noun,INV,typo_noun-477,original,True,sloppy
+beh-6205,"Honestly, the dailogue is sloppy.",0,typo_noun,INV,typo_noun-477,perturbed,True,sloppy
+beh-6206,"Honestly, the performance is horrible.",0,typo_noun,INV,typo_noun-478,original,True,horrible
+beh-6207,"Honestly, the prformance is horrible.",0,typo_noun,INV,typo_noun-478,perturbed,True,horrible
+beh-6208,"Honestly, the performance is dull.",0,typo_noun,INV,typo_noun-479,original,True,dull
+beh-6209,"Honestly, the perofrmance is dull.",0,typo_noun,INV,typo_noun-479,perturbed,True,dull
+beh-6210,"Honestly, the performance is disappointing.",0,typo_noun,INV,typo_noun-480,original,True,disappointing
+beh-6211,"Honestly, the performace is disappointing.",0,typo_noun,INV,typo_noun-480,perturbed,True,disappointing
+beh-6212,"Honestly, the performance is dreadful.",0,typo_noun,INV,typo_noun-481,original,True,dreadful
+beh-6213,"Honestly, the performacne is dreadful.",0,typo_noun,INV,typo_noun-481,perturbed,True,dreadful
+beh-6214,"Honestly, the performance is weak.",0,typo_noun,INV,typo_noun-482,original,True,weak
+beh-6215,"Honestly, the perfomrance is weak.",0,typo_noun,INV,typo_noun-482,perturbed,True,weak
+beh-6216,"Honestly, the performance is painful.",0,typo_noun,INV,typo_noun-483,original,True,painful
+beh-6217,"Honestly, the perforance is painful.",0,typo_noun,INV,typo_noun-483,perturbed,True,painful
+beh-6218,"Honestly, the performance is forgettable.",0,typo_noun,INV,typo_noun-484,original,True,forgettable
+beh-6219,"Honestly, the prformance is forgettable.",0,typo_noun,INV,typo_noun-484,perturbed,True,forgettable
+beh-6220,"Honestly, the direction is boring.",0,typo_noun,INV,typo_noun-485,original,True,boring
+beh-6221,"Honestly, the directoin is boring.",0,typo_noun,INV,typo_noun-485,perturbed,True,boring
+beh-6222,"Honestly, the direction is tedious.",0,typo_noun,INV,typo_noun-486,original,True,tedious
+beh-6223,"Honestly, the direciton is tedious.",0,typo_noun,INV,typo_noun-486,perturbed,True,tedious
+beh-6224,"Honestly, the direction is sloppy.",0,typo_noun,INV,typo_noun-487,original,True,sloppy
+beh-6225,"Honestly, the driection is sloppy.",0,typo_noun,INV,typo_noun-487,perturbed,True,sloppy
+beh-6226,"Honestly, the experience is awful.",0,typo_noun,INV,typo_noun-488,original,True,awful
+beh-6227,"Honestly, the expeience is awful.",0,typo_noun,INV,typo_noun-488,perturbed,True,awful
+beh-6228,"Honestly, the experience is painful.",0,typo_noun,INV,typo_noun-489,original,True,painful
+beh-6229,"Honestly, the experiece is painful.",0,typo_noun,INV,typo_noun-489,perturbed,True,painful
+beh-6230,"Honestly, the experience is lousy.",0,typo_noun,INV,typo_noun-490,original,True,lousy
+beh-6231,"Honestly, the epxerience is lousy.",0,typo_noun,INV,typo_noun-490,perturbed,True,lousy
+beh-6232,"Honestly, the show is dreadful.",0,typo_noun,INV,typo_noun-491,original,True,dreadful
+beh-6233,"Honestly, the sohw is dreadful.",0,typo_noun,INV,typo_noun-491,perturbed,True,dreadful
+beh-6234,"Honestly, the show is lousy.",0,typo_noun,INV,typo_noun-492,original,True,lousy
+beh-6235,"Honestly, the sohw is lousy.",0,typo_noun,INV,typo_noun-492,perturbed,True,lousy
+beh-6236,"Honestly, the show is forgettable.",0,typo_noun,INV,typo_noun-493,original,True,forgettable
+beh-6237,"Honestly, the sow is forgettable.",0,typo_noun,INV,typo_noun-493,perturbed,True,forgettable
+beh-6238,"Honestly, the show is sloppy.",0,typo_noun,INV,typo_noun-494,original,True,sloppy
+beh-6239,"Honestly, the shw is sloppy.",0,typo_noun,INV,typo_noun-494,perturbed,True,sloppy
+beh-6240,"Honestly, the sequel is boring.",0,typo_noun,INV,typo_noun-495,original,True,boring
+beh-6241,"Honestly, the seuqel is boring.",0,typo_noun,INV,typo_noun-495,perturbed,True,boring
+beh-6242,"Honestly, the sequel is poor.",0,typo_noun,INV,typo_noun-496,original,True,poor
+beh-6243,"Honestly, the seuel is poor.",0,typo_noun,INV,typo_noun-496,perturbed,True,poor
+beh-6244,"Honestly, the sequel is disappointing.",0,typo_noun,INV,typo_noun-497,original,True,disappointing
+beh-6245,"Honestly, the seqeul is disappointing.",0,typo_noun,INV,typo_noun-497,perturbed,True,disappointing
+beh-6246,"Honestly, the sequel is dreadful.",0,typo_noun,INV,typo_noun-498,original,True,dreadful
+beh-6247,"Honestly, the seuqel is dreadful.",0,typo_noun,INV,typo_noun-498,perturbed,True,dreadful
+beh-6248,"Honestly, the sequel is painful.",0,typo_noun,INV,typo_noun-499,original,True,painful
+beh-6249,"Honestly, the seuqel is painful.",0,typo_noun,INV,typo_noun-499,perturbed,True,painful

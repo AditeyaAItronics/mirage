@@ -35,6 +35,7 @@ TEST_ORDER = [
     "beh_negation_dir",
     "beh_negation_dir_neg",
     "beh_typo",
+    "beh_typo_noun",
     "beh_name_swap",
     "beh_name_shortcut",
 ]

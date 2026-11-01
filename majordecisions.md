@@ -895,3 +895,70 @@ the Trainer ran 6. The real models were untouched.
 **Not changed:** the effective batch itself. Two GPUs still mean batch 64, which is a fine
 setting. The existing three models (batch 64, 12% warm-up) stay as they are and as recorded in
 D34. Retraining them for a warm-up difference isn't worth a GPU run.
+
+## D37 — DistilBERT's typo shortcut, pinned down (C11)
+
+**Question:** D35 found that a misspelled *positive* adjective flips DistilBERT to negative in 65%
+of pairs ("brilliant" 0.999 → "brililant" 0.010), but a misspelled negative one in only 9%. Is
+that a reaction to *any* garbled word, or specifically to an unreadable sentiment word?
+
+**Control added:** a `typo_noun` test (500 pairs, appended last so earlier draws didn't change),
+which puts the typo in the noun and leaves the adjective intact: "The movie was brilliant." →
+"The moive was brilliant.". A new table, `typo_direction.csv`, splits every typo test by the
+sentence's polarity, with a paired CI on the probability shift.
+
+| model | adjective typo, positive | adjective typo, negative | noun typo, positive | noun typo, negative |
+|---|---|---|---|---|
+| **distilbert** | flips 65%, **−0.64** | flips 9%, +0.11 | **flips 0%, −0.00** | flips 0%, +0.00 |
+| logreg | 42%, −0.37 | 49%, +0.36 | 2%, +0.04 | 6%, −0.07 |
+| mnb | 50%, −0.42 | 25%, +0.28 | 19%, +0.11 | 2%, −0.03 |
+| rf | 18%, −0.13 | 59%, +0.21 | 8%, +0.03 | 14%, −0.03 |
+
+**Finding:** DistilBERT ignores a garbled noun completely, so it isn't "any odd word means
+negative". The shortcut is narrower: **when it can't read the sentiment word itself, its default
+answer is "negative"**, and confidently so. LR, which simply loses the unknown word, drifts
+toward the middle from both sides (−0.37 / +0.36). The tree-based and Naive Bayes models fall in
+between, each with its own lean.
+
+**Where the default comes from:** in SST-2's training phrases, 16.0% of the words in negative
+phrases are split into word pieces (not whole words in DistilBERT's vocabulary), against 10.9% in
+positive phrases. Phrases containing any split word are 49.9% positive, against 61.4% for phrases
+without one. Odd, fragmented words lean negative in the data: coinages like "unwatchable",
+sarcastic spellings, and pieces like "##ible" from "horrible" and "terrible". A typo turns
+"brilliant" into `br ##ili ##lan ##t`, which looks like that negative-leaning vocabulary.
+
+**Also:** the behavioral suite is now 3,750 cases (6,250 rows). All 18 models' behavioral
+predictions were redone locally, including DistilBERT's 3 seeds on the CPU (short sentences take
+minutes), and the tables were regenerated.
+
+## D38 — Why negation marking helps templates but not real sentences (C10)
+
+**Question:** `NOT_` marking closes 96% of LR's negation gap on templates but has no significant
+effect on the 519 real negated sentences. Why? Analysis of LR, `negmark` vs `base`:
+
+**First hypothesis, rejected:** "real sentences mark words the model never saw marked". The model
+knows about as many of the marked words in real sentences (78%) as in templates (74%).
+
+**What actually differs:**
+1. **Scope swallows whole clauses.** A real negation marks **6.9 words** on average, a template
+   2.1. In "it 's never a good sign when a film 's star spends the entirety of the film …",
+   everything after "never" becomes `NOT_a`, `NOT_film`, `NOT_the`. The signal on `NOT_good` is
+   diluted by many marked function words.
+2. **Real negations often don't negate the sentiment.**
+   - Double negation: "it 's almost impossible not to be moved", which is positive.
+   - Idioms: "it wo n't be long before you 'll spy it at a video store".
+   - Negation of a non-sentiment verb: "surely can not last".
+
+   Marking pushes these the wrong way.
+3. **The learned marked weights are noisy outside the clean cases.** `NOT_good` −3.43 and
+   `NOT_funny` −4.29 are sensible, but `NOT_brilliant` is +1.07 (rare and noisy) and `NOT_boring`
+   is −0.08 (no signal).
+
+**Net effect on real sentences (LR):** marking **fixes 38** of the 118 base errors but **breaks
+23** previously correct sentences, a net of +15 out of 519. That's the +2.9-point,
+non-significant gain (D28).
+
+**Takeaway for the report:** the templates test negation in its easiest form, with one negation
+word right before one sentiment word. Real negation is longer-range, idiomatic and sometimes
+double. A token-level marking heuristic captures the first and not the second, which is the
+gap a contextual model like DistilBERT closes (0% template errors, 10.3% real-sentence errors).

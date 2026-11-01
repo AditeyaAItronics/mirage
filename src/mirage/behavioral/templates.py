@@ -191,6 +191,33 @@ def typo(n: int, rng: np.random.Generator) -> list[dict]:
     return [{**r, "test_type": "typo", "kind": "INV", "scored": True} for r in rows]
 
 
+def typo_noun(n: int, rng: np.random.Generator) -> list[dict]:
+    """Control for `typo` (C11, D37): the typo goes in the NOUN, the sentiment word stays intact.
+
+    "The movie was brilliant." -> "The moive was brilliant." A model that turns negative here reacts
+    to any garbled word, not to losing the sentiment word.
+    """
+    pool = [
+        (t, noun, adj, label)
+        for label, adjs in ((1, W.POS_ADJ), (0, W.NEG_ADJ))
+        for t, noun, adj in itertools.product(SIMPLE_TEMPLATES, W.NOUNS, adjs)
+    ]
+    rows = []
+    for i, (t, noun, adj, label) in enumerate(_sample(rng, pool, n)):
+        typo_noun_ = make_typo(noun, rng)
+        for role, nn in (("original", noun), ("perturbed", typo_noun_)):
+            rows.append(
+                {
+                    "text": t.format(noun=nn, adj=adj),
+                    "label": label,
+                    "role": role,
+                    "case_id": f"typo_noun-{i}",
+                    "word": adj,
+                }
+            )
+    return [{**r, "test_type": "typo_noun", "kind": "INV", "scored": True} for r in rows]
+
+
 def name_swap(n: int, rng: np.random.Generator) -> list[dict]:
     """Invariance: swap an Indian name for a Western one (and back) in otherwise identical text."""
     pool = []

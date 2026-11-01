@@ -29,6 +29,7 @@ def build_suite(cfg: dict | None = None) -> pd.DataFrame:
         + templates.name_swap(c["name_swap"], rng)
         # last, so adding it didn't reshuffle the random draws of the tests above
         + templates.name_shortcut(c["name_shortcut"], [tuple(p) for p in cfg["name_pairs"]], rng)
+        + templates.typo_noun(c["typo_noun"], rng)  # appended last: earlier draws unchanged
     )
     df = pd.DataFrame(rows)  # case_id is set by each generator; INV/DIR pairs share one
     df.insert(0, "item_id", [f"beh-{i}" for i in range(len(df))])

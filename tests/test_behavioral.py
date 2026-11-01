@@ -22,6 +22,7 @@ def test_counts_match_config(suite):
     assert cases["negation_dir"] == c["negation_dir"]
     assert cases["negation_dir_neg"] == c["negation_dir_neg"]
     assert cases["name_shortcut"] == c["name_shortcut"]
+    assert cases["typo_noun"] == c["typo_noun"]
 
 
 def test_deterministic(suite):
@@ -151,3 +152,13 @@ def test_name_associations_and_pairs():
     assert set(a.index) == {"spielberg", "seagal"}  # "absent" is under min_phrases
     assert a.loc["spielberg", "log_odds"] > 0 > a.loc["seagal", "log_odds"]
     assert pick_pairs(a.reset_index(), k=1) == [("Spielberg", "Seagal")]
+
+
+def test_typo_noun_keeps_the_sentiment_word(suite):
+    d = suite[suite["test_type"] == "typo_noun"]
+    for _, g in d.groupby("case_id"):
+        a = g[g.role == "original"].text.iloc[0].split()
+        b = g[g.role == "perturbed"].text.iloc[0].split()
+        changed = [(x, y) for x, y in zip(a, b, strict=True) if x != y]
+        assert len(changed) == 1  # exactly one word differs ...
+        assert g["word"].iloc[0] in " ".join(b)  # ... and it isn't the sentiment adjective

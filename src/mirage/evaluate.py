@@ -425,6 +425,44 @@ def name_effect(preds: pd.DataFrame, tests=("name_shortcut", "name_swap"), **ci_
     return out
 
 
+def typo_direction(preds: pd.DataFrame, tests=("typo", "typo_noun"), **ci_kw) -> pd.DataFrame:
+    """C11 / D37: which way do typos push each model, split by the sentence's sentiment?
+
+    shift = mean p_pos(typo) - p_pos(original) with a paired CI. A model that only loses the
+    sentiment word drifts toward its prior from both sides; one that reads "garbled => negative"
+    drops sharply for positive sentences and barely moves for negative ones.
+    """
+    rows = []
+    for (m, v), g in canonical(preds).groupby(["model", "variant"]):
+        b = _behavioral(g)
+        for tt in tests:
+            d = b[b["test_type"] == tt]
+            if d.empty:
+                continue
+            w = d.pivot_table(index="case_id", columns="role", values=["p_pos", "pred", "label"])
+            for polarity, lab in (("positive", 1), ("negative", 0)):
+                x = w[w["label"]["original"] == lab]
+                if x.empty:
+                    continue
+                s = paired_diff_ci(x["p_pos"]["perturbed"], x["p_pos"]["original"], **ci_kw)
+                rows.append(
+                    {
+                        "model": m,
+                        "variant": v,
+                        "test": tt,
+                        "polarity": polarity,
+                        "n_pairs": len(x),
+                        "flip_rate": float(
+                            (x["pred"]["original"] != x["pred"]["perturbed"]).mean()
+                        ),
+                        "shift": s["estimate"],
+                        "shift_lo": s["ci_low"],
+                        "shift_hi": s["ci_high"],
+                    }
+                )
+    return pd.DataFrame(rows)
+
+
 def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
     preds = load_predictions()
     kw = {"n_resamples": ci_resamples}
@@ -439,6 +477,7 @@ def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
         "imdb_by_length": length_table(preds, **kw),
         "shift_decomposition": shift_decomposition(preds),
         "name_effect": name_effect(preds, **kw),
+        "typo_direction": typo_direction(preds, **kw),
     }
     if (preds["model"] == REFERENCE).any():
         tables["negation_gap"] = negation_gap(preds, **kw)

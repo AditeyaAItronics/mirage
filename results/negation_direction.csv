@@ -1,6 +1,6 @@
 model,variant,test,scored,n_pairs,applicable,mean_shift,flip_failure,flip_failure_lo,flip_failure_hi,no_move,no_move_lo,no_move_hi
-distilbert,base,negation_dir,True,500,1.0,0.9928414365085774,0.0,0.0,0.0,0.0,0.0,0.0
-distilbert,base,negation_dir_neg,False,250,1.0,0.9452356959306635,0.028,0.008,0.052,0.0,0.0,0.0
+distilbert,base,negation_dir,True,500,1.0,0.9928414350743405,0.0,0.0,0.0,0.0,0.0,0.0
+distilbert,base,negation_dir_neg,False,250,1.0,0.9452356635420583,0.028,0.008,0.052,0.0,0.0,0.0
 dtree,base,negation_dir,True,500,0.47,0.3104865093560878,0.20425531914893616,0.14893617021276595,0.2554255319148935,0.268,0.228,0.306
 dtree,base,negation_dir_neg,False,250,0.872,-0.11007309940626664,0.9770642201834863,0.9587155963302753,0.9954128440366973,0.928,0.896,0.96
 dtree,negmark,negation_dir,True,500,0.498,0.4318548611295987,0.04819277108433735,0.023995983935742978,0.07630522088353414,0.162,0.13,0.196

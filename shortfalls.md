@@ -186,28 +186,27 @@ bound (C6), not a fault to tune away.
 **MNB** pushes half its IMDb probabilities to exactly 1.0. The early-warning combiner handles this
 (D26). Note it next to MNB's calibration numbers.
 
-### C10. 🟠 (first result, robust to scope rule and test-only subset): negation marking helps templates, not clearly real sentences
-**What:** after Holm, `NOT_` marking cuts the directional-test error significantly for every model
-(LR −25.7 points, MNB −39.5 with `negmark`; similar with `negmark_w3`). On real negated SST-2
-sentences (n = 519) it's significant only for GNB with `negmark`. LR gains +2.9 points under
-either scope rule (Holm 0.27 at best). The same holds on the 339 test-only sentences (B9).
-**Why it matters:** H3 rests on real negation. Templates are short with one clear negation scope,
-which is the easy case for any marking rule.
-**Possible fix:** inspect which real negated sentences change prediction under marking. Report
-template and real-sentence effects side by side.
-**Effort:** small.
+### C10. ✅ EXPLAINED (D38): negation marking helps templates, not clearly real sentences
+After Holm, `NOT_` marking cuts template negation errors for every model but has no significant
+effect on real negated sentences (except GNB). The mechanism:
+- Real negations mark 6.9 words against 2.1 in templates, diluting the signal.
+- Many real negations don't negate the sentiment (double negation, idioms).
+- For LR, marking fixes 38 real sentences and breaks 23 (net +15 of 519).
 
-### C11. 🟠 NEW (first result): DistilBERT has shortcuts of its own
-**What:** it's perfect on simple, negation, direction and both name tests, but fails **39%** of
-typo pairs. The failures are one-sided: a misspelled positive word flips it to negative in 65% of
-pairs (e.g. "brilliant" 0.999 → "brililant" 0.010), a misspelled negative word in only 9%. It has
-learned "unfamiliar-looking ⇒ negative".
-**Why it matters:** this supports C2. DistilBERT is a stronger reference, not a shortcut-free
-one, and its shortcuts are different in kind from the classical models' (word identity, names).
-**Possible fix:** test it on misspellings in negative words and in neutral words (does a typo in
-"movie" also push it negative?), and check whether SST-2's negative phrases contain more rare or
-odd tokens.
-**Effort:** small.
+It isn't a vocabulary gap (78% vs 74% of marked words known). Report the template and
+real-sentence effects side by side, with this explanation.
+
+### C11. ✅ PINNED DOWN (D37): DistilBERT has a shortcut of its own
+**What:** DistilBERT is perfect on simple, negation, direction and both name tests, but when it
+can't read the *sentiment word* (a typo in it), it defaults to **negative**. A positive adjective
+with a typo flips it in 65% of pairs (mean −0.64); a negative one in 9%. A typo in the *noun*
+changes nothing (0 of 500 flips).
+**Why:** in SST-2's training phrases, fragmented, out-of-vocabulary words lean negative: 16.0% of
+words in negative phrases against 10.9% in positive ones are split into word pieces.
+**Why it matters:** DistilBERT is a stronger reference, not a shortcut-free one (C2). Its shortcut
+is a data-learned default, different in kind from the classical models' word and name shortcuts.
+**Still open (optional):** a nonce-word test ("The movie was flurbish.") would show the default
+directly, without a corrupted real word.
 
 ---
 
