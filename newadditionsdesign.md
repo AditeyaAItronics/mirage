@@ -19,9 +19,10 @@ records where the build departed from this design:
 - Later (D43): the demo's word importance became the shared `explain.occlusion` function, which
   now also ranks words for H5. The demo's behaviour is unchanged.
 - Later (D48): the demo caches its results, shows word importance in its own section with a
-  colour key, and uses colours that read on both themes. Still open, if wanted: a presenter
-  mode (next / previous through the examples), one-click perturbation buttons, and showing each
-  model's Mirage Gap numbers beside its verdict.
+  colour key, and uses colours that read on both themes.
+- Later (D49): each model's Mirage Gap numbers (looks → behaves) sit beside its verdict, and a
+  summary line gives the full-test failure rate behind a curated example. Still open, if wanted:
+  a presenter mode (next / previous through the examples) and one-click perturbation buttons.
 
 **Done:** the Kaggle run is in and checked (D46); every table and figure includes both external
 models. One correction came from the results: RoBERTa-large flips on only 1% of name pairs in

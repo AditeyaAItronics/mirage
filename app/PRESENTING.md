@@ -9,7 +9,11 @@
 3. From then on it works **offline**: models load from disk.
 4. If the laptop is slow, switch on **Light mode** in the sidebar. It leaves out the random forest
    and RoBERTa-large.
-5. Fallback images of every curated example are in `app/screenshots/`. Regenerate them with
+5. **Show research numbers** (sidebar, on by default) adds each model's "looks → behaves"
+   (test accuracy → robustness score) and, above a pair, how often each flipping model fails the
+   full test behind it. Point at it after the first flip: "this isn't a lucky pick: Multinomial
+   NB looks 83% but behaves 55%." Results only change between runs if `evaluate` is re-run.
+6. Fallback images of every curated example are in `app/screenshots/`. Regenerate them with
    `python app/make_fallbacks.py` if the models change.
 
 ## Demo script (about 4 minutes)

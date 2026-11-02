@@ -2,15 +2,20 @@
 trained models are on disk (skipped otherwise, e.g. on a fresh clone)."""
 
 import numpy as np
+import pandas as pd
 import pytest
 
 from mirage import paths
 from mirage.demo import (
+    SHORTCUT_TESTS,
     check_example,
+    flipped,
     leave_one_out,
     load_examples,
+    load_findings,
     occlusion,
     score,
+    shortcut_failures,
     trim,
     unknown_words,
 )
@@ -114,3 +119,46 @@ def test_app_runs_headless():
     assert any("What changed" in s.value for s in at.subheader)
     at.radio[0].set_value("Your own sentence").run()
     assert not at.exception
+
+
+def test_flipped_lists_models_whose_label_changes():
+    models = {"a": WordModel(), "b": WordModel()}
+    sc = score(models, ["good film", "bad film"])
+    assert flipped(sc) == ["a", "b"]
+    assert flipped(score(models, ["good film", "good good film"])) == []
+
+
+def test_findings_and_shortcut_failures(tmp_path):
+    csv = tmp_path / "mirage_gap.csv"
+    pd.DataFrame(
+        {
+            "model": ["mnb", "mnb"],
+            "variant": ["base", "negmark"],
+            "accuracy": [0.83, 0.82],
+            "robustness": [0.55, 0.62],
+            "gap": [0.28, 0.20],
+            "pass__beh_name_shortcut": [0.6, 0.5],
+            "pass__beh_typo": [0.5, 0.5],
+            "pass__beh_negation_dir": [0.4, 0.6],
+            "pass__sst2_neg": [0.75, 0.8],
+        }
+    ).to_csv(csv, index=False)
+    f = load_findings(csv)
+    assert list(f.index) == ["mnb"]  # base variant only
+    assert shortcut_failures(f, "mnb", "names") == [(pytest.approx(0.4), "name-swap pairs")]
+    assert [label for _, label in shortcut_failures(f, "mnb", "negation")] == [
+        label for _, label in SHORTCUT_TESTS["negation"]
+    ]
+    assert shortcut_failures(f, "mnb", "sarcasm") == []  # no test behind it
+    assert shortcut_failures(f, "logreg", "names") == []  # model without results
+    assert shortcut_failures(None, "mnb", "names") == []
+    assert load_findings(tmp_path / "missing.csv") is None
+
+
+def test_shortcut_tests_exist_in_results():
+    """Every column the demo reads is one the evaluate stage writes."""
+    from mirage.evaluate import ROBUSTNESS_TESTS
+
+    for tests in SHORTCUT_TESTS.values():
+        for test, _ in tests:
+            assert test in ROBUSTNESS_TESTS

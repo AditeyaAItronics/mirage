@@ -1549,3 +1549,32 @@ The presentation itself runs locally, with `app/screenshots/` as the fallback.
 sentences never share an entry; the unhashed `_clf` argument is safe because a name always maps to
 the same loaded model. User text is still HTML-escaped everywhere it is rendered (chips, tabs,
 the A/B lines). No bugs found.
+
+## D49 — The demo shows the research numbers behind each live example (refines D41)
+
+**Why:** a live flip on one sentence could be a lucky pick. Showing, on the same screen, how the
+model does on the full test makes one example stand for the measured result: Multinomial NB flips
+on "Binoche → Hopkins" *and* looks 83% / behaves 55%.
+
+**What the app shows** (sidebar toggle "Show research numbers", on by default):
+- **A summary line above the A/B table:** "1 of 8 models flip: Multinomial NB", and for a curated
+  example, how often each flipping model fails the full test behind that shortcut ("In the full
+  test, Multinomial NB fails 39% of name-swap pairs").
+- **A "looks → behaves" column** in both tables: SST-2 test accuracy → robustness score, with the
+  gap (the Mirage Gap, D40).
+
+**Where the numbers come from:** `results/mirage_gap.csv` (base variant), read by
+`demo.load_findings`; nothing is recomputed. `demo.SHORTCUT_TESTS` maps an example's `shortcut`
+to its robustness tests: names → name-swap pairs, typos → typo pairs, negation → negation
+template pairs and real negated sentences. Vocabulary and sarcasm have no matching test, so they
+show only the flip count. "Fails" uses the robustness score's definition (a pair fails unless both
+sentences are right), so it can differ slightly from a flip rate: the presenter note's "Naive
+Bayes flips on 38% of pairs" and the screen's "fails 39%" are both correct.
+
+**Also fixed:** the header said models are "59-92% right"; RoBERTa-large reaches 95%, so it now
+says 59-95%. A change that rounds to zero is shown as "+0%", not "-0%".
+
+**Code review:** the demo works without `mirage_gap.csv` (fresh clone): the column and the
+full-test lines disappear. A model missing from the results shows "—". The helper is named
+`shortcut_failures`, not `test_failures`, so pytest doesn't collect it from the test module's
+imports. A test checks that every column the demo reads is one `evaluate` writes. No bugs found.

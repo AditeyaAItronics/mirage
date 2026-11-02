@@ -122,7 +122,7 @@ sentences.
 
 ---
 
-## `tests/`: 133 automated tests (`.venv/Scripts/python -m pytest`)
+## `tests/`: 136 automated tests (`.venv/Scripts/python -m pytest`)
 
 Almost all run on small synthetic data and need no downloads or GPU. The two real-model demo
 tests use the trained models when they're on disk and skip themselves otherwise. The whole suite
@@ -145,7 +145,7 @@ takes about 2 minutes.
 | `test_seed_robustness.py` | The per-seed table's flags: a sign flip, a significance flip and a changed rank are each caught; the median seed is marked; a single seed gives no table. |
 | `test_ladder.py` | The single-word variant really has no word pairs; the ladder columns on hand-made error rates; adding the variant leaves every existing negation-gap column identical; `negmark_effect` skips it; its Holm family. |
 | `test_mirage_gap.py` | The robustness score on hand-made numbers, "both sentences right", a model missing a component is dropped, the leave-one-out check, the fingerprint merge, and both figures render. |
-| `test_demo.py` | Demo logic with a stand-in model: trimming, leaving words out, flags, the vocabulary check, the example checker. Plus, with the real models: every curated example behaves as documented, and the app runs headless. |
+| `test_demo.py` | Demo logic with a stand-in model: trimming, leaving words out, flags, the vocabulary check, the example checker, which models flip, and reading the research numbers (D49). Plus, with the real models: every curated example behaves as documented, and the app runs headless. |
 | `test_pipeline_e2e.py` | Runs the whole CPU pipeline through the real command line on fake data, in a temporary folder, and checks every output file exists. |
 
 ---
@@ -155,7 +155,7 @@ takes about 2 minutes.
 | Folder | What's in it |
 |---|---|
 | `notebooks/` | `kaggle_distilbert.ipynb`: clones the repo on Kaggle, installs it, prepares data, fine-tunes DistilBERT (3 seeds), predicts on the GPU, and zips models + predictions for you to download. `kaggle_external.ipynb`: no training; runs the two ready-made models on every eval set (including all 10,000 IMDb reviews) and zips their predictions (D39). |
-| `app/` | The live demo (D41). `shortcut_explorer.py` is the Streamlit page (layout only; results are cached per model and sentence, and word importance has its own section with a colour key, D48). `examples.yaml` holds the curated example pairs with their measured expected behaviour and a talking point each. `make_fallbacks.py` draws a backup image of every example into `screenshots/`. `PRESENTING.md` is the presenter guide: setup, demo script and ready lines for when a live sentence goes wrong. |
+| `app/` | The live demo (D41). `shortcut_explorer.py` is the Streamlit page (layout only; results are cached per model and sentence, and word importance has its own section with a colour key, D48; a toggle shows each model's accuracy vs robustness and the full-test failure rate behind an example, D49). `examples.yaml` holds the curated example pairs with their measured expected behaviour and a talking point each. `make_fallbacks.py` draws a backup image of every example into `screenshots/`. `PRESENTING.md` is the presenter guide: setup, demo script and ready lines for when a live sentence goes wrong. |
 | `results/` | Every output table (`*.csv`), the behavioral suite, `explain/` (top features, the depth-4 tree, overlap), and `predictions/` (one parquet per model × variant × seed × dataset; git-ignored). |
 | `figures/` | Every figure as PNG + PDF, redrawn by `python -m mirage figures`. |
 | `artifacts/` (git-ignored) | Large regenerable files: `data/` (parquet datasets), `models/` (about 2 GB, mostly the random forests), `emb/` (embedding caches), plus scratch logs. |

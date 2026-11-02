@@ -14,10 +14,13 @@ import streamlit as st
 from mirage.config import load_config
 from mirage.demo import (
     UnusualInput,
+    flipped,
     load_examples,
+    load_findings,
     load_models,
     occlusion,
     score,
+    shortcut_failures,
     trim,
     unknown_words,
 )
@@ -56,6 +59,11 @@ def get_occlusion(_clf, name: str, text: str) -> pd.DataFrame:
     return occlusion(_clf, text)
 
 
+@st.cache_data(show_spinner=False)
+def get_findings() -> pd.DataFrame | None:
+    return load_findings()
+
+
 @st.cache_data(show_spinner=False, max_entries=256)
 def get_unusual_flag(_check, percentile: float, text: str) -> tuple[bool, float]:
     return _check(text)
@@ -72,6 +80,12 @@ with st.sidebar:
     low_conf = st.slider("Low-confidence flag below", 0.5, 0.95, float(CFG["low_confidence"]), 0.05)
     show_words = st.toggle("Show word importance", value=True)
     show_notes = st.toggle("Show presenter notes", value=True)
+    show_findings = st.toggle(
+        "Show research numbers",
+        value=True,
+        help="Each model's test accuracy vs its robustness score (the Mirage Gap, D40), and how "
+        "often it fails the full test behind an example.",
+    )
     if st.button("Reset to examples"):
         for k in ("mode", "own_a", "own_b", "compare"):
             st.session_state.pop(k, None)
@@ -83,20 +97,22 @@ with st.sidebar:
 models = get_models(light)
 UNUSUAL_PCT = float(CFG["unusual_percentile"])
 unusual = get_unusual(UNUSUAL_PCT)
+findings = get_findings() if show_findings else None
 
 # ------------------------------------------------------------------ header + input
 st.title("Mirage: Shortcut Explorer")
 st.markdown(
     "Type a sentence and see how **every model** reads it, and **why**. "
-    "Accuracy says these models are 59-92% right; this shows *how* they get there."
+    "Accuracy says these models are 59-95% right; this shows *how* they get there."
 )
 
 mode = st.radio("Input", ["Curated examples", "Your own sentence"], horizontal=True, key="mode")
-note = None
+note, shortcut = None, None
 if mode == "Curated examples":
     examples = load_examples()
     ex = st.selectbox("Example", examples, format_func=lambda e: e["title"])
     text_a, text_b, note = ex["a"], ex.get("b"), ex["talking_point"]
+    shortcut = ex.get("shortcut")
 else:
     compare = st.toggle("Compare two sentences", key="compare")
     text_a = st.text_input("Sentence", "The movie was not bad at all.", key="own_a")
@@ -208,6 +224,26 @@ def table(header: list[str], rows: list[str], font: str = "1rem") -> str:
     )
 
 
+LOOKS_HEADER = "looks → behaves"
+LOOKS_CAPTION = (
+    "Looks → behaves: the model's SST-2 test accuracy → its robustness score (the share of four "
+    "behavioral tests it gets fully right: negation templates, real negated sentences, typos and "
+    "name swaps; D40). The gap between them is the Mirage Gap."
+)
+
+
+def looks_behaves(name: str) -> str:
+    """'83% → 55%' from the Mirage Gap results, or a dash for a model without results."""
+    if findings is None or name not in findings.index:
+        return "—"
+    f = findings.loc[name]
+    return (
+        f'<span style="white-space:nowrap;" title="test accuracy {f.accuracy:.1%}, robustness '
+        f'{f.robustness:.1%}">{f.accuracy:.0%} → <b>{f.robustness:.0%}</b> '
+        f'<small style="{MUTED}">gap {f.gap * 100:.0f} pts</small></span>'
+    )
+
+
 def row(cells: list[str], bg: str = "") -> str:
     tds = "".join(f"<td style='{CELL}'>{c}</td>" for c in cells)
     return f"<tr style='border-top:1px solid {LINE};{bg}'>{tds}</tr>"
@@ -237,6 +273,7 @@ def results_table(text: str, idx: int, sc: pd.DataFrame) -> None:
                     prob_bar(r["p_pos"]),
                     "<br>".join(flags) or "—",
                 ]
+                + ([looks_behaves(name)] if findings is not None else [])
             )
         )
         if show_words:
@@ -245,7 +282,11 @@ def results_table(text: str, idx: int, sc: pd.DataFrame) -> None:
             why.append(
                 f"<div style='{CELL}'>{model_label(name)}</div><div style='{CELL}'>{chips}</div>"
             )
-    st.markdown(table(["model", "verdict", "probability", "flags"], rows), unsafe_allow_html=True)
+    header = ["model", "verdict", "probability", "flags"]
+    header += [LOOKS_HEADER] if findings is not None else []
+    st.markdown(table(header, rows), unsafe_allow_html=True)
+    if findings is not None:
+        st.caption(LOOKS_CAPTION)
     if show_words:
         # its own full-width section, so a sentence's words sit on one line instead of being
         # squeezed into a table column
@@ -275,21 +316,43 @@ def change_table() -> None:
                     model_label(m),
                     f"{verdict(a)} {a:.0%}",
                     f"{verdict(b)} {b:.0%}",
-                    f"<b>{b - a:+.0%}</b>",
+                    f"<b>{(b - a if abs(b - a) >= 0.005 else 0.0):+.0%}</b>",  # no "-0%"
                     "<b>FLIPS</b>" if flips else "same",
-                ],
+                ]
+                + ([looks_behaves(m)] if findings is not None else []),
                 bg=f"background:{rgba(NEG, 0.14)};" if flips else "",
             )
         )
     header = ["model", "A", "B", "change in positive probability", "verdict"]
+    header += [LOOKS_HEADER] if findings is not None else []
     st.markdown(table(header, rows, font="1.05rem"), unsafe_allow_html=True)
+
+
+def flip_summary() -> None:
+    """One line above the pair table: how many models flip, and (for a curated example) how
+    often each of them fails the full test behind this shortcut, so one live example stands for
+    the measured result."""
+    who = flipped(sc)
+    names = ", ".join(SHORT_NAME.get(m, m) for m in who)
+    head = f"**{len(who)} of {len(models)} models flip**" + (f": {names}." if who else ".")
+    lines = [head]
+    for m in who:
+        fails = shortcut_failures(findings, m, shortcut)
+        if fails:
+            parts = " and ".join(f"**{r:.0%}** of {label}" for r, label in fails)
+            lines.append(f"In the full test, {SHORT_NAME.get(m, m)} fails {parts}.")
+    st.markdown("  \n".join(lines))
 
 
 if len(texts) == 2:
     st.subheader("What changed between A and B?")
     st.markdown(f"**A:** “{html.escape(texts[0])}”  \n**B:** “{html.escape(texts[1])}”")
+    flip_summary()
     change_table()
-    st.caption("A flip on a change that shouldn't matter (a name, a typo in a noun) is a shortcut.")
+    st.caption(
+        "A flip on a change that shouldn't matter (a name, a typo in a noun) is a shortcut."
+        + (" " + LOOKS_CAPTION if findings is not None else "")
+    )
     st.subheader("Why? Each sentence in detail")
     for i, tab in enumerate(st.tabs([f"A: {texts[0]}", f"B: {texts[1]}"])):
         with tab, st.spinner("Removing one word at a time..."):

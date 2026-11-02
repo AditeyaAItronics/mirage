@@ -163,6 +163,6 @@ for why each choice was made.
 | `figures/` | report figures (PNG + PDF) |
 | `notebooks/` | Kaggle notebooks: DistilBERT fine-tuning, and the external models' predictions |
 | `app/` | the live demo (Streamlit), its curated examples and presenter guide |
-| `tests/` | `python -m pytest` (133 tests, about 2–3 min, no GPU needed) |
+| `tests/` | `python -m pytest` (136 tests, about 2–3 min, no GPU needed) |
 
 For a file-by-file tour of the code, see [codeexplanations.md](codeexplanations.md).

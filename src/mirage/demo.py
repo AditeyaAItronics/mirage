@@ -133,6 +133,52 @@ class UnusualInput:
         return d > self.threshold, d
 
 
+# Which robustness tests (mirage_gap.csv columns, D40) back each curated example's shortcut, and
+# how to name them on screen. Shortcuts without a matching test (vocabulary, sarcasm) show none.
+SHORTCUT_TESTS = {
+    "names": [("beh_name_shortcut", "name-swap pairs")],
+    "typos": [("beh_typo", "typo pairs")],
+    "negation": [
+        ("beh_negation_dir", "negation template pairs"),
+        ("sst2_neg", "real negated sentences"),
+    ],
+}
+
+
+def load_findings(path=None) -> pd.DataFrame | None:
+    """Each model's Mirage Gap row (base variant, D40), indexed by model: accuracy, robustness,
+    gap and the pass rate of every robustness test (`pass__<test>`). None if `evaluate` hasn't
+    written results/mirage_gap.csv, so the demo still runs without it."""
+    path = path or paths.RESULTS / "mirage_gap.csv"
+    if not path.exists():
+        return None
+    df = pd.read_csv(path)
+    return df[df["variant"] == "base"].set_index("model")
+
+
+def flipped(scores: pd.DataFrame) -> list[str]:
+    """Models whose predicted label differs between sentence A (text 0) and B (text 1)."""
+    lab = scores.pivot(index="model", columns="text_idx", values="label")
+    return [m for m in scores["model"].unique() if lab.loc[m, 0] != lab.loc[m, 1]]
+
+
+def shortcut_failures(
+    findings: pd.DataFrame | None, model: str, shortcut: str | None
+) -> list[tuple[float, str]]:
+    """(failure rate, test name) for every full test behind `shortcut`, for one model.
+
+    A pair fails unless the model gets both sentences right; a real sentence fails if it's wrong.
+    Empty if there are no findings, the model isn't in them, or no test backs the shortcut."""
+    if findings is None or model not in findings.index:
+        return []
+    out = []
+    for test, label in SHORTCUT_TESTS.get(shortcut, []):
+        rate = findings.loc[model, f"pass__{test}"]
+        if pd.notna(rate):
+            out.append((1 - float(rate), label))
+    return out
+
+
 def load_examples(path=None) -> list[dict]:
     """The curated examples in app/examples.yaml, in presentation order."""
     import yaml
