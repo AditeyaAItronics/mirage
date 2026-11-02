@@ -109,6 +109,19 @@ including all 10,000 IMDb reviews, so they're compared with our models on exactl
   should get 14 files: `results/predictions/{roberta_large,distilbert_hf}__base__seed0__*.parquet`.
 - Then tell Claude. It checks that the reviews match the laptop's, re-runs `evaluate`, `warn` and
   `figures` (every table and figure gains the two models), and writes up the results.
+- **What you'll see, and what's normal** (from the first run, Nov 2026):
+  - **Internet must be On** in the notebook's settings. It can switch off when a session
+    restarts, and without it the run fails within the first minute (it can't clone, install or
+    download the models). That is what stopped the first attempt.
+  - **"Debugger warning: frozen modules…"** at the very start: harmless, Kaggle prints it in
+    every notebook.
+  - **"Token indices sequence length is longer than … (535 > 512)"** around 3 minutes: harmless.
+    The full review is tokenized first, then cut to 512 tokens (start + end kept, D23) before the
+    model sees it.
+  - **A long quiet stretch** after that: RoBERTa-large working through the 10,000 IMDb reviews.
+  - **You can close the laptop.** A saved version runs on Kaggle's servers; only pressing Run All
+    in the editor (without saving a version) depends on your session.
+  - The version badge shows **1** when it has finished; open that version to download the output.
 
 ### 15. Try the live demo yourself (10 min)
 ```bash
