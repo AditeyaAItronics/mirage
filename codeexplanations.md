@@ -28,6 +28,7 @@ never writes results.
 | `newadditionsdesign.md` | The design for the three presentation additions: external models (D39), the Mirage Gap (D40) and the live demo (D41). |
 | `shortfalls.md` | Known limitations, with severity, fixes and a "Resolved" list. |
 | `whatyouneedtodo.md` | The steps only you can do (Kaggle, reviews, proposal fixes). |
+| `reportplan.md` | How the final report gets written: the step-by-step walkthrough (yours and Claude's), the section skeleton with the source of every number, and the hypothesis verdicts to approve. |
 | `proposal.md` | The project proposal: research questions, hypotheses H1–H6, datasets, models and evaluation plan. Its facts were corrected to match the code (Nov 2026); the hypotheses are as originally written. |
 | `MIRAGE_IMPLEMENTATION_PLAN.md` | The original week-by-week build plan. Some details are now superseded by the decision log. |
 | `CLAUDE.md` | Rules for Claude Code when working in this repo. |

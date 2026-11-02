@@ -174,7 +174,10 @@ Only if the week 3 checkpoint is met early. Ask Claude to build it on a separate
 
 ## Week 4 — the report
 
-### 12. Write the report narrative
+### 12. Write the report narrative — follow [reportplan.md](reportplan.md)
+The plan lists every step in order (yours and Claude's), the report skeleton with the source of
+each section, and the hypothesis verdicts to approve. **To start, send Claude: the format rules,
+"verdicts approved" (or your changes), and your main-text / appendix choice.**
 Claude can draft sections, tables and figure captions from the CSVs (ask for a Word/PDF report via
 the docx or pdf skills). But **the argument, the verdict for each hypothesis, and the
 limitations section are yours**: you are graded on them, and you know what your evaluators expect.
