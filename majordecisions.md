@@ -1520,3 +1520,32 @@ negation; ✔ = clearly higher, Holm p < 0.05):**
 - The pair tests count failed *pairs* and the comparison counts failed *sentences*. Both are
   failure rates, so they are comparable; this is stated in the docstring.
 - No bugs found.
+
+## D48 — Demo polish: faster reruns, readable word importance, theme-neutral colours (refines D41)
+
+**What changed in `app/shortcut_explorer.py`** (layout only; `mirage.demo` is unchanged, so no
+number the demo shows changed):
+- **Caching.** Model scores, word importance and the unusual-input distance are cached per
+  (model, sentence) with `st.cache_data`. Moving the low-confidence slider or a toggle no longer
+  re-runs any model (before, every interaction re-ran all eight, RoBERTa-large included), and
+  switching light mode on and off reuses what both modes share. The low-confidence flag is still
+  applied at display time, so the slider takes effect at once.
+- **Word importance gets its own full-width section** ("Which words drove each verdict?"), one
+  row per model, under the verdict table. Before, it was a fifth table column that squeezed a
+  sentence into one word per line and was cut off on narrow screens.
+- **A colour key** above the words: blue = pushed positive, red = pushed negative, grey italic =
+  never seen in training, darker = mattered more to that model (shading is scaled per model).
+  Hovering a word shows its exact effect on the positive probability.
+- **Theme-neutral colours.** Lines, probability-bar tracks and header text use semi-transparent
+  greys or the inherited text colour instead of fixed dark-grey hex values, so the tables stay
+  readable if the dark theme is chosen. Blue / red keep their project-wide meaning.
+
+**Rejected:** hosting on Vercel. Vercel serves JavaScript frontends and short serverless
+functions; the demo keeps PyTorch models (about 2-3 GB) loaded in memory. A public link, if
+wanted, fits Hugging Face Spaces (Streamlit, free CPU tier with enough RAM for all eight models).
+The presentation itself runs locally, with `app/screenshots/` as the fallback.
+
+**Code review:** cache keys include the model name and the exact text tuple, so two models or two
+sentences never share an entry; the unhashed `_clf` argument is safe because a name always maps to
+the same loaded model. User text is still HTML-escaped everywhere it is rendered (chips, tabs,
+the A/B lines). No bugs found.
