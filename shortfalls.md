@@ -534,6 +534,7 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 - **F4, length inside the distance.** Measured with a length-matched check (0.612 vs 0.926) and removed with a length-adjusted distance; H4 is unchanged (D30).
 - **B4, B9, C7: robustness of the headline results.** An IMDb excerpt set splits length from content, test-only negation rows were added, and a second negation-scope variant was trained (D31).
 - **D7, name test that couldn't fail.** Replaced by a name-shortcut test built from the training labels, plus a gender-matched unseen-names probe (D32).
+- **H1 judged by eye.** A formal test against negation-free test sentences (D47): partly supported.
 - **C2, no second reference model.** HF DistilBERT and RoBERTa-large tested on everything (D46).
 - **D8, six name pairs.** All 35 film people: Multinomial NB's reaction tracks 23 unseen names at ρ = 0.91 (D45).
 - **H2, unpinned dependencies.** `requirements-lock.txt` (D46).

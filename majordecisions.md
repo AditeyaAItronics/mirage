@@ -1456,3 +1456,67 @@ its validation and test numbers are clean.
   warning).
 - **Lock file (shortfall H2):** `requirements-lock.txt` is a `pip freeze` of the environment that
   produced the results, with the CPU torch install line.
+
+## D47 — A formal test for H1
+
+**Problem:** H1 ("every model, including DistilBERT, has a clearly higher error rate on negation
+and sentiment-word typos than on the normal test set") was judged by eye from separate
+confidence intervals. That's not a test, and it's the one hypothesis without one.
+
+**Decision:** `evaluate.h1_test` → `results/h1_test.csv`. For every base model (our six, plus the
+external models in their own Holm family):
+- **Comparison set: the SST-2 test sentences that contain *no* negation word.** About 19% of test
+  sentences contain negation, and most of the real-negation set comes from them, so comparing
+  with the whole test set would partly compare negated sentences with themselves. The overall
+  test error is reported next to it for reference.
+- **Tests:**
+  - real negated sentences (`sst2_neg`, 519);
+  - negation templates (`beh_negation`, "not X" → negative);
+  - "X / not X" pairs (`beh_negation_dir`);
+  - sentiment-word typos (`beh_typo`).
+- **Statistic:** error(test) − error(non-negated test sentences), with a 95% bootstrap CI that
+  resamples each group separately (they're different sentences), and the same SE-based p-value as
+  every other comparison (D28). The ratio to the comparison error is reported too.
+- **"Clearly higher"** means a positive difference with Holm p < 0.05 across every
+  (model, test) row in the family.
+
+**Rejected:** comparing with the whole test set (overlapping items), and a pooled z-test (it
+would duplicate the bootstrap the project already uses everywhere else).
+
+**Results (D47; difference in error, percentage points, against SST-2 test sentences without
+negation; ✔ = clearly higher, Holm p < 0.05):**
+
+| model | real negation | "not X" templates | "X / not X" pairs | typos |
+|---|---|---|---|---|
+| Logistic regression | +7.3 ✔ | +11.7 ✔ | +12.2 ✔ | +29.9 ✔ |
+| Multinomial NB | +8.4 ✔ | +33.7 ✔ | +41.8 ✔ | +23.1 ✔ |
+| Gaussian NB | +8.6 ✔ | +54.2 ✔ | +56.6 ✔ | −25.4 |
+| Random forest | +3.6 | −3.2 | +1.0 | +12.8 ✔ |
+| Decision tree | +5.5 | −25.8 | −13.3 | −10.8 |
+| DistilBERT (ours) | +2.6 (p 0.33) | −7.4 (0 errors) | −7.4 (0 errors) | +32.0 ✔ |
+| DistilBERT (HF, external) | +3.5 ✔ (p 0.045) | −7.3 | −7.3 | +31.7 ✔ |
+| RoBERTa-large (external) | +1.6 | −5.3 | −5.3 | +23.9 ✔ |
+
+**H1 verdict: partly supported.**
+- **Typos clearly hurt every model that reads sentiment words**, *including every transformer*
+  (DistilBERT +32 points). That half of H1 holds as worded.
+- **Negation clearly hurts the bag-of-words models** (LR and Multinomial NB on all three negation
+  tests; Gaussian NB too).
+- **It does not clearly hurt the transformers.** They make no template errors, and our DistilBERT
+  is only 2.6 points worse on real negated sentences (not significant). So "including DistilBERT"
+  fails for negation, which is the same finding as H2 seen from the other side.
+- **The weakest models fail typo tests *less* than normal sentences** (decision tree, Gaussian NB).
+  They barely react to the sentiment word anyway, the same effect D40 corrected for in the
+  robustness score. The decision tree's negation results are similar: its normal error is
+  already 34%.
+
+**Code review:**
+- Extracting `stats._summarize` from `bootstrap` is behaviour-preserving: every reported number
+  was re-checked, unchanged.
+- `diff_independent_ci` resamples the two groups separately and uses the project's SE-based
+  p-value.
+- The comparison set excludes exactly the negated test sentences; the validation sentences in
+  the negation set were never in it.
+- The pair tests count failed *pairs* and the comparison counts failed *sentences*. Both are
+  failure rates, so they are comparable; this is stated in the docstring.
+- No bugs found.

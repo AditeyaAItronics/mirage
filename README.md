@@ -42,8 +42,12 @@ results below are clean, because the test sentences are ours.
 | *RoBERTa-large, external* | *0.000* | *0.292* | *0.000* | *0.010* |
 
 **What the results show**
-- **Hidden failures (H1):** classical models that score 65–84% on SST-2 fail 20–57% of simple
-  negation pairs (Gaussian NB 96%). Naive Bayes flips its answer in 38% of sentences when only a
+- **Hidden failures (H1), partly supported (D47):** tested formally against SST-2 test sentences
+  without negation. **Typos clearly raise the error of every model that reads sentiment words,
+  transformers included** (DistilBERT +32 points). **Negation clearly raises it for the
+  bag-of-words models** (logistic regression and Multinomial NB on every negation test) **but not
+  for the transformers** (no template errors; our DistilBERT +2.6 points on real negated
+  sentences, not significant). Naive Bayes also flips its answer in 38% of sentences when only a
   film person's name changes.
 - **Negation gap (H2):** with single-word features, as the proposal states, every classical
   model is significantly worse than DistilBERT on real negated sentences, by 14–35 points (and by
@@ -159,6 +163,6 @@ for why each choice was made.
 | `figures/` | report figures (PNG + PDF) |
 | `notebooks/` | Kaggle notebooks: DistilBERT fine-tuning, and the external models' predictions |
 | `app/` | the live demo (Streamlit), its curated examples and presenter guide |
-| `tests/` | `python -m pytest` (131 tests, about 2–3 min, no GPU needed) |
+| `tests/` | `python -m pytest` (133 tests, about 2–3 min, no GPU needed) |
 
 For a file-by-file tour of the code, see [codeexplanations.md](codeexplanations.md).

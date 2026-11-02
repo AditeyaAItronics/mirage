@@ -775,6 +775,51 @@ def name_probe(effects: pd.DataFrame, n_resamples: int = 1000, seed: int = 42) -
     return out
 
 
+H1_TESTS = ("sst2_neg", "beh_negation", "beh_negation_dir", "beh_typo")
+
+
+def h1_test(preds: pd.DataFrame, tests=H1_TESTS, **ci_kw) -> pd.DataFrame:
+    """H1 (D47): is each model's error on negation and typo tests higher than on SST-2 test
+    sentences *without* negation (a disjoint comparison set)? Independent two-group bootstrap;
+    Holm across every (model, test) row, ours and external models apart (D39)."""
+    from mirage.stats import diff_independent_ci
+
+    rows = []
+    for (m, v), g in canonical(preds).groupby(["model", "variant"]):
+        if v != "base":
+            continue
+        f = _error_flags(g)
+        if INDIST not in f or "sst2_neg" not in f:
+            continue
+        plain = f[INDIST][~f[INDIST].index.isin(f["sst2_neg"].index)]  # test minus negated
+        for t in tests:
+            if t not in f:
+                continue
+            d = diff_independent_ci(f[t].to_numpy(), plain.to_numpy(), **ci_kw)
+            rows.append(
+                {
+                    "model": m,
+                    "test": t,
+                    "n_test": len(f[t]),
+                    "n_plain": len(plain),
+                    "error_test": float(f[t].mean()),
+                    "error_plain": float(plain.mean()),
+                    "error_all_sst2_test": float(f[INDIST].mean()),
+                    "diff": d["estimate"],
+                    "diff_lo": d["ci_low"],
+                    "diff_hi": d["ci_high"],
+                    "diff_p": d["p_value"],
+                    "ratio": float(f[t].mean() / plain.mean()) if plain.mean() else np.nan,
+                }
+            )
+    out = pd.DataFrame(rows)
+    if len(out):
+        out["family"] = holm_family(out["model"])
+        out["diff_p_holm"] = out.groupby("family")["diff_p"].transform(lambda p: holm(p))
+        out["clearly_higher"] = (out["diff"] > 0) & (out["diff_p_holm"] < 0.05)
+    return out
+
+
 def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
     preds = load_predictions()
     kw = {"n_resamples": ci_resamples}
@@ -790,6 +835,7 @@ def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
         "shift_decomposition": shift_decomposition(preds),
         "name_effect": name_effect(preds, **kw),
         "typo_direction": typo_direction(preds, **kw),
+        "h1_test": h1_test(preds, **kw),
     }
     effects = name_probe_effects(preds)
     if len(effects):  # D45: only once the name-probe stage has run

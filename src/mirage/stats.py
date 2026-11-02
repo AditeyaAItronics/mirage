@@ -38,8 +38,13 @@ def bootstrap(
     rng = np.random.default_rng(seed)
     point = stat(np.arange(n_items))
     draws = np.array([stat(rng.integers(0, n_items, n_items)) for _ in range(n_resamples)])
+    return _summarize(point, draws, n_items, alpha, null)
+
+
+def _summarize(point: float, draws: np.ndarray, n, alpha: float, null: float | None) -> dict:
+    """Percentile CI and (with `null`) the SE-based two-sided p-value from bootstrap draws."""
     draws = draws[~np.isnan(draws)]
-    out = {"estimate": float(point), "ci_low": np.nan, "ci_high": np.nan, "n": n_items}
+    out = {"estimate": float(point), "ci_low": np.nan, "ci_high": np.nan, "n": n}
     if null is not None:
         out["p_value"] = np.nan
     if len(draws) == 0:
@@ -53,6 +58,22 @@ def bootstrap(
         else:  # every resample identical: no evidence either way unless it differs from null
             out["p_value"] = 1.0 if np.isclose(point, null) else 0.0
     return out
+
+
+def diff_independent_ci(
+    a: np.ndarray, b: np.ndarray, n_resamples: int = 1000, seed: int = 42, alpha: float = 0.05
+) -> dict:
+    """CI and p-value for mean(a) - mean(b) when a and b are *different* items (H1, D47):
+    each group is resampled on its own, so no pairing is assumed. `n` is (len(a), len(b))."""
+    a, b = np.asarray(a, dtype=float), np.asarray(b, dtype=float)
+    rng = np.random.default_rng(seed)
+    draws = np.array(
+        [
+            a[rng.integers(0, len(a), len(a))].mean() - b[rng.integers(0, len(b), len(b))].mean()
+            for _ in range(n_resamples)
+        ]
+    )
+    return _summarize(a.mean() - b.mean(), draws, (len(a), len(b)), alpha, null=0.0)
 
 
 def rate_ci(flags: np.ndarray, **kw) -> dict:

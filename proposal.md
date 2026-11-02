@@ -57,7 +57,7 @@ Each hypothesis is tested with a specific comparison. Rejecting any of them is s
 
 | # | Hypothesis | How it is tested |
 | --- | --- | --- |
-| H1 | Every model, including DistilBERT, has a clearly higher error rate on negation and sentiment-word typos than on the normal test set | Error rate per test type vs. overall test error |
+| H1 | Every model, including DistilBERT, has a clearly higher error rate on negation and sentiment-word typos than on the normal test set | Error rate per test type vs. the error on test sentences without negation (a disjoint comparison set), with a confidence interval and multiple-testing correction |
 | H2 | DistilBERT handles negation much better than the bag-of-words models with single-word features | Negation error gap, on templates and on the real negation subset |
 | H3 | Word-pair features and negation marking close part, but not all, of that gap | Negation gap before vs. after negation marking |
 | H4 | Gaussian distance on sentence embeddings adds information beyond model confidence for predicting errors on IMDb | Error-detection AUROC: distance vs. confidence vs. both combined |

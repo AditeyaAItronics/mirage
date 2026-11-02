@@ -121,7 +121,7 @@ Eight models, one interface: five classical, our DistilBERT, and two ready-made 
 
 | RQ / H | Data | Computed in | Output |
 |---|---|---|---|
-| RQ1 / H1 hidden failures | sst2_test, sst2_neg, behavioral | `evaluate.error_table` + `behavioral.suite.case_failures` | `errors_by_type.csv`, heatmap |
+| RQ1 / H1 hidden failures | sst2_test, sst2_neg, behavioral | `evaluate.error_table` + `behavioral.suite.case_failures`; formal test `evaluate.h1_test` against negation-free test sentences (D47) | `errors_by_type.csv`, `h1_test.csv`, heatmap |
 | RQ2 / H2–H3 what context buys | sst2_neg, behavioral negation; the ladder unigram → base (+ pairs) → negmark (+ marking), D42 | `evaluate.negation_gap` (paired bootstrap, D12) | `negation_gap.csv`, gap bars |
 | RQ3 / H4 early warning | sst2_train embeddings, imdb | `warning.*`, `cli.stage_warn` | `early_warning.csv`, error-vs-score plot |
 | RQ4 / H5 explanation | trained models, DistilBERT failures; for H5, SST-2 test with one ranking rule for every model (D43) | `explain.*`, stage `occlusion` | `top_features.csv`, `ig_failures.csv`, `deletion_check.csv`, `overlap.csv`; H5 (main): `occlusion_agreement.csv` (reliability-corrected correlation of word effects), `occlusion_reliability.csv`; secondary: `overlap_occlusion.csv`, `occlusion_split_half.csv` |
