@@ -399,10 +399,25 @@ def mirage_gap_chart(gap: pd.DataFrame, variant: str = "base", slide: bool = Fal
             linewidth=2.5 if hollow else 2,
         )
     worst = d["gap"].idxmax()  # the biggest mirage gets a second, bold line under its label
-    label_y = _spread(d["robustness"].to_numpy(), 0.035 if slide else 0.03)
-    for (m, r), yl in zip(d.iterrows(), label_y, strict=True):
-        text = f"{SHORT_NAME.get(m, m)}  {r['robustness']:.0%}"
-        if m == worst:
+    # Models on (almost) the same spot share one label, e.g. our DistilBERT and HF's (D46).
+    groups: list[list[str]] = []
+    for m, r in d.iterrows():
+        for grp in groups:
+            g0 = d.loc[grp[0]]
+            if (
+                abs(g0["accuracy"] - r["accuracy"]) < 0.01
+                and abs(g0["robustness"] - r["robustness"]) < 0.01
+            ):
+                grp.append(m)
+                break
+        else:
+            groups.append([m])
+    anchors = [d.loc[g[0]] for g in groups]
+    label_y = _spread(np.array([a["robustness"] for a in anchors]), 0.035 if slide else 0.03)
+    for grp, r, yl in zip(groups, anchors, label_y, strict=True):
+        text = " = ".join(SHORT_NAME.get(m, m) for m in grp) + f"  {r['robustness']:.0%}"
+        bold = worst in grp
+        if bold:
             text += f"\nlooks {r['accuracy']:.0%}, behaves {r['robustness']:.0%}"
         ax.annotate(
             text,
@@ -410,8 +425,8 @@ def mirage_gap_chart(gap: pd.DataFrame, variant: str = "base", slide: bool = Fal
             xytext=(r["accuracy"] + 0.012, yl),
             fontsize=fs * 0.85,
             color=INK,
-            va="top" if m == worst else "center",
-            fontweight="bold" if m == worst else "normal",
+            va="top" if bold else "center",
+            fontweight="bold" if bold else "normal",
         )
     ax.set_xlim(lo, 1.0)
     ax.set_ylim(lo, 1.02)

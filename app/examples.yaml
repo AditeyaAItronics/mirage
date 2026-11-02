@@ -24,8 +24,10 @@
   a: "Another Kidman drama, and it was decent."
   b: "Another Seagal drama, and it was decent."
   talking_point: >
-    RoBERTa-large is five times bigger than DistilBERT and trained on 15 datasets, and it still
-    flips on a name. Scale does not cure this shortcut.
+    RoBERTa-large is five times bigger than DistilBERT and trained on 15 datasets, and on this
+    sentence it still flips on a name. Across the full test it does so rarely (1% of pairs, D46),
+    but its reactions to 35 film names still follow their training reputations: scale shrinks
+    this shortcut, it doesn't erase it. Naive Bayes flips on 38% of pairs.
   expect:
     flips: [mnb, roberta_large]
     stable: [distilbert]

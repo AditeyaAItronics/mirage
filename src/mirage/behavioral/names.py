@@ -50,3 +50,47 @@ def pick_pairs(assoc: pd.DataFrame, k: int = 6) -> list[tuple[str, str]]:
     pos = assoc[assoc["log_odds"] > 0].head(k)["name"].tolist()
     neg = assoc[assoc["log_odds"] < 0].tail(k)["name"].tolist()[::-1]
     return [(p.capitalize(), n.capitalize()) for p, n in zip(pos, neg, strict=False)]
+
+
+PROBE_PATH_NAME = "name_probe_suite.csv"
+
+
+def name_probe_suite(
+    assoc: pd.DataFrame, tested: set[str], n_sentences: int, seed: int
+) -> pd.DataFrame:
+    """Every name in `assoc` placed in the same `n_sentences` neutral sentences (D45).
+
+    The sentences are the name-shortcut templates with a work noun and a mild adjective (which
+    alone carries the sentiment), sampled once, so names differ only by the name. `tested` marks
+    the names already used in the main suite's pairs; the others are the out-of-sample check.
+    """
+    import itertools
+
+    from mirage.behavioral import wordlists as W
+    from mirage.behavioral.templates import NAME_SHORTCUT_TEMPLATES
+
+    combos = list(
+        itertools.product(
+            NAME_SHORTCUT_TEMPLATES,
+            W.WORK_NOUNS,
+            [(1, a) for a in W.MILD_POS] + [(0, a) for a in W.MILD_NEG],
+        )
+    )
+    rng = np.random.default_rng(seed)
+    picked = [combos[i] for i in sorted(rng.choice(len(combos), n_sentences, replace=False))]
+    rows = []
+    for _, r in assoc.iterrows():
+        name = r["name"].capitalize()
+        for c, (template, noun, (label, adj)) in enumerate(picked):
+            rows.append(
+                {
+                    "item_id": f"name_probe-{r['name']}-{c}",
+                    "text": template.format(name=name, noun=noun, adj=adj),
+                    "label": label,
+                    "name": r["name"],
+                    "sentence": c,
+                    "log_odds": float(r["log_odds"]),
+                    "tested": r["name"] in tested,
+                }
+            )
+    return pd.DataFrame(rows)

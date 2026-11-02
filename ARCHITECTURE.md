@@ -128,9 +128,12 @@ Eight models, one interface: five classical, our DistilBERT, and two ready-made 
 | H6 GNB vs MNB | sst2_test | `evaluate.main_table` + McNemar | `main_table.csv`, `mcnemar.csv` |
 | Calibration | sst2_test, imdb | `metrics.ece`, `reliability_bins` | ECE columns, reliability diagram |
 | Does scale cure shortcuts? (D39) | every set, external models | the same tables; their own Holm families | new rows everywhere |
+| Name shortcut beyond the 6 test pairs (D45) | all 35 film people in the same 40 sentences (`name_probe`, a separate eval set) | stage `name-probe`, `evaluate.name_probe` | `name_probe.csv`, `name_probe_by_name.csv` |
+| Does any conclusion depend on DistilBERT's seed? (D44) | every per-item result, per seed | `evaluate.seed_robustness` | `seed_robustness.csv` |
 | Accuracy vs behaviour (D40) | sst2_test, sst2_neg, behavioral pairs | `evaluate.mirage_gap` (pair accuracy) | `mirage_gap.csv`, Mirage Gap chart, fingerprint |
 
-Seed policy (D13): tables average DistilBERT over 3 seeds; per-item analyses use its median seed.
+Seed policy (D13): tables average DistilBERT over 3 seeds; per-item analyses use its median seed,
+and `evaluate.seed_robustness` reruns each of them on every seed to show no conclusion depends on it (D44).
 
 ---
 
@@ -170,6 +173,7 @@ laptop struggles, train it on its own with `--models rf` and limit the grid to `
 - `MIRAGE_ROOT` relocates all outputs and `MIRAGE_CONFIGS` swaps the config folder. The
   end-to-end test uses both to run the whole CPU pipeline in a temp folder.
 - Re-running from scratch: `prepare → train-classical → (Kaggle) train-distilbert → all`.
+- Exact library versions of the final results: `requirements-lock.txt` (`pip freeze`, D46).
 
 ---
 

@@ -322,6 +322,52 @@ def stage_occlusion(args) -> None:
     pd.DataFrame(reliability).to_csv(out / "occlusion_reliability.csv", index=False)
 
 
+def stage_name_probe(args) -> None:
+    """D45: every film person from the training labels in the same neutral sentences."""
+    from mirage.behavioral.names import PROBE_PATH_NAME, name_associations, name_probe_suite
+    from mirage.data import load
+    from mirage.evaluate import median_seed
+    from mirage.models.base import load_classifier
+    from mirage.models.external import EXTERNAL_SEED, ExternalClassifier
+    from mirage.predict import load_predictions, predictions_path, run_predictions
+
+    cfg = load_config("behavioral")
+    pc = cfg["name_probe"]
+    train = pd.concat([load("sst2_train"), load("sst2_heldout")])  # as in build-suite (D32)
+    assoc = name_associations(train, min_phrases=pc["min_phrases"])
+    tested = {n.lower() for pair in cfg["name_pairs"] for n in pair}
+    suite = name_probe_suite(assoc, tested, pc["n_sentences"], pc["seed"])
+    suite.to_csv(paths.RESULTS / PROBE_PATH_NAME, index=False)
+    print(
+        f"name probe: {assoc.shape[0]} names ({len(tested)} already tested) x "
+        f"{pc['n_sentences']} sentences = {len(suite)} rows"
+    )
+    ext = load_config("external")
+    for name in pc["models"]:
+        if name in ext["models"]:
+            seed = EXTERNAL_SEED
+        elif name == "distilbert":
+            try:
+                seed = median_seed(load_predictions(model="distilbert", dataset="sst2_val"))
+            except FileNotFoundError:
+                print("no DistilBERT predictions - skipping it")
+                continue
+        else:
+            seed = load_config("classical")["seed"]
+        try:
+            if name in ext["models"]:  # cached locally only: never a 1.4 GB download from here
+                clf = ExternalClassifier.from_hub(name, ext["models"][name], ext, local_only=True)
+            else:
+                clf = load_classifier(paths.model_dir(name, "base", seed))
+        except (OSError, FileNotFoundError) as e:
+            # A probe file left from an earlier run would be analysed as if current: remove it.
+            predictions_path(name, "base", seed, "name_probe").unlink(missing_ok=True)
+            print(f"skip {name}: {type(e).__name__}")
+            continue
+        for p in run_predictions(clf, "base", seed, ["name_probe"]):
+            print("wrote", p.name)
+
+
 def stage_warn(args) -> None:
     from mirage.data import load
     from mirage.evaluate import canonical
@@ -513,6 +559,7 @@ def stage_all(args) -> None:
     for fn in (
         stage_build_suite,
         stage_predict,
+        stage_name_probe,
         stage_evaluate,
         stage_explain,
         stage_occlusion,
@@ -574,6 +621,9 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--overlap-k", type=int, default=50)
     s.set_defaults(fn=stage_explain)
 
+    sub.add_parser(
+        "name-probe", help="D45: every film person in the same sentences (name shortcut)"
+    ).set_defaults(fn=stage_name_probe)
     sub.add_parser(
         "occlusion", help="H5: leave-one-word-out word rankings and their overlap (D43)"
     ).set_defaults(fn=stage_occlusion)

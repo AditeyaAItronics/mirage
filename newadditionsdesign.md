@@ -19,8 +19,12 @@ records where the build departed from this design:
 - Later (D43): the demo's word importance became the shared `explain.occlusion` function, which
   now also ranks words for H5. The demo's behaviour is unchanged.
 
-**Still to do here:** the external models' tables, figures and demo rows wait on the Kaggle run
-(`whatyouneedtodo.md` step 14).
+**Done:** the Kaggle run is in and checked (D46); every table and figure includes both external
+models. One correction came from the results: RoBERTa-large flips on only 1% of name pairs in
+the full test, so the demo's Kidman/Seagal talking point and the presenter guide now say scale
+*shrinks* the name shortcut rather than "doesn't cure it".
+
+**Nothing left to build here.**
 
 This document is kept as the original design; the decision log is the current record.
 

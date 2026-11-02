@@ -31,6 +31,7 @@ never writes results.
 | `proposal.md` | The project proposal: research questions, hypotheses H1–H6, datasets, models and evaluation plan. Its facts were corrected to match the code (Nov 2026); the hypotheses are as originally written. |
 | `MIRAGE_IMPLEMENTATION_PLAN.md` | The original week-by-week build plan. Some details are now superseded by the decision log. |
 | `CLAUDE.md` | Rules for Claude Code when working in this repo. |
+| `requirements-lock.txt` | Exact library versions of the environment that produced the final results (D46). |
 | `codeexplanations.md` | This file. |
 | `pyproject.toml` | Package definition. Core dependencies (pandas, scikit-learn…); `[dl]` adds the deep-learning stack (torch, transformers, captum, sentence-transformers); `[demo]` adds Streamlit for the live demo; `[dev]` adds pytest and ruff. Also holds the pytest and ruff settings. |
 | `.streamlit/config.toml` | The demo's look: light theme (projector-friendly), no usage statistics. |
@@ -46,7 +47,7 @@ never writes results.
 | `data.yaml` | Dataset names (SST-2, the public SST-2 test labels, IMDb), held-out fraction (5%), IMDb sample size (10,000), the head/tail word cap (220 + 140), and the negation words. |
 | `classical.yaml` | TF-IDF settings (unigrams + bigrams, min_df 2) and each classical model's tuning grid. |
 | `distilbert.yaml` | Fine-tuning settings: 3 seeds, learning rate, batch size, epochs, max lengths (128 for SST-2, 512 for IMDb). |
-| `behavioral.yaml` | How many cases each behavioral test gets, and the six name pairs for the name-shortcut test. |
+| `behavioral.yaml` | How many cases each behavioral test gets, the six name pairs for the name-shortcut test, and the name probe's settings (sentences per name, models, D45). |
 | `explain.yaml` | The H5 settings (D43): which sentences (SST-2 test), which models, the minimum word count (5, and 10 as a check), top-k (50), reliability splits (20), bootstrap resamples and the seed. |
 | `warning.yaml` | Embedding model (MiniLM), distance type (Gaussian), unit (per-sentence max), CV folds, bootstrap resamples. |
 | `external.yaml` | The two ready-made Hugging Face models (RoBERTa-large, HF's SST-2 DistilBERT): their ids, batch sizes, token limits, and which eval sets they predict (D39). |
@@ -62,7 +63,7 @@ never writes results.
 |---|---|
 | `__init__.py` | Package docstring and version number. |
 | `__main__.py` | Makes `python -m mirage` call `cli.main()`. |
-| `cli.py` | The command line. One `stage_*` function per pipeline step: `prepare`, `train-classical`, `train-distilbert`, `build-suite`, `predict`, `evaluate`, `explain`, `warn`, `figures`, and `all`, which runs every step after training. `predict` skips models whose prediction files are newer than the model. `predict-external` runs the ready-made models and skips files that already exist (D39). `occlusion` ranks words the same way for every model for H5 (D43). `warn` also runs the length checks (D30). `figures` also draws the Mirage Gap and the shortcut fingerprint (D40). |
+| `cli.py` | The command line. One `stage_*` function per pipeline step: `prepare`, `train-classical`, `train-distilbert`, `build-suite`, `predict`, `evaluate`, `explain`, `warn`, `figures`, and `all`, which runs every step after training. `predict` skips models whose prediction files are newer than the model. `predict-external` runs the ready-made models and skips files that already exist (D39). `occlusion` ranks words the same way for every model for H5 (D43). `name-probe` builds and predicts the name probe (D45; external models only if cached locally). `warn` also runs the length checks (D30). `figures` also draws the Mirage Gap and the shortcut fingerprint (D40). |
 | `paths.py` | Every file location in one place (`artifacts/data`, `results/predictions`, `figures`…). `MIRAGE_ROOT` and `MIRAGE_CONFIGS` can move them (used by the tests and on Kaggle). |
 | `config.py` | `load_config(name)` reads a YAML file from `configs/`; `save_resolved` writes the exact settings next to a model; `set_seed` seeds Python, NumPy and torch. |
 | `text.py` | All text handling. `normalize` turns any text into SST-2 style (lowercase, "doesn't" → "does n't", punctuation split off, abbreviations kept whole). `negation_mark` adds `NOT_` to words after a negation, using either the original rule (up to punctuation) or the 3-word rule with exceptions. `sentences` splits a review into sentences. `Preprocessor` bundles these so they run inside the classical models. |
@@ -71,7 +72,7 @@ never writes results.
 | `predict.py` | The predictions contract. Defines the required columns, validates every prediction file, writes one parquet per (model, variant, seed, dataset), and loads them back with those four as columns. |
 | `metrics.py` | Single-number metrics: accuracy, macro-F1, confidence, reliability bins, expected calibration error (ECE), AUROC. |
 | `stats.py` | Uncertainty. Bootstrap confidence intervals and p-values, paired differences, the "gap closed" ratio, paired AUROC difference, Holm correction, McNemar's test. |
-| `evaluate.py` | Builds every results table from the prediction files: main table, errors by test type, negation gap to DistilBERT along the ladder single words → + word pairs → + negation marking (D42), negation-marking effect, negation control, directional negation, IMDb error by length, length-vs-content split, name effect, typo direction, McNemar, per-word errors, and the Mirage Gap (`mirage_gap`: accuracy vs a robustness score built from pair accuracy on four shortcut tests, plus its leave-one-out sensitivity check; `fingerprint_table` adds calibration and early warning, D40). External models and the single-word ablation get their own Holm families (`holm_family`), so they don't change earlier p-values. Writes everything to `results/*.csv`. |
+| `evaluate.py` | Builds every results table from the prediction files: main table, errors by test type, negation gap to DistilBERT along the ladder single words → + word pairs → + negation marking (D42), negation-marking effect, negation control, directional negation, IMDb error by length, length-vs-content split, name effect, typo direction, McNemar, per-word errors, and the Mirage Gap (`mirage_gap`: accuracy vs a robustness score built from pair accuracy on four shortcut tests, plus its leave-one-out sensitivity check; `fingerprint_table` adds calibration and early warning, D40). External models and the single-word ablation get their own Holm families (`holm_family`), so they don't change earlier p-values. Also `name_probe_effects` / `name_probe` (does a model's reaction to a name track its training reputation, with the effect size, D45), and `seed_robustness`: every result that uses DistilBERT's median seed, rerun on each of its three seeds, with flags for any change of direction or significance (D44). Writes everything to `results/*.csv`. |
 | `plots.py` | Every figure (PNG + PDF): error heatmap, negation-gap bars, error vs score, error by review length, reliability diagram, explanation-overlap heatmap, the small decision tree, word-attribution strips, the Mirage Gap scatter and the shortcut-fingerprint small multiples (each also as a 16:9 `_slide` version). Uses a fixed, colour-blind-checked palette with eight model slots. |
 | `demo.py` | The logic behind the live demo (D41): loads the models (DistilBERT at its median seed), scores a sentence, word importance by leaving each word out (the shared `explain.occlusion` function), which words a classical model never saw, the low-confidence and unusual-input flags, and the curated examples with a check that each still behaves as documented. |
 
@@ -84,7 +85,7 @@ sentences.
 |---|---|
 | `wordlists.py` | The vocabulary: 20 positive and 20 negative adjectives, 15 movie nouns, mild adjectives and "work" nouns for the name test, Indian and Western first names (paired by gender), and sentiment verbs. |
 | `templates.py` | Turns word lists into test cases. Each generator writes sentences from patterns ("The {noun} was {adj}."): `simple`, `negation` ("not great" should be negative), `negation_dir` (the "X / not X" pairs), `typo`, `typo_noun` (the control: typo in the noun, D37), `name_swap` (unseen names) and `name_shortcut` (Kidman vs Seagal). Each row records its test type, case id, role (original/perturbed) and the adjective used. |
-| `names.py` | Picks the film people for the name test from the *training labels*: for each surname, how positive its training phrases are (smoothed log-odds). `pick_pairs` pairs the most positive names with the most negative. |
+| `names.py` | Picks the film people for the name test from the *training labels*: for each surname, how positive its training phrases are (smoothed log-odds). `pick_pairs` pairs the most positive names with the most negative. `name_probe_suite` puts all 35 such names into the same 40 neutral sentences, the separate name probe (D45). |
 | `suite.py` | Builds the whole suite (6,250 rows, 3,750 cases) from the config, saves it to `results/behavioral_suite.csv`, and scores predictions. Single-sentence tests fail when the label is wrong; invariance pairs fail when the label changes; direction pairs fail when adding "not" doesn't change the label. |
 
 ### `models/`: the classifiers
@@ -120,7 +121,7 @@ sentences.
 
 ---
 
-## `tests/`: 127 automated tests (`.venv/Scripts/python -m pytest`)
+## `tests/`: 131 automated tests (`.venv/Scripts/python -m pytest`)
 
 Almost all run on small synthetic data and need no downloads or GPU. The two real-model demo
 tests use the trained models when they're on disk and skip themselves otherwise. The whole suite
@@ -138,6 +139,8 @@ takes about 2 minutes.
 | `test_explain_warning.py` | Overlap measures, deletion check, Mahalanobis against scipy, kNN, sentence splitting, length adjustment, the out-of-fold combiner. |
 | `test_external.py` | External models with a tiny random BERT built locally (no download): label mapping in both orders, rejection of 3-class and unnamed labels, raw text and long text, and the `predict-external` stage writing contract files and skipping existing ones. |
 | `test_occlusion.py` | Leaving words out: correct changes, chunking changes nothing, punctuation and rare words aren't ranked, the signed direction; the split-half ceiling (a stable model scores 1, and one-off words can't swamp it); chance overlap; agreement (two models that read words alike correlate, an opposite one correlates negatively, and the reliability correction is applied). |
+| `test_name_probe.py` | The probe puts every name in identical sentences; a model that follows names' reputations correlates, one that ignores names gives no correlation and zero effect size. |
+| `test_seed_robustness.py` | The per-seed table's flags: a sign flip, a significance flip and a changed rank are each caught; the median seed is marked; a single seed gives no table. |
 | `test_ladder.py` | The single-word variant really has no word pairs; the ladder columns on hand-made error rates; adding the variant leaves every existing negation-gap column identical; `negmark_effect` skips it; its Holm family. |
 | `test_mirage_gap.py` | The robustness score on hand-made numbers, "both sentences right", a model missing a component is dropped, the leave-one-out check, the fingerprint merge, and both figures render. |
 | `test_demo.py` | Demo logic with a stand-in model: trimming, leaving words out, flags, the vocabulary check, the example checker. Plus, with the real models: every curated example behaves as documented, and the app runs headless. |

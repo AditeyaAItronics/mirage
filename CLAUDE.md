@@ -19,6 +19,10 @@ Read `ARCHITECTURE.md` for the design, `majordecisions.md` for why, and
 - **Classical variants:** `base` (words + word pairs), `negmark` / `negmark_w3` (+ negation
   marking), `unigram` (single words only, the first rung of the H2/H3 ladder). Ablation variant
   names live in `models.base.ABLATION_VARIANTS`, so analysis code never imports model classes.
+- **Side probes stay out of `EVAL_SETS`** (e.g. `name_probe`, D45): they have their own stage, so
+  `predict` and the Kaggle notebooks never touch them.
+- **Report an effect size next to every correlation:** a rank correlation of noise-level
+  effects can look large (D45).
 - **Don't edit `src/` while a stage is running:** lazy imports can mix old and new modules mid-run.
 - **Held-out is split by sentence** (`data.heldout_mask`): never replace it with a random row split. SST-2 rows are sub-phrases, so a random split leaks (D21).
 - **Never use GLUE's SST-2 test labels** (they are `-1`). The test set comes from `SetFit/sst2` (original public Stanford labels, D22).
@@ -40,6 +44,12 @@ Update every relevant markdown file **as part of the same change**, not at the e
 - `newadditionsdesign.md`: what has been done, what hasn't, and any fixes or changes to the design.
 - `codeexplanations.md`: new or changed files (and the test count); `whatyouneedtodo.md`: steps for the user.
 - `CLAUDE.md`: new hard rules.
+
+## Review once per request
+When every fix or build in a request is done, and before committing: review **all** the changed
+code together, once, for bugs (correctness, edge cases, layering, the hard rules above). Fix what
+it finds and record the findings and fixes in `majordecisions.md`. After adding models, variants or analyses, also check
+that every previously reported number in the committed `results/*.csv` is unchanged.
 
 ## Commands (Windows, from repo root)
 - Tests: `.venv/Scripts/python -m pytest`

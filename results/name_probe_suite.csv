@@ -1,0 +1,1401 @@
+item_id,text,label,name,sentence,log_odds,tested
+name_probe-kidman-0,The new Kidman film was decent.,1,kidman,0,3.0634946510101866,True
+name_probe-kidman-1,The new Kidman film was nice.,1,kidman,1,3.0634946510101866,True
+name_probe-kidman-2,The new Kidman film was flat.,0,kidman,2,3.0634946510101866,True
+name_probe-kidman-3,The new Kidman film was forgettable.,0,kidman,3,3.0634946510101866,True
+name_probe-kidman-4,The new Kidman film was bland.,0,kidman,4,3.0634946510101866,True
+name_probe-kidman-5,The new Kidman film was bland.,0,kidman,5,3.0634946510101866,True
+name_probe-kidman-6,The new Kidman film was flat.,0,kidman,6,3.0634946510101866,True
+name_probe-kidman-7,The new Kidman film was bland.,0,kidman,7,3.0634946510101866,True
+name_probe-kidman-8,The new Kidman film was decent.,1,kidman,8,3.0634946510101866,True
+name_probe-kidman-9,I watched the Kidman movie and it was bland.,0,kidman,9,3.0634946510101866,True
+name_probe-kidman-10,I watched the Kidman movie and it was solid.,1,kidman,10,3.0634946510101866,True
+name_probe-kidman-11,I watched the Kidman movie and it was pleasant.,1,kidman,11,3.0634946510101866,True
+name_probe-kidman-12,I watched the Kidman movie and it was nice.,1,kidman,12,3.0634946510101866,True
+name_probe-kidman-13,I watched the Kidman movie and it was flat.,0,kidman,13,3.0634946510101866,True
+name_probe-kidman-14,I watched the Kidman movie and it was forgettable.,0,kidman,14,3.0634946510101866,True
+name_probe-kidman-15,I watched the Kidman movie and it was decent.,1,kidman,15,3.0634946510101866,True
+name_probe-kidman-16,I watched the Kidman movie and it was decent.,1,kidman,16,3.0634946510101866,True
+name_probe-kidman-17,I watched the Kidman movie and it was watchable.,1,kidman,17,3.0634946510101866,True
+name_probe-kidman-18,I watched the Kidman movie and it was pleasant.,1,kidman,18,3.0634946510101866,True
+name_probe-kidman-19,Kidman's latest movie is bland.,0,kidman,19,3.0634946510101866,True
+name_probe-kidman-20,Kidman's latest film is nice.,1,kidman,20,3.0634946510101866,True
+name_probe-kidman-21,Kidman's latest sequel is flat.,0,kidman,21,3.0634946510101866,True
+name_probe-kidman-22,Kidman's latest drama is forgettable.,0,kidman,22,3.0634946510101866,True
+name_probe-kidman-23,Kidman's latest comedy is decent.,1,kidman,23,3.0634946510101866,True
+name_probe-kidman-24,Kidman's latest comedy is watchable.,1,kidman,24,3.0634946510101866,True
+name_probe-kidman-25,Kidman's latest thriller is solid.,1,kidman,25,3.0634946510101866,True
+name_probe-kidman-26,Kidman's latest thriller is flat.,0,kidman,26,3.0634946510101866,True
+name_probe-kidman-27,Kidman's latest thriller is bland.,0,kidman,27,3.0634946510101866,True
+name_probe-kidman-28,Kidman's latest project is pleasant.,1,kidman,28,3.0634946510101866,True
+name_probe-kidman-29,Kidman's latest picture is watchable.,1,kidman,29,3.0634946510101866,True
+name_probe-kidman-30,Kidman's latest picture is bland.,0,kidman,30,3.0634946510101866,True
+name_probe-kidman-31,"Another Kidman movie, and it was flat.",0,kidman,31,3.0634946510101866,True
+name_probe-kidman-32,"Another Kidman film, and it was solid.",1,kidman,32,3.0634946510101866,True
+name_probe-kidman-33,"Another Kidman film, and it was pleasant.",1,kidman,33,3.0634946510101866,True
+name_probe-kidman-34,"Another Kidman sequel, and it was pleasant.",1,kidman,34,3.0634946510101866,True
+name_probe-kidman-35,"Another Kidman drama, and it was watchable.",1,kidman,35,3.0634946510101866,True
+name_probe-kidman-36,"Another Kidman drama, and it was weak.",0,kidman,36,3.0634946510101866,True
+name_probe-kidman-37,"Another Kidman comedy, and it was solid.",1,kidman,37,3.0634946510101866,True
+name_probe-kidman-38,"Another Kidman comedy, and it was nice.",1,kidman,38,3.0634946510101866,True
+name_probe-kidman-39,"Another Kidman project, and it was uneven.",0,kidman,39,3.0634946510101866,True
+name_probe-binoche-0,The new Binoche film was decent.,1,binoche,0,2.5402465072456386,True
+name_probe-binoche-1,The new Binoche film was nice.,1,binoche,1,2.5402465072456386,True
+name_probe-binoche-2,The new Binoche film was flat.,0,binoche,2,2.5402465072456386,True
+name_probe-binoche-3,The new Binoche film was forgettable.,0,binoche,3,2.5402465072456386,True
+name_probe-binoche-4,The new Binoche film was bland.,0,binoche,4,2.5402465072456386,True
+name_probe-binoche-5,The new Binoche film was bland.,0,binoche,5,2.5402465072456386,True
+name_probe-binoche-6,The new Binoche film was flat.,0,binoche,6,2.5402465072456386,True
+name_probe-binoche-7,The new Binoche film was bland.,0,binoche,7,2.5402465072456386,True
+name_probe-binoche-8,The new Binoche film was decent.,1,binoche,8,2.5402465072456386,True
+name_probe-binoche-9,I watched the Binoche movie and it was bland.,0,binoche,9,2.5402465072456386,True
+name_probe-binoche-10,I watched the Binoche movie and it was solid.,1,binoche,10,2.5402465072456386,True
+name_probe-binoche-11,I watched the Binoche movie and it was pleasant.,1,binoche,11,2.5402465072456386,True
+name_probe-binoche-12,I watched the Binoche movie and it was nice.,1,binoche,12,2.5402465072456386,True
+name_probe-binoche-13,I watched the Binoche movie and it was flat.,0,binoche,13,2.5402465072456386,True
+name_probe-binoche-14,I watched the Binoche movie and it was forgettable.,0,binoche,14,2.5402465072456386,True
+name_probe-binoche-15,I watched the Binoche movie and it was decent.,1,binoche,15,2.5402465072456386,True
+name_probe-binoche-16,I watched the Binoche movie and it was decent.,1,binoche,16,2.5402465072456386,True
+name_probe-binoche-17,I watched the Binoche movie and it was watchable.,1,binoche,17,2.5402465072456386,True
+name_probe-binoche-18,I watched the Binoche movie and it was pleasant.,1,binoche,18,2.5402465072456386,True
+name_probe-binoche-19,Binoche's latest movie is bland.,0,binoche,19,2.5402465072456386,True
+name_probe-binoche-20,Binoche's latest film is nice.,1,binoche,20,2.5402465072456386,True
+name_probe-binoche-21,Binoche's latest sequel is flat.,0,binoche,21,2.5402465072456386,True
+name_probe-binoche-22,Binoche's latest drama is forgettable.,0,binoche,22,2.5402465072456386,True
+name_probe-binoche-23,Binoche's latest comedy is decent.,1,binoche,23,2.5402465072456386,True
+name_probe-binoche-24,Binoche's latest comedy is watchable.,1,binoche,24,2.5402465072456386,True
+name_probe-binoche-25,Binoche's latest thriller is solid.,1,binoche,25,2.5402465072456386,True
+name_probe-binoche-26,Binoche's latest thriller is flat.,0,binoche,26,2.5402465072456386,True
+name_probe-binoche-27,Binoche's latest thriller is bland.,0,binoche,27,2.5402465072456386,True
+name_probe-binoche-28,Binoche's latest project is pleasant.,1,binoche,28,2.5402465072456386,True
+name_probe-binoche-29,Binoche's latest picture is watchable.,1,binoche,29,2.5402465072456386,True
+name_probe-binoche-30,Binoche's latest picture is bland.,0,binoche,30,2.5402465072456386,True
+name_probe-binoche-31,"Another Binoche movie, and it was flat.",0,binoche,31,2.5402465072456386,True
+name_probe-binoche-32,"Another Binoche film, and it was solid.",1,binoche,32,2.5402465072456386,True
+name_probe-binoche-33,"Another Binoche film, and it was pleasant.",1,binoche,33,2.5402465072456386,True
+name_probe-binoche-34,"Another Binoche sequel, and it was pleasant.",1,binoche,34,2.5402465072456386,True
+name_probe-binoche-35,"Another Binoche drama, and it was watchable.",1,binoche,35,2.5402465072456386,True
+name_probe-binoche-36,"Another Binoche drama, and it was weak.",0,binoche,36,2.5402465072456386,True
+name_probe-binoche-37,"Another Binoche comedy, and it was solid.",1,binoche,37,2.5402465072456386,True
+name_probe-binoche-38,"Another Binoche comedy, and it was nice.",1,binoche,38,2.5402465072456386,True
+name_probe-binoche-39,"Another Binoche project, and it was uneven.",0,binoche,39,2.5402465072456386,True
+name_probe-spielberg-0,The new Spielberg film was decent.,1,spielberg,0,2.119033042169335,True
+name_probe-spielberg-1,The new Spielberg film was nice.,1,spielberg,1,2.119033042169335,True
+name_probe-spielberg-2,The new Spielberg film was flat.,0,spielberg,2,2.119033042169335,True
+name_probe-spielberg-3,The new Spielberg film was forgettable.,0,spielberg,3,2.119033042169335,True
+name_probe-spielberg-4,The new Spielberg film was bland.,0,spielberg,4,2.119033042169335,True
+name_probe-spielberg-5,The new Spielberg film was bland.,0,spielberg,5,2.119033042169335,True
+name_probe-spielberg-6,The new Spielberg film was flat.,0,spielberg,6,2.119033042169335,True
+name_probe-spielberg-7,The new Spielberg film was bland.,0,spielberg,7,2.119033042169335,True
+name_probe-spielberg-8,The new Spielberg film was decent.,1,spielberg,8,2.119033042169335,True
+name_probe-spielberg-9,I watched the Spielberg movie and it was bland.,0,spielberg,9,2.119033042169335,True
+name_probe-spielberg-10,I watched the Spielberg movie and it was solid.,1,spielberg,10,2.119033042169335,True
+name_probe-spielberg-11,I watched the Spielberg movie and it was pleasant.,1,spielberg,11,2.119033042169335,True
+name_probe-spielberg-12,I watched the Spielberg movie and it was nice.,1,spielberg,12,2.119033042169335,True
+name_probe-spielberg-13,I watched the Spielberg movie and it was flat.,0,spielberg,13,2.119033042169335,True
+name_probe-spielberg-14,I watched the Spielberg movie and it was forgettable.,0,spielberg,14,2.119033042169335,True
+name_probe-spielberg-15,I watched the Spielberg movie and it was decent.,1,spielberg,15,2.119033042169335,True
+name_probe-spielberg-16,I watched the Spielberg movie and it was decent.,1,spielberg,16,2.119033042169335,True
+name_probe-spielberg-17,I watched the Spielberg movie and it was watchable.,1,spielberg,17,2.119033042169335,True
+name_probe-spielberg-18,I watched the Spielberg movie and it was pleasant.,1,spielberg,18,2.119033042169335,True
+name_probe-spielberg-19,Spielberg's latest movie is bland.,0,spielberg,19,2.119033042169335,True
+name_probe-spielberg-20,Spielberg's latest film is nice.,1,spielberg,20,2.119033042169335,True
+name_probe-spielberg-21,Spielberg's latest sequel is flat.,0,spielberg,21,2.119033042169335,True
+name_probe-spielberg-22,Spielberg's latest drama is forgettable.,0,spielberg,22,2.119033042169335,True
+name_probe-spielberg-23,Spielberg's latest comedy is decent.,1,spielberg,23,2.119033042169335,True
+name_probe-spielberg-24,Spielberg's latest comedy is watchable.,1,spielberg,24,2.119033042169335,True
+name_probe-spielberg-25,Spielberg's latest thriller is solid.,1,spielberg,25,2.119033042169335,True
+name_probe-spielberg-26,Spielberg's latest thriller is flat.,0,spielberg,26,2.119033042169335,True
+name_probe-spielberg-27,Spielberg's latest thriller is bland.,0,spielberg,27,2.119033042169335,True
+name_probe-spielberg-28,Spielberg's latest project is pleasant.,1,spielberg,28,2.119033042169335,True
+name_probe-spielberg-29,Spielberg's latest picture is watchable.,1,spielberg,29,2.119033042169335,True
+name_probe-spielberg-30,Spielberg's latest picture is bland.,0,spielberg,30,2.119033042169335,True
+name_probe-spielberg-31,"Another Spielberg movie, and it was flat.",0,spielberg,31,2.119033042169335,True
+name_probe-spielberg-32,"Another Spielberg film, and it was solid.",1,spielberg,32,2.119033042169335,True
+name_probe-spielberg-33,"Another Spielberg film, and it was pleasant.",1,spielberg,33,2.119033042169335,True
+name_probe-spielberg-34,"Another Spielberg sequel, and it was pleasant.",1,spielberg,34,2.119033042169335,True
+name_probe-spielberg-35,"Another Spielberg drama, and it was watchable.",1,spielberg,35,2.119033042169335,True
+name_probe-spielberg-36,"Another Spielberg drama, and it was weak.",0,spielberg,36,2.119033042169335,True
+name_probe-spielberg-37,"Another Spielberg comedy, and it was solid.",1,spielberg,37,2.119033042169335,True
+name_probe-spielberg-38,"Another Spielberg comedy, and it was nice.",1,spielberg,38,2.119033042169335,True
+name_probe-spielberg-39,"Another Spielberg project, and it was uneven.",0,spielberg,39,2.119033042169335,True
+name_probe-nicholson-0,The new Nicholson film was decent.,1,nicholson,0,2.0189495836123528,True
+name_probe-nicholson-1,The new Nicholson film was nice.,1,nicholson,1,2.0189495836123528,True
+name_probe-nicholson-2,The new Nicholson film was flat.,0,nicholson,2,2.0189495836123528,True
+name_probe-nicholson-3,The new Nicholson film was forgettable.,0,nicholson,3,2.0189495836123528,True
+name_probe-nicholson-4,The new Nicholson film was bland.,0,nicholson,4,2.0189495836123528,True
+name_probe-nicholson-5,The new Nicholson film was bland.,0,nicholson,5,2.0189495836123528,True
+name_probe-nicholson-6,The new Nicholson film was flat.,0,nicholson,6,2.0189495836123528,True
+name_probe-nicholson-7,The new Nicholson film was bland.,0,nicholson,7,2.0189495836123528,True
+name_probe-nicholson-8,The new Nicholson film was decent.,1,nicholson,8,2.0189495836123528,True
+name_probe-nicholson-9,I watched the Nicholson movie and it was bland.,0,nicholson,9,2.0189495836123528,True
+name_probe-nicholson-10,I watched the Nicholson movie and it was solid.,1,nicholson,10,2.0189495836123528,True
+name_probe-nicholson-11,I watched the Nicholson movie and it was pleasant.,1,nicholson,11,2.0189495836123528,True
+name_probe-nicholson-12,I watched the Nicholson movie and it was nice.,1,nicholson,12,2.0189495836123528,True
+name_probe-nicholson-13,I watched the Nicholson movie and it was flat.,0,nicholson,13,2.0189495836123528,True
+name_probe-nicholson-14,I watched the Nicholson movie and it was forgettable.,0,nicholson,14,2.0189495836123528,True
+name_probe-nicholson-15,I watched the Nicholson movie and it was decent.,1,nicholson,15,2.0189495836123528,True
+name_probe-nicholson-16,I watched the Nicholson movie and it was decent.,1,nicholson,16,2.0189495836123528,True
+name_probe-nicholson-17,I watched the Nicholson movie and it was watchable.,1,nicholson,17,2.0189495836123528,True
+name_probe-nicholson-18,I watched the Nicholson movie and it was pleasant.,1,nicholson,18,2.0189495836123528,True
+name_probe-nicholson-19,Nicholson's latest movie is bland.,0,nicholson,19,2.0189495836123528,True
+name_probe-nicholson-20,Nicholson's latest film is nice.,1,nicholson,20,2.0189495836123528,True
+name_probe-nicholson-21,Nicholson's latest sequel is flat.,0,nicholson,21,2.0189495836123528,True
+name_probe-nicholson-22,Nicholson's latest drama is forgettable.,0,nicholson,22,2.0189495836123528,True
+name_probe-nicholson-23,Nicholson's latest comedy is decent.,1,nicholson,23,2.0189495836123528,True
+name_probe-nicholson-24,Nicholson's latest comedy is watchable.,1,nicholson,24,2.0189495836123528,True
+name_probe-nicholson-25,Nicholson's latest thriller is solid.,1,nicholson,25,2.0189495836123528,True
+name_probe-nicholson-26,Nicholson's latest thriller is flat.,0,nicholson,26,2.0189495836123528,True
+name_probe-nicholson-27,Nicholson's latest thriller is bland.,0,nicholson,27,2.0189495836123528,True
+name_probe-nicholson-28,Nicholson's latest project is pleasant.,1,nicholson,28,2.0189495836123528,True
+name_probe-nicholson-29,Nicholson's latest picture is watchable.,1,nicholson,29,2.0189495836123528,True
+name_probe-nicholson-30,Nicholson's latest picture is bland.,0,nicholson,30,2.0189495836123528,True
+name_probe-nicholson-31,"Another Nicholson movie, and it was flat.",0,nicholson,31,2.0189495836123528,True
+name_probe-nicholson-32,"Another Nicholson film, and it was solid.",1,nicholson,32,2.0189495836123528,True
+name_probe-nicholson-33,"Another Nicholson film, and it was pleasant.",1,nicholson,33,2.0189495836123528,True
+name_probe-nicholson-34,"Another Nicholson sequel, and it was pleasant.",1,nicholson,34,2.0189495836123528,True
+name_probe-nicholson-35,"Another Nicholson drama, and it was watchable.",1,nicholson,35,2.0189495836123528,True
+name_probe-nicholson-36,"Another Nicholson drama, and it was weak.",0,nicholson,36,2.0189495836123528,True
+name_probe-nicholson-37,"Another Nicholson comedy, and it was solid.",1,nicholson,37,2.0189495836123528,True
+name_probe-nicholson-38,"Another Nicholson comedy, and it was nice.",1,nicholson,38,2.0189495836123528,True
+name_probe-nicholson-39,"Another Nicholson project, and it was uneven.",0,nicholson,39,2.0189495836123528,True
+name_probe-diesel-0,The new Diesel film was decent.,1,diesel,0,1.441634218577529,True
+name_probe-diesel-1,The new Diesel film was nice.,1,diesel,1,1.441634218577529,True
+name_probe-diesel-2,The new Diesel film was flat.,0,diesel,2,1.441634218577529,True
+name_probe-diesel-3,The new Diesel film was forgettable.,0,diesel,3,1.441634218577529,True
+name_probe-diesel-4,The new Diesel film was bland.,0,diesel,4,1.441634218577529,True
+name_probe-diesel-5,The new Diesel film was bland.,0,diesel,5,1.441634218577529,True
+name_probe-diesel-6,The new Diesel film was flat.,0,diesel,6,1.441634218577529,True
+name_probe-diesel-7,The new Diesel film was bland.,0,diesel,7,1.441634218577529,True
+name_probe-diesel-8,The new Diesel film was decent.,1,diesel,8,1.441634218577529,True
+name_probe-diesel-9,I watched the Diesel movie and it was bland.,0,diesel,9,1.441634218577529,True
+name_probe-diesel-10,I watched the Diesel movie and it was solid.,1,diesel,10,1.441634218577529,True
+name_probe-diesel-11,I watched the Diesel movie and it was pleasant.,1,diesel,11,1.441634218577529,True
+name_probe-diesel-12,I watched the Diesel movie and it was nice.,1,diesel,12,1.441634218577529,True
+name_probe-diesel-13,I watched the Diesel movie and it was flat.,0,diesel,13,1.441634218577529,True
+name_probe-diesel-14,I watched the Diesel movie and it was forgettable.,0,diesel,14,1.441634218577529,True
+name_probe-diesel-15,I watched the Diesel movie and it was decent.,1,diesel,15,1.441634218577529,True
+name_probe-diesel-16,I watched the Diesel movie and it was decent.,1,diesel,16,1.441634218577529,True
+name_probe-diesel-17,I watched the Diesel movie and it was watchable.,1,diesel,17,1.441634218577529,True
+name_probe-diesel-18,I watched the Diesel movie and it was pleasant.,1,diesel,18,1.441634218577529,True
+name_probe-diesel-19,Diesel's latest movie is bland.,0,diesel,19,1.441634218577529,True
+name_probe-diesel-20,Diesel's latest film is nice.,1,diesel,20,1.441634218577529,True
+name_probe-diesel-21,Diesel's latest sequel is flat.,0,diesel,21,1.441634218577529,True
+name_probe-diesel-22,Diesel's latest drama is forgettable.,0,diesel,22,1.441634218577529,True
+name_probe-diesel-23,Diesel's latest comedy is decent.,1,diesel,23,1.441634218577529,True
+name_probe-diesel-24,Diesel's latest comedy is watchable.,1,diesel,24,1.441634218577529,True
+name_probe-diesel-25,Diesel's latest thriller is solid.,1,diesel,25,1.441634218577529,True
+name_probe-diesel-26,Diesel's latest thriller is flat.,0,diesel,26,1.441634218577529,True
+name_probe-diesel-27,Diesel's latest thriller is bland.,0,diesel,27,1.441634218577529,True
+name_probe-diesel-28,Diesel's latest project is pleasant.,1,diesel,28,1.441634218577529,True
+name_probe-diesel-29,Diesel's latest picture is watchable.,1,diesel,29,1.441634218577529,True
+name_probe-diesel-30,Diesel's latest picture is bland.,0,diesel,30,1.441634218577529,True
+name_probe-diesel-31,"Another Diesel movie, and it was flat.",0,diesel,31,1.441634218577529,True
+name_probe-diesel-32,"Another Diesel film, and it was solid.",1,diesel,32,1.441634218577529,True
+name_probe-diesel-33,"Another Diesel film, and it was pleasant.",1,diesel,33,1.441634218577529,True
+name_probe-diesel-34,"Another Diesel sequel, and it was pleasant.",1,diesel,34,1.441634218577529,True
+name_probe-diesel-35,"Another Diesel drama, and it was watchable.",1,diesel,35,1.441634218577529,True
+name_probe-diesel-36,"Another Diesel drama, and it was weak.",0,diesel,36,1.441634218577529,True
+name_probe-diesel-37,"Another Diesel comedy, and it was solid.",1,diesel,37,1.441634218577529,True
+name_probe-diesel-38,"Another Diesel comedy, and it was nice.",1,diesel,38,1.441634218577529,True
+name_probe-diesel-39,"Another Diesel project, and it was uneven.",0,diesel,39,1.441634218577529,True
+name_probe-kline-0,The new Kline film was decent.,1,kline,0,1.1175845019548734,True
+name_probe-kline-1,The new Kline film was nice.,1,kline,1,1.1175845019548734,True
+name_probe-kline-2,The new Kline film was flat.,0,kline,2,1.1175845019548734,True
+name_probe-kline-3,The new Kline film was forgettable.,0,kline,3,1.1175845019548734,True
+name_probe-kline-4,The new Kline film was bland.,0,kline,4,1.1175845019548734,True
+name_probe-kline-5,The new Kline film was bland.,0,kline,5,1.1175845019548734,True
+name_probe-kline-6,The new Kline film was flat.,0,kline,6,1.1175845019548734,True
+name_probe-kline-7,The new Kline film was bland.,0,kline,7,1.1175845019548734,True
+name_probe-kline-8,The new Kline film was decent.,1,kline,8,1.1175845019548734,True
+name_probe-kline-9,I watched the Kline movie and it was bland.,0,kline,9,1.1175845019548734,True
+name_probe-kline-10,I watched the Kline movie and it was solid.,1,kline,10,1.1175845019548734,True
+name_probe-kline-11,I watched the Kline movie and it was pleasant.,1,kline,11,1.1175845019548734,True
+name_probe-kline-12,I watched the Kline movie and it was nice.,1,kline,12,1.1175845019548734,True
+name_probe-kline-13,I watched the Kline movie and it was flat.,0,kline,13,1.1175845019548734,True
+name_probe-kline-14,I watched the Kline movie and it was forgettable.,0,kline,14,1.1175845019548734,True
+name_probe-kline-15,I watched the Kline movie and it was decent.,1,kline,15,1.1175845019548734,True
+name_probe-kline-16,I watched the Kline movie and it was decent.,1,kline,16,1.1175845019548734,True
+name_probe-kline-17,I watched the Kline movie and it was watchable.,1,kline,17,1.1175845019548734,True
+name_probe-kline-18,I watched the Kline movie and it was pleasant.,1,kline,18,1.1175845019548734,True
+name_probe-kline-19,Kline's latest movie is bland.,0,kline,19,1.1175845019548734,True
+name_probe-kline-20,Kline's latest film is nice.,1,kline,20,1.1175845019548734,True
+name_probe-kline-21,Kline's latest sequel is flat.,0,kline,21,1.1175845019548734,True
+name_probe-kline-22,Kline's latest drama is forgettable.,0,kline,22,1.1175845019548734,True
+name_probe-kline-23,Kline's latest comedy is decent.,1,kline,23,1.1175845019548734,True
+name_probe-kline-24,Kline's latest comedy is watchable.,1,kline,24,1.1175845019548734,True
+name_probe-kline-25,Kline's latest thriller is solid.,1,kline,25,1.1175845019548734,True
+name_probe-kline-26,Kline's latest thriller is flat.,0,kline,26,1.1175845019548734,True
+name_probe-kline-27,Kline's latest thriller is bland.,0,kline,27,1.1175845019548734,True
+name_probe-kline-28,Kline's latest project is pleasant.,1,kline,28,1.1175845019548734,True
+name_probe-kline-29,Kline's latest picture is watchable.,1,kline,29,1.1175845019548734,True
+name_probe-kline-30,Kline's latest picture is bland.,0,kline,30,1.1175845019548734,True
+name_probe-kline-31,"Another Kline movie, and it was flat.",0,kline,31,1.1175845019548734,True
+name_probe-kline-32,"Another Kline film, and it was solid.",1,kline,32,1.1175845019548734,True
+name_probe-kline-33,"Another Kline film, and it was pleasant.",1,kline,33,1.1175845019548734,True
+name_probe-kline-34,"Another Kline sequel, and it was pleasant.",1,kline,34,1.1175845019548734,True
+name_probe-kline-35,"Another Kline drama, and it was watchable.",1,kline,35,1.1175845019548734,True
+name_probe-kline-36,"Another Kline drama, and it was weak.",0,kline,36,1.1175845019548734,True
+name_probe-kline-37,"Another Kline comedy, and it was solid.",1,kline,37,1.1175845019548734,True
+name_probe-kline-38,"Another Kline comedy, and it was nice.",1,kline,38,1.1175845019548734,True
+name_probe-kline-39,"Another Kline project, and it was uneven.",0,kline,39,1.1175845019548734,True
+name_probe-scorsese-0,The new Scorsese film was decent.,1,scorsese,0,0.8037497166926334,False
+name_probe-scorsese-1,The new Scorsese film was nice.,1,scorsese,1,0.8037497166926334,False
+name_probe-scorsese-2,The new Scorsese film was flat.,0,scorsese,2,0.8037497166926334,False
+name_probe-scorsese-3,The new Scorsese film was forgettable.,0,scorsese,3,0.8037497166926334,False
+name_probe-scorsese-4,The new Scorsese film was bland.,0,scorsese,4,0.8037497166926334,False
+name_probe-scorsese-5,The new Scorsese film was bland.,0,scorsese,5,0.8037497166926334,False
+name_probe-scorsese-6,The new Scorsese film was flat.,0,scorsese,6,0.8037497166926334,False
+name_probe-scorsese-7,The new Scorsese film was bland.,0,scorsese,7,0.8037497166926334,False
+name_probe-scorsese-8,The new Scorsese film was decent.,1,scorsese,8,0.8037497166926334,False
+name_probe-scorsese-9,I watched the Scorsese movie and it was bland.,0,scorsese,9,0.8037497166926334,False
+name_probe-scorsese-10,I watched the Scorsese movie and it was solid.,1,scorsese,10,0.8037497166926334,False
+name_probe-scorsese-11,I watched the Scorsese movie and it was pleasant.,1,scorsese,11,0.8037497166926334,False
+name_probe-scorsese-12,I watched the Scorsese movie and it was nice.,1,scorsese,12,0.8037497166926334,False
+name_probe-scorsese-13,I watched the Scorsese movie and it was flat.,0,scorsese,13,0.8037497166926334,False
+name_probe-scorsese-14,I watched the Scorsese movie and it was forgettable.,0,scorsese,14,0.8037497166926334,False
+name_probe-scorsese-15,I watched the Scorsese movie and it was decent.,1,scorsese,15,0.8037497166926334,False
+name_probe-scorsese-16,I watched the Scorsese movie and it was decent.,1,scorsese,16,0.8037497166926334,False
+name_probe-scorsese-17,I watched the Scorsese movie and it was watchable.,1,scorsese,17,0.8037497166926334,False
+name_probe-scorsese-18,I watched the Scorsese movie and it was pleasant.,1,scorsese,18,0.8037497166926334,False
+name_probe-scorsese-19,Scorsese's latest movie is bland.,0,scorsese,19,0.8037497166926334,False
+name_probe-scorsese-20,Scorsese's latest film is nice.,1,scorsese,20,0.8037497166926334,False
+name_probe-scorsese-21,Scorsese's latest sequel is flat.,0,scorsese,21,0.8037497166926334,False
+name_probe-scorsese-22,Scorsese's latest drama is forgettable.,0,scorsese,22,0.8037497166926334,False
+name_probe-scorsese-23,Scorsese's latest comedy is decent.,1,scorsese,23,0.8037497166926334,False
+name_probe-scorsese-24,Scorsese's latest comedy is watchable.,1,scorsese,24,0.8037497166926334,False
+name_probe-scorsese-25,Scorsese's latest thriller is solid.,1,scorsese,25,0.8037497166926334,False
+name_probe-scorsese-26,Scorsese's latest thriller is flat.,0,scorsese,26,0.8037497166926334,False
+name_probe-scorsese-27,Scorsese's latest thriller is bland.,0,scorsese,27,0.8037497166926334,False
+name_probe-scorsese-28,Scorsese's latest project is pleasant.,1,scorsese,28,0.8037497166926334,False
+name_probe-scorsese-29,Scorsese's latest picture is watchable.,1,scorsese,29,0.8037497166926334,False
+name_probe-scorsese-30,Scorsese's latest picture is bland.,0,scorsese,30,0.8037497166926334,False
+name_probe-scorsese-31,"Another Scorsese movie, and it was flat.",0,scorsese,31,0.8037497166926334,False
+name_probe-scorsese-32,"Another Scorsese film, and it was solid.",1,scorsese,32,0.8037497166926334,False
+name_probe-scorsese-33,"Another Scorsese film, and it was pleasant.",1,scorsese,33,0.8037497166926334,False
+name_probe-scorsese-34,"Another Scorsese sequel, and it was pleasant.",1,scorsese,34,0.8037497166926334,False
+name_probe-scorsese-35,"Another Scorsese drama, and it was watchable.",1,scorsese,35,0.8037497166926334,False
+name_probe-scorsese-36,"Another Scorsese drama, and it was weak.",0,scorsese,36,0.8037497166926334,False
+name_probe-scorsese-37,"Another Scorsese comedy, and it was solid.",1,scorsese,37,0.8037497166926334,False
+name_probe-scorsese-38,"Another Scorsese comedy, and it was nice.",1,scorsese,38,0.8037497166926334,False
+name_probe-scorsese-39,"Another Scorsese project, and it was uneven.",0,scorsese,39,0.8037497166926334,False
+name_probe-jolie-0,The new Jolie film was decent.,1,jolie,0,0.6431265223597574,False
+name_probe-jolie-1,The new Jolie film was nice.,1,jolie,1,0.6431265223597574,False
+name_probe-jolie-2,The new Jolie film was flat.,0,jolie,2,0.6431265223597574,False
+name_probe-jolie-3,The new Jolie film was forgettable.,0,jolie,3,0.6431265223597574,False
+name_probe-jolie-4,The new Jolie film was bland.,0,jolie,4,0.6431265223597574,False
+name_probe-jolie-5,The new Jolie film was bland.,0,jolie,5,0.6431265223597574,False
+name_probe-jolie-6,The new Jolie film was flat.,0,jolie,6,0.6431265223597574,False
+name_probe-jolie-7,The new Jolie film was bland.,0,jolie,7,0.6431265223597574,False
+name_probe-jolie-8,The new Jolie film was decent.,1,jolie,8,0.6431265223597574,False
+name_probe-jolie-9,I watched the Jolie movie and it was bland.,0,jolie,9,0.6431265223597574,False
+name_probe-jolie-10,I watched the Jolie movie and it was solid.,1,jolie,10,0.6431265223597574,False
+name_probe-jolie-11,I watched the Jolie movie and it was pleasant.,1,jolie,11,0.6431265223597574,False
+name_probe-jolie-12,I watched the Jolie movie and it was nice.,1,jolie,12,0.6431265223597574,False
+name_probe-jolie-13,I watched the Jolie movie and it was flat.,0,jolie,13,0.6431265223597574,False
+name_probe-jolie-14,I watched the Jolie movie and it was forgettable.,0,jolie,14,0.6431265223597574,False
+name_probe-jolie-15,I watched the Jolie movie and it was decent.,1,jolie,15,0.6431265223597574,False
+name_probe-jolie-16,I watched the Jolie movie and it was decent.,1,jolie,16,0.6431265223597574,False
+name_probe-jolie-17,I watched the Jolie movie and it was watchable.,1,jolie,17,0.6431265223597574,False
+name_probe-jolie-18,I watched the Jolie movie and it was pleasant.,1,jolie,18,0.6431265223597574,False
+name_probe-jolie-19,Jolie's latest movie is bland.,0,jolie,19,0.6431265223597574,False
+name_probe-jolie-20,Jolie's latest film is nice.,1,jolie,20,0.6431265223597574,False
+name_probe-jolie-21,Jolie's latest sequel is flat.,0,jolie,21,0.6431265223597574,False
+name_probe-jolie-22,Jolie's latest drama is forgettable.,0,jolie,22,0.6431265223597574,False
+name_probe-jolie-23,Jolie's latest comedy is decent.,1,jolie,23,0.6431265223597574,False
+name_probe-jolie-24,Jolie's latest comedy is watchable.,1,jolie,24,0.6431265223597574,False
+name_probe-jolie-25,Jolie's latest thriller is solid.,1,jolie,25,0.6431265223597574,False
+name_probe-jolie-26,Jolie's latest thriller is flat.,0,jolie,26,0.6431265223597574,False
+name_probe-jolie-27,Jolie's latest thriller is bland.,0,jolie,27,0.6431265223597574,False
+name_probe-jolie-28,Jolie's latest project is pleasant.,1,jolie,28,0.6431265223597574,False
+name_probe-jolie-29,Jolie's latest picture is watchable.,1,jolie,29,0.6431265223597574,False
+name_probe-jolie-30,Jolie's latest picture is bland.,0,jolie,30,0.6431265223597574,False
+name_probe-jolie-31,"Another Jolie movie, and it was flat.",0,jolie,31,0.6431265223597574,False
+name_probe-jolie-32,"Another Jolie film, and it was solid.",1,jolie,32,0.6431265223597574,False
+name_probe-jolie-33,"Another Jolie film, and it was pleasant.",1,jolie,33,0.6431265223597574,False
+name_probe-jolie-34,"Another Jolie sequel, and it was pleasant.",1,jolie,34,0.6431265223597574,False
+name_probe-jolie-35,"Another Jolie drama, and it was watchable.",1,jolie,35,0.6431265223597574,False
+name_probe-jolie-36,"Another Jolie drama, and it was weak.",0,jolie,36,0.6431265223597574,False
+name_probe-jolie-37,"Another Jolie comedy, and it was solid.",1,jolie,37,0.6431265223597574,False
+name_probe-jolie-38,"Another Jolie comedy, and it was nice.",1,jolie,38,0.6431265223597574,False
+name_probe-jolie-39,"Another Jolie project, and it was uneven.",0,jolie,39,0.6431265223597574,False
+name_probe-shyamalan-0,The new Shyamalan film was decent.,1,shyamalan,0,0.5886383370756879,False
+name_probe-shyamalan-1,The new Shyamalan film was nice.,1,shyamalan,1,0.5886383370756879,False
+name_probe-shyamalan-2,The new Shyamalan film was flat.,0,shyamalan,2,0.5886383370756879,False
+name_probe-shyamalan-3,The new Shyamalan film was forgettable.,0,shyamalan,3,0.5886383370756879,False
+name_probe-shyamalan-4,The new Shyamalan film was bland.,0,shyamalan,4,0.5886383370756879,False
+name_probe-shyamalan-5,The new Shyamalan film was bland.,0,shyamalan,5,0.5886383370756879,False
+name_probe-shyamalan-6,The new Shyamalan film was flat.,0,shyamalan,6,0.5886383370756879,False
+name_probe-shyamalan-7,The new Shyamalan film was bland.,0,shyamalan,7,0.5886383370756879,False
+name_probe-shyamalan-8,The new Shyamalan film was decent.,1,shyamalan,8,0.5886383370756879,False
+name_probe-shyamalan-9,I watched the Shyamalan movie and it was bland.,0,shyamalan,9,0.5886383370756879,False
+name_probe-shyamalan-10,I watched the Shyamalan movie and it was solid.,1,shyamalan,10,0.5886383370756879,False
+name_probe-shyamalan-11,I watched the Shyamalan movie and it was pleasant.,1,shyamalan,11,0.5886383370756879,False
+name_probe-shyamalan-12,I watched the Shyamalan movie and it was nice.,1,shyamalan,12,0.5886383370756879,False
+name_probe-shyamalan-13,I watched the Shyamalan movie and it was flat.,0,shyamalan,13,0.5886383370756879,False
+name_probe-shyamalan-14,I watched the Shyamalan movie and it was forgettable.,0,shyamalan,14,0.5886383370756879,False
+name_probe-shyamalan-15,I watched the Shyamalan movie and it was decent.,1,shyamalan,15,0.5886383370756879,False
+name_probe-shyamalan-16,I watched the Shyamalan movie and it was decent.,1,shyamalan,16,0.5886383370756879,False
+name_probe-shyamalan-17,I watched the Shyamalan movie and it was watchable.,1,shyamalan,17,0.5886383370756879,False
+name_probe-shyamalan-18,I watched the Shyamalan movie and it was pleasant.,1,shyamalan,18,0.5886383370756879,False
+name_probe-shyamalan-19,Shyamalan's latest movie is bland.,0,shyamalan,19,0.5886383370756879,False
+name_probe-shyamalan-20,Shyamalan's latest film is nice.,1,shyamalan,20,0.5886383370756879,False
+name_probe-shyamalan-21,Shyamalan's latest sequel is flat.,0,shyamalan,21,0.5886383370756879,False
+name_probe-shyamalan-22,Shyamalan's latest drama is forgettable.,0,shyamalan,22,0.5886383370756879,False
+name_probe-shyamalan-23,Shyamalan's latest comedy is decent.,1,shyamalan,23,0.5886383370756879,False
+name_probe-shyamalan-24,Shyamalan's latest comedy is watchable.,1,shyamalan,24,0.5886383370756879,False
+name_probe-shyamalan-25,Shyamalan's latest thriller is solid.,1,shyamalan,25,0.5886383370756879,False
+name_probe-shyamalan-26,Shyamalan's latest thriller is flat.,0,shyamalan,26,0.5886383370756879,False
+name_probe-shyamalan-27,Shyamalan's latest thriller is bland.,0,shyamalan,27,0.5886383370756879,False
+name_probe-shyamalan-28,Shyamalan's latest project is pleasant.,1,shyamalan,28,0.5886383370756879,False
+name_probe-shyamalan-29,Shyamalan's latest picture is watchable.,1,shyamalan,29,0.5886383370756879,False
+name_probe-shyamalan-30,Shyamalan's latest picture is bland.,0,shyamalan,30,0.5886383370756879,False
+name_probe-shyamalan-31,"Another Shyamalan movie, and it was flat.",0,shyamalan,31,0.5886383370756879,False
+name_probe-shyamalan-32,"Another Shyamalan film, and it was solid.",1,shyamalan,32,0.5886383370756879,False
+name_probe-shyamalan-33,"Another Shyamalan film, and it was pleasant.",1,shyamalan,33,0.5886383370756879,False
+name_probe-shyamalan-34,"Another Shyamalan sequel, and it was pleasant.",1,shyamalan,34,0.5886383370756879,False
+name_probe-shyamalan-35,"Another Shyamalan drama, and it was watchable.",1,shyamalan,35,0.5886383370756879,False
+name_probe-shyamalan-36,"Another Shyamalan drama, and it was weak.",0,shyamalan,36,0.5886383370756879,False
+name_probe-shyamalan-37,"Another Shyamalan comedy, and it was solid.",1,shyamalan,37,0.5886383370756879,False
+name_probe-shyamalan-38,"Another Shyamalan comedy, and it was nice.",1,shyamalan,38,0.5886383370756879,False
+name_probe-shyamalan-39,"Another Shyamalan project, and it was uneven.",0,shyamalan,39,0.5886383370756879,False
+name_probe-gibson-0,The new Gibson film was decent.,1,gibson,0,0.5408476732393392,False
+name_probe-gibson-1,The new Gibson film was nice.,1,gibson,1,0.5408476732393392,False
+name_probe-gibson-2,The new Gibson film was flat.,0,gibson,2,0.5408476732393392,False
+name_probe-gibson-3,The new Gibson film was forgettable.,0,gibson,3,0.5408476732393392,False
+name_probe-gibson-4,The new Gibson film was bland.,0,gibson,4,0.5408476732393392,False
+name_probe-gibson-5,The new Gibson film was bland.,0,gibson,5,0.5408476732393392,False
+name_probe-gibson-6,The new Gibson film was flat.,0,gibson,6,0.5408476732393392,False
+name_probe-gibson-7,The new Gibson film was bland.,0,gibson,7,0.5408476732393392,False
+name_probe-gibson-8,The new Gibson film was decent.,1,gibson,8,0.5408476732393392,False
+name_probe-gibson-9,I watched the Gibson movie and it was bland.,0,gibson,9,0.5408476732393392,False
+name_probe-gibson-10,I watched the Gibson movie and it was solid.,1,gibson,10,0.5408476732393392,False
+name_probe-gibson-11,I watched the Gibson movie and it was pleasant.,1,gibson,11,0.5408476732393392,False
+name_probe-gibson-12,I watched the Gibson movie and it was nice.,1,gibson,12,0.5408476732393392,False
+name_probe-gibson-13,I watched the Gibson movie and it was flat.,0,gibson,13,0.5408476732393392,False
+name_probe-gibson-14,I watched the Gibson movie and it was forgettable.,0,gibson,14,0.5408476732393392,False
+name_probe-gibson-15,I watched the Gibson movie and it was decent.,1,gibson,15,0.5408476732393392,False
+name_probe-gibson-16,I watched the Gibson movie and it was decent.,1,gibson,16,0.5408476732393392,False
+name_probe-gibson-17,I watched the Gibson movie and it was watchable.,1,gibson,17,0.5408476732393392,False
+name_probe-gibson-18,I watched the Gibson movie and it was pleasant.,1,gibson,18,0.5408476732393392,False
+name_probe-gibson-19,Gibson's latest movie is bland.,0,gibson,19,0.5408476732393392,False
+name_probe-gibson-20,Gibson's latest film is nice.,1,gibson,20,0.5408476732393392,False
+name_probe-gibson-21,Gibson's latest sequel is flat.,0,gibson,21,0.5408476732393392,False
+name_probe-gibson-22,Gibson's latest drama is forgettable.,0,gibson,22,0.5408476732393392,False
+name_probe-gibson-23,Gibson's latest comedy is decent.,1,gibson,23,0.5408476732393392,False
+name_probe-gibson-24,Gibson's latest comedy is watchable.,1,gibson,24,0.5408476732393392,False
+name_probe-gibson-25,Gibson's latest thriller is solid.,1,gibson,25,0.5408476732393392,False
+name_probe-gibson-26,Gibson's latest thriller is flat.,0,gibson,26,0.5408476732393392,False
+name_probe-gibson-27,Gibson's latest thriller is bland.,0,gibson,27,0.5408476732393392,False
+name_probe-gibson-28,Gibson's latest project is pleasant.,1,gibson,28,0.5408476732393392,False
+name_probe-gibson-29,Gibson's latest picture is watchable.,1,gibson,29,0.5408476732393392,False
+name_probe-gibson-30,Gibson's latest picture is bland.,0,gibson,30,0.5408476732393392,False
+name_probe-gibson-31,"Another Gibson movie, and it was flat.",0,gibson,31,0.5408476732393392,False
+name_probe-gibson-32,"Another Gibson film, and it was solid.",1,gibson,32,0.5408476732393392,False
+name_probe-gibson-33,"Another Gibson film, and it was pleasant.",1,gibson,33,0.5408476732393392,False
+name_probe-gibson-34,"Another Gibson sequel, and it was pleasant.",1,gibson,34,0.5408476732393392,False
+name_probe-gibson-35,"Another Gibson drama, and it was watchable.",1,gibson,35,0.5408476732393392,False
+name_probe-gibson-36,"Another Gibson drama, and it was weak.",0,gibson,36,0.5408476732393392,False
+name_probe-gibson-37,"Another Gibson comedy, and it was solid.",1,gibson,37,0.5408476732393392,False
+name_probe-gibson-38,"Another Gibson comedy, and it was nice.",1,gibson,38,0.5408476732393392,False
+name_probe-gibson-39,"Another Gibson project, and it was uneven.",0,gibson,39,0.5408476732393392,False
+name_probe-soderbergh-0,The new Soderbergh film was decent.,1,soderbergh,0,0.49157662423255655,False
+name_probe-soderbergh-1,The new Soderbergh film was nice.,1,soderbergh,1,0.49157662423255655,False
+name_probe-soderbergh-2,The new Soderbergh film was flat.,0,soderbergh,2,0.49157662423255655,False
+name_probe-soderbergh-3,The new Soderbergh film was forgettable.,0,soderbergh,3,0.49157662423255655,False
+name_probe-soderbergh-4,The new Soderbergh film was bland.,0,soderbergh,4,0.49157662423255655,False
+name_probe-soderbergh-5,The new Soderbergh film was bland.,0,soderbergh,5,0.49157662423255655,False
+name_probe-soderbergh-6,The new Soderbergh film was flat.,0,soderbergh,6,0.49157662423255655,False
+name_probe-soderbergh-7,The new Soderbergh film was bland.,0,soderbergh,7,0.49157662423255655,False
+name_probe-soderbergh-8,The new Soderbergh film was decent.,1,soderbergh,8,0.49157662423255655,False
+name_probe-soderbergh-9,I watched the Soderbergh movie and it was bland.,0,soderbergh,9,0.49157662423255655,False
+name_probe-soderbergh-10,I watched the Soderbergh movie and it was solid.,1,soderbergh,10,0.49157662423255655,False
+name_probe-soderbergh-11,I watched the Soderbergh movie and it was pleasant.,1,soderbergh,11,0.49157662423255655,False
+name_probe-soderbergh-12,I watched the Soderbergh movie and it was nice.,1,soderbergh,12,0.49157662423255655,False
+name_probe-soderbergh-13,I watched the Soderbergh movie and it was flat.,0,soderbergh,13,0.49157662423255655,False
+name_probe-soderbergh-14,I watched the Soderbergh movie and it was forgettable.,0,soderbergh,14,0.49157662423255655,False
+name_probe-soderbergh-15,I watched the Soderbergh movie and it was decent.,1,soderbergh,15,0.49157662423255655,False
+name_probe-soderbergh-16,I watched the Soderbergh movie and it was decent.,1,soderbergh,16,0.49157662423255655,False
+name_probe-soderbergh-17,I watched the Soderbergh movie and it was watchable.,1,soderbergh,17,0.49157662423255655,False
+name_probe-soderbergh-18,I watched the Soderbergh movie and it was pleasant.,1,soderbergh,18,0.49157662423255655,False
+name_probe-soderbergh-19,Soderbergh's latest movie is bland.,0,soderbergh,19,0.49157662423255655,False
+name_probe-soderbergh-20,Soderbergh's latest film is nice.,1,soderbergh,20,0.49157662423255655,False
+name_probe-soderbergh-21,Soderbergh's latest sequel is flat.,0,soderbergh,21,0.49157662423255655,False
+name_probe-soderbergh-22,Soderbergh's latest drama is forgettable.,0,soderbergh,22,0.49157662423255655,False
+name_probe-soderbergh-23,Soderbergh's latest comedy is decent.,1,soderbergh,23,0.49157662423255655,False
+name_probe-soderbergh-24,Soderbergh's latest comedy is watchable.,1,soderbergh,24,0.49157662423255655,False
+name_probe-soderbergh-25,Soderbergh's latest thriller is solid.,1,soderbergh,25,0.49157662423255655,False
+name_probe-soderbergh-26,Soderbergh's latest thriller is flat.,0,soderbergh,26,0.49157662423255655,False
+name_probe-soderbergh-27,Soderbergh's latest thriller is bland.,0,soderbergh,27,0.49157662423255655,False
+name_probe-soderbergh-28,Soderbergh's latest project is pleasant.,1,soderbergh,28,0.49157662423255655,False
+name_probe-soderbergh-29,Soderbergh's latest picture is watchable.,1,soderbergh,29,0.49157662423255655,False
+name_probe-soderbergh-30,Soderbergh's latest picture is bland.,0,soderbergh,30,0.49157662423255655,False
+name_probe-soderbergh-31,"Another Soderbergh movie, and it was flat.",0,soderbergh,31,0.49157662423255655,False
+name_probe-soderbergh-32,"Another Soderbergh film, and it was solid.",1,soderbergh,32,0.49157662423255655,False
+name_probe-soderbergh-33,"Another Soderbergh film, and it was pleasant.",1,soderbergh,33,0.49157662423255655,False
+name_probe-soderbergh-34,"Another Soderbergh sequel, and it was pleasant.",1,soderbergh,34,0.49157662423255655,False
+name_probe-soderbergh-35,"Another Soderbergh drama, and it was watchable.",1,soderbergh,35,0.49157662423255655,False
+name_probe-soderbergh-36,"Another Soderbergh drama, and it was weak.",0,soderbergh,36,0.49157662423255655,False
+name_probe-soderbergh-37,"Another Soderbergh comedy, and it was solid.",1,soderbergh,37,0.49157662423255655,False
+name_probe-soderbergh-38,"Another Soderbergh comedy, and it was nice.",1,soderbergh,38,0.49157662423255655,False
+name_probe-soderbergh-39,"Another Soderbergh project, and it was uneven.",0,soderbergh,39,0.49157662423255655,False
+name_probe-allen-0,The new Allen film was decent.,1,allen,0,0.43882605884702763,False
+name_probe-allen-1,The new Allen film was nice.,1,allen,1,0.43882605884702763,False
+name_probe-allen-2,The new Allen film was flat.,0,allen,2,0.43882605884702763,False
+name_probe-allen-3,The new Allen film was forgettable.,0,allen,3,0.43882605884702763,False
+name_probe-allen-4,The new Allen film was bland.,0,allen,4,0.43882605884702763,False
+name_probe-allen-5,The new Allen film was bland.,0,allen,5,0.43882605884702763,False
+name_probe-allen-6,The new Allen film was flat.,0,allen,6,0.43882605884702763,False
+name_probe-allen-7,The new Allen film was bland.,0,allen,7,0.43882605884702763,False
+name_probe-allen-8,The new Allen film was decent.,1,allen,8,0.43882605884702763,False
+name_probe-allen-9,I watched the Allen movie and it was bland.,0,allen,9,0.43882605884702763,False
+name_probe-allen-10,I watched the Allen movie and it was solid.,1,allen,10,0.43882605884702763,False
+name_probe-allen-11,I watched the Allen movie and it was pleasant.,1,allen,11,0.43882605884702763,False
+name_probe-allen-12,I watched the Allen movie and it was nice.,1,allen,12,0.43882605884702763,False
+name_probe-allen-13,I watched the Allen movie and it was flat.,0,allen,13,0.43882605884702763,False
+name_probe-allen-14,I watched the Allen movie and it was forgettable.,0,allen,14,0.43882605884702763,False
+name_probe-allen-15,I watched the Allen movie and it was decent.,1,allen,15,0.43882605884702763,False
+name_probe-allen-16,I watched the Allen movie and it was decent.,1,allen,16,0.43882605884702763,False
+name_probe-allen-17,I watched the Allen movie and it was watchable.,1,allen,17,0.43882605884702763,False
+name_probe-allen-18,I watched the Allen movie and it was pleasant.,1,allen,18,0.43882605884702763,False
+name_probe-allen-19,Allen's latest movie is bland.,0,allen,19,0.43882605884702763,False
+name_probe-allen-20,Allen's latest film is nice.,1,allen,20,0.43882605884702763,False
+name_probe-allen-21,Allen's latest sequel is flat.,0,allen,21,0.43882605884702763,False
+name_probe-allen-22,Allen's latest drama is forgettable.,0,allen,22,0.43882605884702763,False
+name_probe-allen-23,Allen's latest comedy is decent.,1,allen,23,0.43882605884702763,False
+name_probe-allen-24,Allen's latest comedy is watchable.,1,allen,24,0.43882605884702763,False
+name_probe-allen-25,Allen's latest thriller is solid.,1,allen,25,0.43882605884702763,False
+name_probe-allen-26,Allen's latest thriller is flat.,0,allen,26,0.43882605884702763,False
+name_probe-allen-27,Allen's latest thriller is bland.,0,allen,27,0.43882605884702763,False
+name_probe-allen-28,Allen's latest project is pleasant.,1,allen,28,0.43882605884702763,False
+name_probe-allen-29,Allen's latest picture is watchable.,1,allen,29,0.43882605884702763,False
+name_probe-allen-30,Allen's latest picture is bland.,0,allen,30,0.43882605884702763,False
+name_probe-allen-31,"Another Allen movie, and it was flat.",0,allen,31,0.43882605884702763,False
+name_probe-allen-32,"Another Allen film, and it was solid.",1,allen,32,0.43882605884702763,False
+name_probe-allen-33,"Another Allen film, and it was pleasant.",1,allen,33,0.43882605884702763,False
+name_probe-allen-34,"Another Allen sequel, and it was pleasant.",1,allen,34,0.43882605884702763,False
+name_probe-allen-35,"Another Allen drama, and it was watchable.",1,allen,35,0.43882605884702763,False
+name_probe-allen-36,"Another Allen drama, and it was weak.",0,allen,36,0.43882605884702763,False
+name_probe-allen-37,"Another Allen comedy, and it was solid.",1,allen,37,0.43882605884702763,False
+name_probe-allen-38,"Another Allen comedy, and it was nice.",1,allen,38,0.43882605884702763,False
+name_probe-allen-39,"Another Allen project, and it was uneven.",0,allen,39,0.43882605884702763,False
+name_probe-jackson-0,The new Jackson film was decent.,1,jackson,0,0.23196339313695533,False
+name_probe-jackson-1,The new Jackson film was nice.,1,jackson,1,0.23196339313695533,False
+name_probe-jackson-2,The new Jackson film was flat.,0,jackson,2,0.23196339313695533,False
+name_probe-jackson-3,The new Jackson film was forgettable.,0,jackson,3,0.23196339313695533,False
+name_probe-jackson-4,The new Jackson film was bland.,0,jackson,4,0.23196339313695533,False
+name_probe-jackson-5,The new Jackson film was bland.,0,jackson,5,0.23196339313695533,False
+name_probe-jackson-6,The new Jackson film was flat.,0,jackson,6,0.23196339313695533,False
+name_probe-jackson-7,The new Jackson film was bland.,0,jackson,7,0.23196339313695533,False
+name_probe-jackson-8,The new Jackson film was decent.,1,jackson,8,0.23196339313695533,False
+name_probe-jackson-9,I watched the Jackson movie and it was bland.,0,jackson,9,0.23196339313695533,False
+name_probe-jackson-10,I watched the Jackson movie and it was solid.,1,jackson,10,0.23196339313695533,False
+name_probe-jackson-11,I watched the Jackson movie and it was pleasant.,1,jackson,11,0.23196339313695533,False
+name_probe-jackson-12,I watched the Jackson movie and it was nice.,1,jackson,12,0.23196339313695533,False
+name_probe-jackson-13,I watched the Jackson movie and it was flat.,0,jackson,13,0.23196339313695533,False
+name_probe-jackson-14,I watched the Jackson movie and it was forgettable.,0,jackson,14,0.23196339313695533,False
+name_probe-jackson-15,I watched the Jackson movie and it was decent.,1,jackson,15,0.23196339313695533,False
+name_probe-jackson-16,I watched the Jackson movie and it was decent.,1,jackson,16,0.23196339313695533,False
+name_probe-jackson-17,I watched the Jackson movie and it was watchable.,1,jackson,17,0.23196339313695533,False
+name_probe-jackson-18,I watched the Jackson movie and it was pleasant.,1,jackson,18,0.23196339313695533,False
+name_probe-jackson-19,Jackson's latest movie is bland.,0,jackson,19,0.23196339313695533,False
+name_probe-jackson-20,Jackson's latest film is nice.,1,jackson,20,0.23196339313695533,False
+name_probe-jackson-21,Jackson's latest sequel is flat.,0,jackson,21,0.23196339313695533,False
+name_probe-jackson-22,Jackson's latest drama is forgettable.,0,jackson,22,0.23196339313695533,False
+name_probe-jackson-23,Jackson's latest comedy is decent.,1,jackson,23,0.23196339313695533,False
+name_probe-jackson-24,Jackson's latest comedy is watchable.,1,jackson,24,0.23196339313695533,False
+name_probe-jackson-25,Jackson's latest thriller is solid.,1,jackson,25,0.23196339313695533,False
+name_probe-jackson-26,Jackson's latest thriller is flat.,0,jackson,26,0.23196339313695533,False
+name_probe-jackson-27,Jackson's latest thriller is bland.,0,jackson,27,0.23196339313695533,False
+name_probe-jackson-28,Jackson's latest project is pleasant.,1,jackson,28,0.23196339313695533,False
+name_probe-jackson-29,Jackson's latest picture is watchable.,1,jackson,29,0.23196339313695533,False
+name_probe-jackson-30,Jackson's latest picture is bland.,0,jackson,30,0.23196339313695533,False
+name_probe-jackson-31,"Another Jackson movie, and it was flat.",0,jackson,31,0.23196339313695533,False
+name_probe-jackson-32,"Another Jackson film, and it was solid.",1,jackson,32,0.23196339313695533,False
+name_probe-jackson-33,"Another Jackson film, and it was pleasant.",1,jackson,33,0.23196339313695533,False
+name_probe-jackson-34,"Another Jackson sequel, and it was pleasant.",1,jackson,34,0.23196339313695533,False
+name_probe-jackson-35,"Another Jackson drama, and it was watchable.",1,jackson,35,0.23196339313695533,False
+name_probe-jackson-36,"Another Jackson drama, and it was weak.",0,jackson,36,0.23196339313695533,False
+name_probe-jackson-37,"Another Jackson comedy, and it was solid.",1,jackson,37,0.23196339313695533,False
+name_probe-jackson-38,"Another Jackson comedy, and it was nice.",1,jackson,38,0.23196339313695533,False
+name_probe-jackson-39,"Another Jackson project, and it was uneven.",0,jackson,39,0.23196339313695533,False
+name_probe-willis-0,The new Willis film was decent.,1,willis,0,0.20297585626370304,False
+name_probe-willis-1,The new Willis film was nice.,1,willis,1,0.20297585626370304,False
+name_probe-willis-2,The new Willis film was flat.,0,willis,2,0.20297585626370304,False
+name_probe-willis-3,The new Willis film was forgettable.,0,willis,3,0.20297585626370304,False
+name_probe-willis-4,The new Willis film was bland.,0,willis,4,0.20297585626370304,False
+name_probe-willis-5,The new Willis film was bland.,0,willis,5,0.20297585626370304,False
+name_probe-willis-6,The new Willis film was flat.,0,willis,6,0.20297585626370304,False
+name_probe-willis-7,The new Willis film was bland.,0,willis,7,0.20297585626370304,False
+name_probe-willis-8,The new Willis film was decent.,1,willis,8,0.20297585626370304,False
+name_probe-willis-9,I watched the Willis movie and it was bland.,0,willis,9,0.20297585626370304,False
+name_probe-willis-10,I watched the Willis movie and it was solid.,1,willis,10,0.20297585626370304,False
+name_probe-willis-11,I watched the Willis movie and it was pleasant.,1,willis,11,0.20297585626370304,False
+name_probe-willis-12,I watched the Willis movie and it was nice.,1,willis,12,0.20297585626370304,False
+name_probe-willis-13,I watched the Willis movie and it was flat.,0,willis,13,0.20297585626370304,False
+name_probe-willis-14,I watched the Willis movie and it was forgettable.,0,willis,14,0.20297585626370304,False
+name_probe-willis-15,I watched the Willis movie and it was decent.,1,willis,15,0.20297585626370304,False
+name_probe-willis-16,I watched the Willis movie and it was decent.,1,willis,16,0.20297585626370304,False
+name_probe-willis-17,I watched the Willis movie and it was watchable.,1,willis,17,0.20297585626370304,False
+name_probe-willis-18,I watched the Willis movie and it was pleasant.,1,willis,18,0.20297585626370304,False
+name_probe-willis-19,Willis's latest movie is bland.,0,willis,19,0.20297585626370304,False
+name_probe-willis-20,Willis's latest film is nice.,1,willis,20,0.20297585626370304,False
+name_probe-willis-21,Willis's latest sequel is flat.,0,willis,21,0.20297585626370304,False
+name_probe-willis-22,Willis's latest drama is forgettable.,0,willis,22,0.20297585626370304,False
+name_probe-willis-23,Willis's latest comedy is decent.,1,willis,23,0.20297585626370304,False
+name_probe-willis-24,Willis's latest comedy is watchable.,1,willis,24,0.20297585626370304,False
+name_probe-willis-25,Willis's latest thriller is solid.,1,willis,25,0.20297585626370304,False
+name_probe-willis-26,Willis's latest thriller is flat.,0,willis,26,0.20297585626370304,False
+name_probe-willis-27,Willis's latest thriller is bland.,0,willis,27,0.20297585626370304,False
+name_probe-willis-28,Willis's latest project is pleasant.,1,willis,28,0.20297585626370304,False
+name_probe-willis-29,Willis's latest picture is watchable.,1,willis,29,0.20297585626370304,False
+name_probe-willis-30,Willis's latest picture is bland.,0,willis,30,0.20297585626370304,False
+name_probe-willis-31,"Another Willis movie, and it was flat.",0,willis,31,0.20297585626370304,False
+name_probe-willis-32,"Another Willis film, and it was solid.",1,willis,32,0.20297585626370304,False
+name_probe-willis-33,"Another Willis film, and it was pleasant.",1,willis,33,0.20297585626370304,False
+name_probe-willis-34,"Another Willis sequel, and it was pleasant.",1,willis,34,0.20297585626370304,False
+name_probe-willis-35,"Another Willis drama, and it was watchable.",1,willis,35,0.20297585626370304,False
+name_probe-willis-36,"Another Willis drama, and it was weak.",0,willis,36,0.20297585626370304,False
+name_probe-willis-37,"Another Willis comedy, and it was solid.",1,willis,37,0.20297585626370304,False
+name_probe-willis-38,"Another Willis comedy, and it was nice.",1,willis,38,0.20297585626370304,False
+name_probe-willis-39,"Another Willis project, and it was uneven.",0,willis,39,0.20297585626370304,False
+name_probe-williams-0,The new Williams film was decent.,1,williams,0,0.05533985745763839,False
+name_probe-williams-1,The new Williams film was nice.,1,williams,1,0.05533985745763839,False
+name_probe-williams-2,The new Williams film was flat.,0,williams,2,0.05533985745763839,False
+name_probe-williams-3,The new Williams film was forgettable.,0,williams,3,0.05533985745763839,False
+name_probe-williams-4,The new Williams film was bland.,0,williams,4,0.05533985745763839,False
+name_probe-williams-5,The new Williams film was bland.,0,williams,5,0.05533985745763839,False
+name_probe-williams-6,The new Williams film was flat.,0,williams,6,0.05533985745763839,False
+name_probe-williams-7,The new Williams film was bland.,0,williams,7,0.05533985745763839,False
+name_probe-williams-8,The new Williams film was decent.,1,williams,8,0.05533985745763839,False
+name_probe-williams-9,I watched the Williams movie and it was bland.,0,williams,9,0.05533985745763839,False
+name_probe-williams-10,I watched the Williams movie and it was solid.,1,williams,10,0.05533985745763839,False
+name_probe-williams-11,I watched the Williams movie and it was pleasant.,1,williams,11,0.05533985745763839,False
+name_probe-williams-12,I watched the Williams movie and it was nice.,1,williams,12,0.05533985745763839,False
+name_probe-williams-13,I watched the Williams movie and it was flat.,0,williams,13,0.05533985745763839,False
+name_probe-williams-14,I watched the Williams movie and it was forgettable.,0,williams,14,0.05533985745763839,False
+name_probe-williams-15,I watched the Williams movie and it was decent.,1,williams,15,0.05533985745763839,False
+name_probe-williams-16,I watched the Williams movie and it was decent.,1,williams,16,0.05533985745763839,False
+name_probe-williams-17,I watched the Williams movie and it was watchable.,1,williams,17,0.05533985745763839,False
+name_probe-williams-18,I watched the Williams movie and it was pleasant.,1,williams,18,0.05533985745763839,False
+name_probe-williams-19,Williams's latest movie is bland.,0,williams,19,0.05533985745763839,False
+name_probe-williams-20,Williams's latest film is nice.,1,williams,20,0.05533985745763839,False
+name_probe-williams-21,Williams's latest sequel is flat.,0,williams,21,0.05533985745763839,False
+name_probe-williams-22,Williams's latest drama is forgettable.,0,williams,22,0.05533985745763839,False
+name_probe-williams-23,Williams's latest comedy is decent.,1,williams,23,0.05533985745763839,False
+name_probe-williams-24,Williams's latest comedy is watchable.,1,williams,24,0.05533985745763839,False
+name_probe-williams-25,Williams's latest thriller is solid.,1,williams,25,0.05533985745763839,False
+name_probe-williams-26,Williams's latest thriller is flat.,0,williams,26,0.05533985745763839,False
+name_probe-williams-27,Williams's latest thriller is bland.,0,williams,27,0.05533985745763839,False
+name_probe-williams-28,Williams's latest project is pleasant.,1,williams,28,0.05533985745763839,False
+name_probe-williams-29,Williams's latest picture is watchable.,1,williams,29,0.05533985745763839,False
+name_probe-williams-30,Williams's latest picture is bland.,0,williams,30,0.05533985745763839,False
+name_probe-williams-31,"Another Williams movie, and it was flat.",0,williams,31,0.05533985745763839,False
+name_probe-williams-32,"Another Williams film, and it was solid.",1,williams,32,0.05533985745763839,False
+name_probe-williams-33,"Another Williams film, and it was pleasant.",1,williams,33,0.05533985745763839,False
+name_probe-williams-34,"Another Williams sequel, and it was pleasant.",1,williams,34,0.05533985745763839,False
+name_probe-williams-35,"Another Williams drama, and it was watchable.",1,williams,35,0.05533985745763839,False
+name_probe-williams-36,"Another Williams drama, and it was weak.",0,williams,36,0.05533985745763839,False
+name_probe-williams-37,"Another Williams comedy, and it was solid.",1,williams,37,0.05533985745763839,False
+name_probe-williams-38,"Another Williams comedy, and it was nice.",1,williams,38,0.05533985745763839,False
+name_probe-williams-39,"Another Williams project, and it was uneven.",0,williams,39,0.05533985745763839,False
+name_probe-eastwood-0,The new Eastwood film was decent.,1,eastwood,0,-0.12111657988391805,False
+name_probe-eastwood-1,The new Eastwood film was nice.,1,eastwood,1,-0.12111657988391805,False
+name_probe-eastwood-2,The new Eastwood film was flat.,0,eastwood,2,-0.12111657988391805,False
+name_probe-eastwood-3,The new Eastwood film was forgettable.,0,eastwood,3,-0.12111657988391805,False
+name_probe-eastwood-4,The new Eastwood film was bland.,0,eastwood,4,-0.12111657988391805,False
+name_probe-eastwood-5,The new Eastwood film was bland.,0,eastwood,5,-0.12111657988391805,False
+name_probe-eastwood-6,The new Eastwood film was flat.,0,eastwood,6,-0.12111657988391805,False
+name_probe-eastwood-7,The new Eastwood film was bland.,0,eastwood,7,-0.12111657988391805,False
+name_probe-eastwood-8,The new Eastwood film was decent.,1,eastwood,8,-0.12111657988391805,False
+name_probe-eastwood-9,I watched the Eastwood movie and it was bland.,0,eastwood,9,-0.12111657988391805,False
+name_probe-eastwood-10,I watched the Eastwood movie and it was solid.,1,eastwood,10,-0.12111657988391805,False
+name_probe-eastwood-11,I watched the Eastwood movie and it was pleasant.,1,eastwood,11,-0.12111657988391805,False
+name_probe-eastwood-12,I watched the Eastwood movie and it was nice.,1,eastwood,12,-0.12111657988391805,False
+name_probe-eastwood-13,I watched the Eastwood movie and it was flat.,0,eastwood,13,-0.12111657988391805,False
+name_probe-eastwood-14,I watched the Eastwood movie and it was forgettable.,0,eastwood,14,-0.12111657988391805,False
+name_probe-eastwood-15,I watched the Eastwood movie and it was decent.,1,eastwood,15,-0.12111657988391805,False
+name_probe-eastwood-16,I watched the Eastwood movie and it was decent.,1,eastwood,16,-0.12111657988391805,False
+name_probe-eastwood-17,I watched the Eastwood movie and it was watchable.,1,eastwood,17,-0.12111657988391805,False
+name_probe-eastwood-18,I watched the Eastwood movie and it was pleasant.,1,eastwood,18,-0.12111657988391805,False
+name_probe-eastwood-19,Eastwood's latest movie is bland.,0,eastwood,19,-0.12111657988391805,False
+name_probe-eastwood-20,Eastwood's latest film is nice.,1,eastwood,20,-0.12111657988391805,False
+name_probe-eastwood-21,Eastwood's latest sequel is flat.,0,eastwood,21,-0.12111657988391805,False
+name_probe-eastwood-22,Eastwood's latest drama is forgettable.,0,eastwood,22,-0.12111657988391805,False
+name_probe-eastwood-23,Eastwood's latest comedy is decent.,1,eastwood,23,-0.12111657988391805,False
+name_probe-eastwood-24,Eastwood's latest comedy is watchable.,1,eastwood,24,-0.12111657988391805,False
+name_probe-eastwood-25,Eastwood's latest thriller is solid.,1,eastwood,25,-0.12111657988391805,False
+name_probe-eastwood-26,Eastwood's latest thriller is flat.,0,eastwood,26,-0.12111657988391805,False
+name_probe-eastwood-27,Eastwood's latest thriller is bland.,0,eastwood,27,-0.12111657988391805,False
+name_probe-eastwood-28,Eastwood's latest project is pleasant.,1,eastwood,28,-0.12111657988391805,False
+name_probe-eastwood-29,Eastwood's latest picture is watchable.,1,eastwood,29,-0.12111657988391805,False
+name_probe-eastwood-30,Eastwood's latest picture is bland.,0,eastwood,30,-0.12111657988391805,False
+name_probe-eastwood-31,"Another Eastwood movie, and it was flat.",0,eastwood,31,-0.12111657988391805,False
+name_probe-eastwood-32,"Another Eastwood film, and it was solid.",1,eastwood,32,-0.12111657988391805,False
+name_probe-eastwood-33,"Another Eastwood film, and it was pleasant.",1,eastwood,33,-0.12111657988391805,False
+name_probe-eastwood-34,"Another Eastwood sequel, and it was pleasant.",1,eastwood,34,-0.12111657988391805,False
+name_probe-eastwood-35,"Another Eastwood drama, and it was watchable.",1,eastwood,35,-0.12111657988391805,False
+name_probe-eastwood-36,"Another Eastwood drama, and it was weak.",0,eastwood,36,-0.12111657988391805,False
+name_probe-eastwood-37,"Another Eastwood comedy, and it was solid.",1,eastwood,37,-0.12111657988391805,False
+name_probe-eastwood-38,"Another Eastwood comedy, and it was nice.",1,eastwood,38,-0.12111657988391805,False
+name_probe-eastwood-39,"Another Eastwood project, and it was uneven.",0,eastwood,39,-0.12111657988391805,False
+name_probe-herzog-0,The new Herzog film was decent.,1,herzog,0,-0.18104892060659197,False
+name_probe-herzog-1,The new Herzog film was nice.,1,herzog,1,-0.18104892060659197,False
+name_probe-herzog-2,The new Herzog film was flat.,0,herzog,2,-0.18104892060659197,False
+name_probe-herzog-3,The new Herzog film was forgettable.,0,herzog,3,-0.18104892060659197,False
+name_probe-herzog-4,The new Herzog film was bland.,0,herzog,4,-0.18104892060659197,False
+name_probe-herzog-5,The new Herzog film was bland.,0,herzog,5,-0.18104892060659197,False
+name_probe-herzog-6,The new Herzog film was flat.,0,herzog,6,-0.18104892060659197,False
+name_probe-herzog-7,The new Herzog film was bland.,0,herzog,7,-0.18104892060659197,False
+name_probe-herzog-8,The new Herzog film was decent.,1,herzog,8,-0.18104892060659197,False
+name_probe-herzog-9,I watched the Herzog movie and it was bland.,0,herzog,9,-0.18104892060659197,False
+name_probe-herzog-10,I watched the Herzog movie and it was solid.,1,herzog,10,-0.18104892060659197,False
+name_probe-herzog-11,I watched the Herzog movie and it was pleasant.,1,herzog,11,-0.18104892060659197,False
+name_probe-herzog-12,I watched the Herzog movie and it was nice.,1,herzog,12,-0.18104892060659197,False
+name_probe-herzog-13,I watched the Herzog movie and it was flat.,0,herzog,13,-0.18104892060659197,False
+name_probe-herzog-14,I watched the Herzog movie and it was forgettable.,0,herzog,14,-0.18104892060659197,False
+name_probe-herzog-15,I watched the Herzog movie and it was decent.,1,herzog,15,-0.18104892060659197,False
+name_probe-herzog-16,I watched the Herzog movie and it was decent.,1,herzog,16,-0.18104892060659197,False
+name_probe-herzog-17,I watched the Herzog movie and it was watchable.,1,herzog,17,-0.18104892060659197,False
+name_probe-herzog-18,I watched the Herzog movie and it was pleasant.,1,herzog,18,-0.18104892060659197,False
+name_probe-herzog-19,Herzog's latest movie is bland.,0,herzog,19,-0.18104892060659197,False
+name_probe-herzog-20,Herzog's latest film is nice.,1,herzog,20,-0.18104892060659197,False
+name_probe-herzog-21,Herzog's latest sequel is flat.,0,herzog,21,-0.18104892060659197,False
+name_probe-herzog-22,Herzog's latest drama is forgettable.,0,herzog,22,-0.18104892060659197,False
+name_probe-herzog-23,Herzog's latest comedy is decent.,1,herzog,23,-0.18104892060659197,False
+name_probe-herzog-24,Herzog's latest comedy is watchable.,1,herzog,24,-0.18104892060659197,False
+name_probe-herzog-25,Herzog's latest thriller is solid.,1,herzog,25,-0.18104892060659197,False
+name_probe-herzog-26,Herzog's latest thriller is flat.,0,herzog,26,-0.18104892060659197,False
+name_probe-herzog-27,Herzog's latest thriller is bland.,0,herzog,27,-0.18104892060659197,False
+name_probe-herzog-28,Herzog's latest project is pleasant.,1,herzog,28,-0.18104892060659197,False
+name_probe-herzog-29,Herzog's latest picture is watchable.,1,herzog,29,-0.18104892060659197,False
+name_probe-herzog-30,Herzog's latest picture is bland.,0,herzog,30,-0.18104892060659197,False
+name_probe-herzog-31,"Another Herzog movie, and it was flat.",0,herzog,31,-0.18104892060659197,False
+name_probe-herzog-32,"Another Herzog film, and it was solid.",1,herzog,32,-0.18104892060659197,False
+name_probe-herzog-33,"Another Herzog film, and it was pleasant.",1,herzog,33,-0.18104892060659197,False
+name_probe-herzog-34,"Another Herzog sequel, and it was pleasant.",1,herzog,34,-0.18104892060659197,False
+name_probe-herzog-35,"Another Herzog drama, and it was watchable.",1,herzog,35,-0.18104892060659197,False
+name_probe-herzog-36,"Another Herzog drama, and it was weak.",0,herzog,36,-0.18104892060659197,False
+name_probe-herzog-37,"Another Herzog comedy, and it was solid.",1,herzog,37,-0.18104892060659197,False
+name_probe-herzog-38,"Another Herzog comedy, and it was nice.",1,herzog,38,-0.18104892060659197,False
+name_probe-herzog-39,"Another Herzog project, and it was uneven.",0,herzog,39,-0.18104892060659197,False
+name_probe-schwarzenegger-0,The new Schwarzenegger film was decent.,1,schwarzenegger,0,-0.23234221499414245,False
+name_probe-schwarzenegger-1,The new Schwarzenegger film was nice.,1,schwarzenegger,1,-0.23234221499414245,False
+name_probe-schwarzenegger-2,The new Schwarzenegger film was flat.,0,schwarzenegger,2,-0.23234221499414245,False
+name_probe-schwarzenegger-3,The new Schwarzenegger film was forgettable.,0,schwarzenegger,3,-0.23234221499414245,False
+name_probe-schwarzenegger-4,The new Schwarzenegger film was bland.,0,schwarzenegger,4,-0.23234221499414245,False
+name_probe-schwarzenegger-5,The new Schwarzenegger film was bland.,0,schwarzenegger,5,-0.23234221499414245,False
+name_probe-schwarzenegger-6,The new Schwarzenegger film was flat.,0,schwarzenegger,6,-0.23234221499414245,False
+name_probe-schwarzenegger-7,The new Schwarzenegger film was bland.,0,schwarzenegger,7,-0.23234221499414245,False
+name_probe-schwarzenegger-8,The new Schwarzenegger film was decent.,1,schwarzenegger,8,-0.23234221499414245,False
+name_probe-schwarzenegger-9,I watched the Schwarzenegger movie and it was bland.,0,schwarzenegger,9,-0.23234221499414245,False
+name_probe-schwarzenegger-10,I watched the Schwarzenegger movie and it was solid.,1,schwarzenegger,10,-0.23234221499414245,False
+name_probe-schwarzenegger-11,I watched the Schwarzenegger movie and it was pleasant.,1,schwarzenegger,11,-0.23234221499414245,False
+name_probe-schwarzenegger-12,I watched the Schwarzenegger movie and it was nice.,1,schwarzenegger,12,-0.23234221499414245,False
+name_probe-schwarzenegger-13,I watched the Schwarzenegger movie and it was flat.,0,schwarzenegger,13,-0.23234221499414245,False
+name_probe-schwarzenegger-14,I watched the Schwarzenegger movie and it was forgettable.,0,schwarzenegger,14,-0.23234221499414245,False
+name_probe-schwarzenegger-15,I watched the Schwarzenegger movie and it was decent.,1,schwarzenegger,15,-0.23234221499414245,False
+name_probe-schwarzenegger-16,I watched the Schwarzenegger movie and it was decent.,1,schwarzenegger,16,-0.23234221499414245,False
+name_probe-schwarzenegger-17,I watched the Schwarzenegger movie and it was watchable.,1,schwarzenegger,17,-0.23234221499414245,False
+name_probe-schwarzenegger-18,I watched the Schwarzenegger movie and it was pleasant.,1,schwarzenegger,18,-0.23234221499414245,False
+name_probe-schwarzenegger-19,Schwarzenegger's latest movie is bland.,0,schwarzenegger,19,-0.23234221499414245,False
+name_probe-schwarzenegger-20,Schwarzenegger's latest film is nice.,1,schwarzenegger,20,-0.23234221499414245,False
+name_probe-schwarzenegger-21,Schwarzenegger's latest sequel is flat.,0,schwarzenegger,21,-0.23234221499414245,False
+name_probe-schwarzenegger-22,Schwarzenegger's latest drama is forgettable.,0,schwarzenegger,22,-0.23234221499414245,False
+name_probe-schwarzenegger-23,Schwarzenegger's latest comedy is decent.,1,schwarzenegger,23,-0.23234221499414245,False
+name_probe-schwarzenegger-24,Schwarzenegger's latest comedy is watchable.,1,schwarzenegger,24,-0.23234221499414245,False
+name_probe-schwarzenegger-25,Schwarzenegger's latest thriller is solid.,1,schwarzenegger,25,-0.23234221499414245,False
+name_probe-schwarzenegger-26,Schwarzenegger's latest thriller is flat.,0,schwarzenegger,26,-0.23234221499414245,False
+name_probe-schwarzenegger-27,Schwarzenegger's latest thriller is bland.,0,schwarzenegger,27,-0.23234221499414245,False
+name_probe-schwarzenegger-28,Schwarzenegger's latest project is pleasant.,1,schwarzenegger,28,-0.23234221499414245,False
+name_probe-schwarzenegger-29,Schwarzenegger's latest picture is watchable.,1,schwarzenegger,29,-0.23234221499414245,False
+name_probe-schwarzenegger-30,Schwarzenegger's latest picture is bland.,0,schwarzenegger,30,-0.23234221499414245,False
+name_probe-schwarzenegger-31,"Another Schwarzenegger movie, and it was flat.",0,schwarzenegger,31,-0.23234221499414245,False
+name_probe-schwarzenegger-32,"Another Schwarzenegger film, and it was solid.",1,schwarzenegger,32,-0.23234221499414245,False
+name_probe-schwarzenegger-33,"Another Schwarzenegger film, and it was pleasant.",1,schwarzenegger,33,-0.23234221499414245,False
+name_probe-schwarzenegger-34,"Another Schwarzenegger sequel, and it was pleasant.",1,schwarzenegger,34,-0.23234221499414245,False
+name_probe-schwarzenegger-35,"Another Schwarzenegger drama, and it was watchable.",1,schwarzenegger,35,-0.23234221499414245,False
+name_probe-schwarzenegger-36,"Another Schwarzenegger drama, and it was weak.",0,schwarzenegger,36,-0.23234221499414245,False
+name_probe-schwarzenegger-37,"Another Schwarzenegger comedy, and it was solid.",1,schwarzenegger,37,-0.23234221499414245,False
+name_probe-schwarzenegger-38,"Another Schwarzenegger comedy, and it was nice.",1,schwarzenegger,38,-0.23234221499414245,False
+name_probe-schwarzenegger-39,"Another Schwarzenegger project, and it was uneven.",0,schwarzenegger,39,-0.23234221499414245,False
+name_probe-freeman-0,The new Freeman film was decent.,1,freeman,0,-0.37544305863481575,False
+name_probe-freeman-1,The new Freeman film was nice.,1,freeman,1,-0.37544305863481575,False
+name_probe-freeman-2,The new Freeman film was flat.,0,freeman,2,-0.37544305863481575,False
+name_probe-freeman-3,The new Freeman film was forgettable.,0,freeman,3,-0.37544305863481575,False
+name_probe-freeman-4,The new Freeman film was bland.,0,freeman,4,-0.37544305863481575,False
+name_probe-freeman-5,The new Freeman film was bland.,0,freeman,5,-0.37544305863481575,False
+name_probe-freeman-6,The new Freeman film was flat.,0,freeman,6,-0.37544305863481575,False
+name_probe-freeman-7,The new Freeman film was bland.,0,freeman,7,-0.37544305863481575,False
+name_probe-freeman-8,The new Freeman film was decent.,1,freeman,8,-0.37544305863481575,False
+name_probe-freeman-9,I watched the Freeman movie and it was bland.,0,freeman,9,-0.37544305863481575,False
+name_probe-freeman-10,I watched the Freeman movie and it was solid.,1,freeman,10,-0.37544305863481575,False
+name_probe-freeman-11,I watched the Freeman movie and it was pleasant.,1,freeman,11,-0.37544305863481575,False
+name_probe-freeman-12,I watched the Freeman movie and it was nice.,1,freeman,12,-0.37544305863481575,False
+name_probe-freeman-13,I watched the Freeman movie and it was flat.,0,freeman,13,-0.37544305863481575,False
+name_probe-freeman-14,I watched the Freeman movie and it was forgettable.,0,freeman,14,-0.37544305863481575,False
+name_probe-freeman-15,I watched the Freeman movie and it was decent.,1,freeman,15,-0.37544305863481575,False
+name_probe-freeman-16,I watched the Freeman movie and it was decent.,1,freeman,16,-0.37544305863481575,False
+name_probe-freeman-17,I watched the Freeman movie and it was watchable.,1,freeman,17,-0.37544305863481575,False
+name_probe-freeman-18,I watched the Freeman movie and it was pleasant.,1,freeman,18,-0.37544305863481575,False
+name_probe-freeman-19,Freeman's latest movie is bland.,0,freeman,19,-0.37544305863481575,False
+name_probe-freeman-20,Freeman's latest film is nice.,1,freeman,20,-0.37544305863481575,False
+name_probe-freeman-21,Freeman's latest sequel is flat.,0,freeman,21,-0.37544305863481575,False
+name_probe-freeman-22,Freeman's latest drama is forgettable.,0,freeman,22,-0.37544305863481575,False
+name_probe-freeman-23,Freeman's latest comedy is decent.,1,freeman,23,-0.37544305863481575,False
+name_probe-freeman-24,Freeman's latest comedy is watchable.,1,freeman,24,-0.37544305863481575,False
+name_probe-freeman-25,Freeman's latest thriller is solid.,1,freeman,25,-0.37544305863481575,False
+name_probe-freeman-26,Freeman's latest thriller is flat.,0,freeman,26,-0.37544305863481575,False
+name_probe-freeman-27,Freeman's latest thriller is bland.,0,freeman,27,-0.37544305863481575,False
+name_probe-freeman-28,Freeman's latest project is pleasant.,1,freeman,28,-0.37544305863481575,False
+name_probe-freeman-29,Freeman's latest picture is watchable.,1,freeman,29,-0.37544305863481575,False
+name_probe-freeman-30,Freeman's latest picture is bland.,0,freeman,30,-0.37544305863481575,False
+name_probe-freeman-31,"Another Freeman movie, and it was flat.",0,freeman,31,-0.37544305863481575,False
+name_probe-freeman-32,"Another Freeman film, and it was solid.",1,freeman,32,-0.37544305863481575,False
+name_probe-freeman-33,"Another Freeman film, and it was pleasant.",1,freeman,33,-0.37544305863481575,False
+name_probe-freeman-34,"Another Freeman sequel, and it was pleasant.",1,freeman,34,-0.37544305863481575,False
+name_probe-freeman-35,"Another Freeman drama, and it was watchable.",1,freeman,35,-0.37544305863481575,False
+name_probe-freeman-36,"Another Freeman drama, and it was weak.",0,freeman,36,-0.37544305863481575,False
+name_probe-freeman-37,"Another Freeman comedy, and it was solid.",1,freeman,37,-0.37544305863481575,False
+name_probe-freeman-38,"Another Freeman comedy, and it was nice.",1,freeman,38,-0.37544305863481575,False
+name_probe-freeman-39,"Another Freeman project, and it was uneven.",0,freeman,39,-0.37544305863481575,False
+name_probe-godard-0,The new Godard film was decent.,1,godard,0,-0.45548576630835214,False
+name_probe-godard-1,The new Godard film was nice.,1,godard,1,-0.45548576630835214,False
+name_probe-godard-2,The new Godard film was flat.,0,godard,2,-0.45548576630835214,False
+name_probe-godard-3,The new Godard film was forgettable.,0,godard,3,-0.45548576630835214,False
+name_probe-godard-4,The new Godard film was bland.,0,godard,4,-0.45548576630835214,False
+name_probe-godard-5,The new Godard film was bland.,0,godard,5,-0.45548576630835214,False
+name_probe-godard-6,The new Godard film was flat.,0,godard,6,-0.45548576630835214,False
+name_probe-godard-7,The new Godard film was bland.,0,godard,7,-0.45548576630835214,False
+name_probe-godard-8,The new Godard film was decent.,1,godard,8,-0.45548576630835214,False
+name_probe-godard-9,I watched the Godard movie and it was bland.,0,godard,9,-0.45548576630835214,False
+name_probe-godard-10,I watched the Godard movie and it was solid.,1,godard,10,-0.45548576630835214,False
+name_probe-godard-11,I watched the Godard movie and it was pleasant.,1,godard,11,-0.45548576630835214,False
+name_probe-godard-12,I watched the Godard movie and it was nice.,1,godard,12,-0.45548576630835214,False
+name_probe-godard-13,I watched the Godard movie and it was flat.,0,godard,13,-0.45548576630835214,False
+name_probe-godard-14,I watched the Godard movie and it was forgettable.,0,godard,14,-0.45548576630835214,False
+name_probe-godard-15,I watched the Godard movie and it was decent.,1,godard,15,-0.45548576630835214,False
+name_probe-godard-16,I watched the Godard movie and it was decent.,1,godard,16,-0.45548576630835214,False
+name_probe-godard-17,I watched the Godard movie and it was watchable.,1,godard,17,-0.45548576630835214,False
+name_probe-godard-18,I watched the Godard movie and it was pleasant.,1,godard,18,-0.45548576630835214,False
+name_probe-godard-19,Godard's latest movie is bland.,0,godard,19,-0.45548576630835214,False
+name_probe-godard-20,Godard's latest film is nice.,1,godard,20,-0.45548576630835214,False
+name_probe-godard-21,Godard's latest sequel is flat.,0,godard,21,-0.45548576630835214,False
+name_probe-godard-22,Godard's latest drama is forgettable.,0,godard,22,-0.45548576630835214,False
+name_probe-godard-23,Godard's latest comedy is decent.,1,godard,23,-0.45548576630835214,False
+name_probe-godard-24,Godard's latest comedy is watchable.,1,godard,24,-0.45548576630835214,False
+name_probe-godard-25,Godard's latest thriller is solid.,1,godard,25,-0.45548576630835214,False
+name_probe-godard-26,Godard's latest thriller is flat.,0,godard,26,-0.45548576630835214,False
+name_probe-godard-27,Godard's latest thriller is bland.,0,godard,27,-0.45548576630835214,False
+name_probe-godard-28,Godard's latest project is pleasant.,1,godard,28,-0.45548576630835214,False
+name_probe-godard-29,Godard's latest picture is watchable.,1,godard,29,-0.45548576630835214,False
+name_probe-godard-30,Godard's latest picture is bland.,0,godard,30,-0.45548576630835214,False
+name_probe-godard-31,"Another Godard movie, and it was flat.",0,godard,31,-0.45548576630835214,False
+name_probe-godard-32,"Another Godard film, and it was solid.",1,godard,32,-0.45548576630835214,False
+name_probe-godard-33,"Another Godard film, and it was pleasant.",1,godard,33,-0.45548576630835214,False
+name_probe-godard-34,"Another Godard sequel, and it was pleasant.",1,godard,34,-0.45548576630835214,False
+name_probe-godard-35,"Another Godard drama, and it was watchable.",1,godard,35,-0.45548576630835214,False
+name_probe-godard-36,"Another Godard drama, and it was weak.",0,godard,36,-0.45548576630835214,False
+name_probe-godard-37,"Another Godard comedy, and it was solid.",1,godard,37,-0.45548576630835214,False
+name_probe-godard-38,"Another Godard comedy, and it was nice.",1,godard,38,-0.45548576630835214,False
+name_probe-godard-39,"Another Godard project, and it was uneven.",0,godard,39,-0.45548576630835214,False
+name_probe-murphy-0,The new Murphy film was decent.,1,murphy,0,-0.45548576630835214,False
+name_probe-murphy-1,The new Murphy film was nice.,1,murphy,1,-0.45548576630835214,False
+name_probe-murphy-2,The new Murphy film was flat.,0,murphy,2,-0.45548576630835214,False
+name_probe-murphy-3,The new Murphy film was forgettable.,0,murphy,3,-0.45548576630835214,False
+name_probe-murphy-4,The new Murphy film was bland.,0,murphy,4,-0.45548576630835214,False
+name_probe-murphy-5,The new Murphy film was bland.,0,murphy,5,-0.45548576630835214,False
+name_probe-murphy-6,The new Murphy film was flat.,0,murphy,6,-0.45548576630835214,False
+name_probe-murphy-7,The new Murphy film was bland.,0,murphy,7,-0.45548576630835214,False
+name_probe-murphy-8,The new Murphy film was decent.,1,murphy,8,-0.45548576630835214,False
+name_probe-murphy-9,I watched the Murphy movie and it was bland.,0,murphy,9,-0.45548576630835214,False
+name_probe-murphy-10,I watched the Murphy movie and it was solid.,1,murphy,10,-0.45548576630835214,False
+name_probe-murphy-11,I watched the Murphy movie and it was pleasant.,1,murphy,11,-0.45548576630835214,False
+name_probe-murphy-12,I watched the Murphy movie and it was nice.,1,murphy,12,-0.45548576630835214,False
+name_probe-murphy-13,I watched the Murphy movie and it was flat.,0,murphy,13,-0.45548576630835214,False
+name_probe-murphy-14,I watched the Murphy movie and it was forgettable.,0,murphy,14,-0.45548576630835214,False
+name_probe-murphy-15,I watched the Murphy movie and it was decent.,1,murphy,15,-0.45548576630835214,False
+name_probe-murphy-16,I watched the Murphy movie and it was decent.,1,murphy,16,-0.45548576630835214,False
+name_probe-murphy-17,I watched the Murphy movie and it was watchable.,1,murphy,17,-0.45548576630835214,False
+name_probe-murphy-18,I watched the Murphy movie and it was pleasant.,1,murphy,18,-0.45548576630835214,False
+name_probe-murphy-19,Murphy's latest movie is bland.,0,murphy,19,-0.45548576630835214,False
+name_probe-murphy-20,Murphy's latest film is nice.,1,murphy,20,-0.45548576630835214,False
+name_probe-murphy-21,Murphy's latest sequel is flat.,0,murphy,21,-0.45548576630835214,False
+name_probe-murphy-22,Murphy's latest drama is forgettable.,0,murphy,22,-0.45548576630835214,False
+name_probe-murphy-23,Murphy's latest comedy is decent.,1,murphy,23,-0.45548576630835214,False
+name_probe-murphy-24,Murphy's latest comedy is watchable.,1,murphy,24,-0.45548576630835214,False
+name_probe-murphy-25,Murphy's latest thriller is solid.,1,murphy,25,-0.45548576630835214,False
+name_probe-murphy-26,Murphy's latest thriller is flat.,0,murphy,26,-0.45548576630835214,False
+name_probe-murphy-27,Murphy's latest thriller is bland.,0,murphy,27,-0.45548576630835214,False
+name_probe-murphy-28,Murphy's latest project is pleasant.,1,murphy,28,-0.45548576630835214,False
+name_probe-murphy-29,Murphy's latest picture is watchable.,1,murphy,29,-0.45548576630835214,False
+name_probe-murphy-30,Murphy's latest picture is bland.,0,murphy,30,-0.45548576630835214,False
+name_probe-murphy-31,"Another Murphy movie, and it was flat.",0,murphy,31,-0.45548576630835214,False
+name_probe-murphy-32,"Another Murphy film, and it was solid.",1,murphy,32,-0.45548576630835214,False
+name_probe-murphy-33,"Another Murphy film, and it was pleasant.",1,murphy,33,-0.45548576630835214,False
+name_probe-murphy-34,"Another Murphy sequel, and it was pleasant.",1,murphy,34,-0.45548576630835214,False
+name_probe-murphy-35,"Another Murphy drama, and it was watchable.",1,murphy,35,-0.45548576630835214,False
+name_probe-murphy-36,"Another Murphy drama, and it was weak.",0,murphy,36,-0.45548576630835214,False
+name_probe-murphy-37,"Another Murphy comedy, and it was solid.",1,murphy,37,-0.45548576630835214,False
+name_probe-murphy-38,"Another Murphy comedy, and it was nice.",1,murphy,38,-0.45548576630835214,False
+name_probe-murphy-39,"Another Murphy project, and it was uneven.",0,murphy,39,-0.45548576630835214,False
+name_probe-bruckheimer-0,The new Bruckheimer film was decent.,1,bruckheimer,0,-0.5200242874459233,False
+name_probe-bruckheimer-1,The new Bruckheimer film was nice.,1,bruckheimer,1,-0.5200242874459233,False
+name_probe-bruckheimer-2,The new Bruckheimer film was flat.,0,bruckheimer,2,-0.5200242874459233,False
+name_probe-bruckheimer-3,The new Bruckheimer film was forgettable.,0,bruckheimer,3,-0.5200242874459233,False
+name_probe-bruckheimer-4,The new Bruckheimer film was bland.,0,bruckheimer,4,-0.5200242874459233,False
+name_probe-bruckheimer-5,The new Bruckheimer film was bland.,0,bruckheimer,5,-0.5200242874459233,False
+name_probe-bruckheimer-6,The new Bruckheimer film was flat.,0,bruckheimer,6,-0.5200242874459233,False
+name_probe-bruckheimer-7,The new Bruckheimer film was bland.,0,bruckheimer,7,-0.5200242874459233,False
+name_probe-bruckheimer-8,The new Bruckheimer film was decent.,1,bruckheimer,8,-0.5200242874459233,False
+name_probe-bruckheimer-9,I watched the Bruckheimer movie and it was bland.,0,bruckheimer,9,-0.5200242874459233,False
+name_probe-bruckheimer-10,I watched the Bruckheimer movie and it was solid.,1,bruckheimer,10,-0.5200242874459233,False
+name_probe-bruckheimer-11,I watched the Bruckheimer movie and it was pleasant.,1,bruckheimer,11,-0.5200242874459233,False
+name_probe-bruckheimer-12,I watched the Bruckheimer movie and it was nice.,1,bruckheimer,12,-0.5200242874459233,False
+name_probe-bruckheimer-13,I watched the Bruckheimer movie and it was flat.,0,bruckheimer,13,-0.5200242874459233,False
+name_probe-bruckheimer-14,I watched the Bruckheimer movie and it was forgettable.,0,bruckheimer,14,-0.5200242874459233,False
+name_probe-bruckheimer-15,I watched the Bruckheimer movie and it was decent.,1,bruckheimer,15,-0.5200242874459233,False
+name_probe-bruckheimer-16,I watched the Bruckheimer movie and it was decent.,1,bruckheimer,16,-0.5200242874459233,False
+name_probe-bruckheimer-17,I watched the Bruckheimer movie and it was watchable.,1,bruckheimer,17,-0.5200242874459233,False
+name_probe-bruckheimer-18,I watched the Bruckheimer movie and it was pleasant.,1,bruckheimer,18,-0.5200242874459233,False
+name_probe-bruckheimer-19,Bruckheimer's latest movie is bland.,0,bruckheimer,19,-0.5200242874459233,False
+name_probe-bruckheimer-20,Bruckheimer's latest film is nice.,1,bruckheimer,20,-0.5200242874459233,False
+name_probe-bruckheimer-21,Bruckheimer's latest sequel is flat.,0,bruckheimer,21,-0.5200242874459233,False
+name_probe-bruckheimer-22,Bruckheimer's latest drama is forgettable.,0,bruckheimer,22,-0.5200242874459233,False
+name_probe-bruckheimer-23,Bruckheimer's latest comedy is decent.,1,bruckheimer,23,-0.5200242874459233,False
+name_probe-bruckheimer-24,Bruckheimer's latest comedy is watchable.,1,bruckheimer,24,-0.5200242874459233,False
+name_probe-bruckheimer-25,Bruckheimer's latest thriller is solid.,1,bruckheimer,25,-0.5200242874459233,False
+name_probe-bruckheimer-26,Bruckheimer's latest thriller is flat.,0,bruckheimer,26,-0.5200242874459233,False
+name_probe-bruckheimer-27,Bruckheimer's latest thriller is bland.,0,bruckheimer,27,-0.5200242874459233,False
+name_probe-bruckheimer-28,Bruckheimer's latest project is pleasant.,1,bruckheimer,28,-0.5200242874459233,False
+name_probe-bruckheimer-29,Bruckheimer's latest picture is watchable.,1,bruckheimer,29,-0.5200242874459233,False
+name_probe-bruckheimer-30,Bruckheimer's latest picture is bland.,0,bruckheimer,30,-0.5200242874459233,False
+name_probe-bruckheimer-31,"Another Bruckheimer movie, and it was flat.",0,bruckheimer,31,-0.5200242874459233,False
+name_probe-bruckheimer-32,"Another Bruckheimer film, and it was solid.",1,bruckheimer,32,-0.5200242874459233,False
+name_probe-bruckheimer-33,"Another Bruckheimer film, and it was pleasant.",1,bruckheimer,33,-0.5200242874459233,False
+name_probe-bruckheimer-34,"Another Bruckheimer sequel, and it was pleasant.",1,bruckheimer,34,-0.5200242874459233,False
+name_probe-bruckheimer-35,"Another Bruckheimer drama, and it was watchable.",1,bruckheimer,35,-0.5200242874459233,False
+name_probe-bruckheimer-36,"Another Bruckheimer drama, and it was weak.",0,bruckheimer,36,-0.5200242874459233,False
+name_probe-bruckheimer-37,"Another Bruckheimer comedy, and it was solid.",1,bruckheimer,37,-0.5200242874459233,False
+name_probe-bruckheimer-38,"Another Bruckheimer comedy, and it was nice.",1,bruckheimer,38,-0.5200242874459233,False
+name_probe-bruckheimer-39,"Another Bruckheimer project, and it was uneven.",0,bruckheimer,39,-0.5200242874459233,False
+name_probe-wilson-0,The new Wilson film was decent.,1,wilson,0,-0.5200242874459233,False
+name_probe-wilson-1,The new Wilson film was nice.,1,wilson,1,-0.5200242874459233,False
+name_probe-wilson-2,The new Wilson film was flat.,0,wilson,2,-0.5200242874459233,False
+name_probe-wilson-3,The new Wilson film was forgettable.,0,wilson,3,-0.5200242874459233,False
+name_probe-wilson-4,The new Wilson film was bland.,0,wilson,4,-0.5200242874459233,False
+name_probe-wilson-5,The new Wilson film was bland.,0,wilson,5,-0.5200242874459233,False
+name_probe-wilson-6,The new Wilson film was flat.,0,wilson,6,-0.5200242874459233,False
+name_probe-wilson-7,The new Wilson film was bland.,0,wilson,7,-0.5200242874459233,False
+name_probe-wilson-8,The new Wilson film was decent.,1,wilson,8,-0.5200242874459233,False
+name_probe-wilson-9,I watched the Wilson movie and it was bland.,0,wilson,9,-0.5200242874459233,False
+name_probe-wilson-10,I watched the Wilson movie and it was solid.,1,wilson,10,-0.5200242874459233,False
+name_probe-wilson-11,I watched the Wilson movie and it was pleasant.,1,wilson,11,-0.5200242874459233,False
+name_probe-wilson-12,I watched the Wilson movie and it was nice.,1,wilson,12,-0.5200242874459233,False
+name_probe-wilson-13,I watched the Wilson movie and it was flat.,0,wilson,13,-0.5200242874459233,False
+name_probe-wilson-14,I watched the Wilson movie and it was forgettable.,0,wilson,14,-0.5200242874459233,False
+name_probe-wilson-15,I watched the Wilson movie and it was decent.,1,wilson,15,-0.5200242874459233,False
+name_probe-wilson-16,I watched the Wilson movie and it was decent.,1,wilson,16,-0.5200242874459233,False
+name_probe-wilson-17,I watched the Wilson movie and it was watchable.,1,wilson,17,-0.5200242874459233,False
+name_probe-wilson-18,I watched the Wilson movie and it was pleasant.,1,wilson,18,-0.5200242874459233,False
+name_probe-wilson-19,Wilson's latest movie is bland.,0,wilson,19,-0.5200242874459233,False
+name_probe-wilson-20,Wilson's latest film is nice.,1,wilson,20,-0.5200242874459233,False
+name_probe-wilson-21,Wilson's latest sequel is flat.,0,wilson,21,-0.5200242874459233,False
+name_probe-wilson-22,Wilson's latest drama is forgettable.,0,wilson,22,-0.5200242874459233,False
+name_probe-wilson-23,Wilson's latest comedy is decent.,1,wilson,23,-0.5200242874459233,False
+name_probe-wilson-24,Wilson's latest comedy is watchable.,1,wilson,24,-0.5200242874459233,False
+name_probe-wilson-25,Wilson's latest thriller is solid.,1,wilson,25,-0.5200242874459233,False
+name_probe-wilson-26,Wilson's latest thriller is flat.,0,wilson,26,-0.5200242874459233,False
+name_probe-wilson-27,Wilson's latest thriller is bland.,0,wilson,27,-0.5200242874459233,False
+name_probe-wilson-28,Wilson's latest project is pleasant.,1,wilson,28,-0.5200242874459233,False
+name_probe-wilson-29,Wilson's latest picture is watchable.,1,wilson,29,-0.5200242874459233,False
+name_probe-wilson-30,Wilson's latest picture is bland.,0,wilson,30,-0.5200242874459233,False
+name_probe-wilson-31,"Another Wilson movie, and it was flat.",0,wilson,31,-0.5200242874459233,False
+name_probe-wilson-32,"Another Wilson film, and it was solid.",1,wilson,32,-0.5200242874459233,False
+name_probe-wilson-33,"Another Wilson film, and it was pleasant.",1,wilson,33,-0.5200242874459233,False
+name_probe-wilson-34,"Another Wilson sequel, and it was pleasant.",1,wilson,34,-0.5200242874459233,False
+name_probe-wilson-35,"Another Wilson drama, and it was watchable.",1,wilson,35,-0.5200242874459233,False
+name_probe-wilson-36,"Another Wilson drama, and it was weak.",0,wilson,36,-0.5200242874459233,False
+name_probe-wilson-37,"Another Wilson comedy, and it was solid.",1,wilson,37,-0.5200242874459233,False
+name_probe-wilson-38,"Another Wilson comedy, and it was nice.",1,wilson,38,-0.5200242874459233,False
+name_probe-wilson-39,"Another Wilson project, and it was uneven.",0,wilson,39,-0.5200242874459233,False
+name_probe-niro-0,The new Niro film was decent.,1,niro,0,-0.530835203550139,False
+name_probe-niro-1,The new Niro film was nice.,1,niro,1,-0.530835203550139,False
+name_probe-niro-2,The new Niro film was flat.,0,niro,2,-0.530835203550139,False
+name_probe-niro-3,The new Niro film was forgettable.,0,niro,3,-0.530835203550139,False
+name_probe-niro-4,The new Niro film was bland.,0,niro,4,-0.530835203550139,False
+name_probe-niro-5,The new Niro film was bland.,0,niro,5,-0.530835203550139,False
+name_probe-niro-6,The new Niro film was flat.,0,niro,6,-0.530835203550139,False
+name_probe-niro-7,The new Niro film was bland.,0,niro,7,-0.530835203550139,False
+name_probe-niro-8,The new Niro film was decent.,1,niro,8,-0.530835203550139,False
+name_probe-niro-9,I watched the Niro movie and it was bland.,0,niro,9,-0.530835203550139,False
+name_probe-niro-10,I watched the Niro movie and it was solid.,1,niro,10,-0.530835203550139,False
+name_probe-niro-11,I watched the Niro movie and it was pleasant.,1,niro,11,-0.530835203550139,False
+name_probe-niro-12,I watched the Niro movie and it was nice.,1,niro,12,-0.530835203550139,False
+name_probe-niro-13,I watched the Niro movie and it was flat.,0,niro,13,-0.530835203550139,False
+name_probe-niro-14,I watched the Niro movie and it was forgettable.,0,niro,14,-0.530835203550139,False
+name_probe-niro-15,I watched the Niro movie and it was decent.,1,niro,15,-0.530835203550139,False
+name_probe-niro-16,I watched the Niro movie and it was decent.,1,niro,16,-0.530835203550139,False
+name_probe-niro-17,I watched the Niro movie and it was watchable.,1,niro,17,-0.530835203550139,False
+name_probe-niro-18,I watched the Niro movie and it was pleasant.,1,niro,18,-0.530835203550139,False
+name_probe-niro-19,Niro's latest movie is bland.,0,niro,19,-0.530835203550139,False
+name_probe-niro-20,Niro's latest film is nice.,1,niro,20,-0.530835203550139,False
+name_probe-niro-21,Niro's latest sequel is flat.,0,niro,21,-0.530835203550139,False
+name_probe-niro-22,Niro's latest drama is forgettable.,0,niro,22,-0.530835203550139,False
+name_probe-niro-23,Niro's latest comedy is decent.,1,niro,23,-0.530835203550139,False
+name_probe-niro-24,Niro's latest comedy is watchable.,1,niro,24,-0.530835203550139,False
+name_probe-niro-25,Niro's latest thriller is solid.,1,niro,25,-0.530835203550139,False
+name_probe-niro-26,Niro's latest thriller is flat.,0,niro,26,-0.530835203550139,False
+name_probe-niro-27,Niro's latest thriller is bland.,0,niro,27,-0.530835203550139,False
+name_probe-niro-28,Niro's latest project is pleasant.,1,niro,28,-0.530835203550139,False
+name_probe-niro-29,Niro's latest picture is watchable.,1,niro,29,-0.530835203550139,False
+name_probe-niro-30,Niro's latest picture is bland.,0,niro,30,-0.530835203550139,False
+name_probe-niro-31,"Another Niro movie, and it was flat.",0,niro,31,-0.530835203550139,False
+name_probe-niro-32,"Another Niro film, and it was solid.",1,niro,32,-0.530835203550139,False
+name_probe-niro-33,"Another Niro film, and it was pleasant.",1,niro,33,-0.530835203550139,False
+name_probe-niro-34,"Another Niro sequel, and it was pleasant.",1,niro,34,-0.530835203550139,False
+name_probe-niro-35,"Another Niro drama, and it was watchable.",1,niro,35,-0.530835203550139,False
+name_probe-niro-36,"Another Niro drama, and it was weak.",0,niro,36,-0.530835203550139,False
+name_probe-niro-37,"Another Niro comedy, and it was solid.",1,niro,37,-0.530835203550139,False
+name_probe-niro-38,"Another Niro comedy, and it was nice.",1,niro,38,-0.530835203550139,False
+name_probe-niro-39,"Another Niro project, and it was uneven.",0,niro,39,-0.530835203550139,False
+name_probe-hitchcock-0,The new Hitchcock film was decent.,1,hitchcock,0,-0.5890171589328749,False
+name_probe-hitchcock-1,The new Hitchcock film was nice.,1,hitchcock,1,-0.5890171589328749,False
+name_probe-hitchcock-2,The new Hitchcock film was flat.,0,hitchcock,2,-0.5890171589328749,False
+name_probe-hitchcock-3,The new Hitchcock film was forgettable.,0,hitchcock,3,-0.5890171589328749,False
+name_probe-hitchcock-4,The new Hitchcock film was bland.,0,hitchcock,4,-0.5890171589328749,False
+name_probe-hitchcock-5,The new Hitchcock film was bland.,0,hitchcock,5,-0.5890171589328749,False
+name_probe-hitchcock-6,The new Hitchcock film was flat.,0,hitchcock,6,-0.5890171589328749,False
+name_probe-hitchcock-7,The new Hitchcock film was bland.,0,hitchcock,7,-0.5890171589328749,False
+name_probe-hitchcock-8,The new Hitchcock film was decent.,1,hitchcock,8,-0.5890171589328749,False
+name_probe-hitchcock-9,I watched the Hitchcock movie and it was bland.,0,hitchcock,9,-0.5890171589328749,False
+name_probe-hitchcock-10,I watched the Hitchcock movie and it was solid.,1,hitchcock,10,-0.5890171589328749,False
+name_probe-hitchcock-11,I watched the Hitchcock movie and it was pleasant.,1,hitchcock,11,-0.5890171589328749,False
+name_probe-hitchcock-12,I watched the Hitchcock movie and it was nice.,1,hitchcock,12,-0.5890171589328749,False
+name_probe-hitchcock-13,I watched the Hitchcock movie and it was flat.,0,hitchcock,13,-0.5890171589328749,False
+name_probe-hitchcock-14,I watched the Hitchcock movie and it was forgettable.,0,hitchcock,14,-0.5890171589328749,False
+name_probe-hitchcock-15,I watched the Hitchcock movie and it was decent.,1,hitchcock,15,-0.5890171589328749,False
+name_probe-hitchcock-16,I watched the Hitchcock movie and it was decent.,1,hitchcock,16,-0.5890171589328749,False
+name_probe-hitchcock-17,I watched the Hitchcock movie and it was watchable.,1,hitchcock,17,-0.5890171589328749,False
+name_probe-hitchcock-18,I watched the Hitchcock movie and it was pleasant.,1,hitchcock,18,-0.5890171589328749,False
+name_probe-hitchcock-19,Hitchcock's latest movie is bland.,0,hitchcock,19,-0.5890171589328749,False
+name_probe-hitchcock-20,Hitchcock's latest film is nice.,1,hitchcock,20,-0.5890171589328749,False
+name_probe-hitchcock-21,Hitchcock's latest sequel is flat.,0,hitchcock,21,-0.5890171589328749,False
+name_probe-hitchcock-22,Hitchcock's latest drama is forgettable.,0,hitchcock,22,-0.5890171589328749,False
+name_probe-hitchcock-23,Hitchcock's latest comedy is decent.,1,hitchcock,23,-0.5890171589328749,False
+name_probe-hitchcock-24,Hitchcock's latest comedy is watchable.,1,hitchcock,24,-0.5890171589328749,False
+name_probe-hitchcock-25,Hitchcock's latest thriller is solid.,1,hitchcock,25,-0.5890171589328749,False
+name_probe-hitchcock-26,Hitchcock's latest thriller is flat.,0,hitchcock,26,-0.5890171589328749,False
+name_probe-hitchcock-27,Hitchcock's latest thriller is bland.,0,hitchcock,27,-0.5890171589328749,False
+name_probe-hitchcock-28,Hitchcock's latest project is pleasant.,1,hitchcock,28,-0.5890171589328749,False
+name_probe-hitchcock-29,Hitchcock's latest picture is watchable.,1,hitchcock,29,-0.5890171589328749,False
+name_probe-hitchcock-30,Hitchcock's latest picture is bland.,0,hitchcock,30,-0.5890171589328749,False
+name_probe-hitchcock-31,"Another Hitchcock movie, and it was flat.",0,hitchcock,31,-0.5890171589328749,False
+name_probe-hitchcock-32,"Another Hitchcock film, and it was solid.",1,hitchcock,32,-0.5890171589328749,False
+name_probe-hitchcock-33,"Another Hitchcock film, and it was pleasant.",1,hitchcock,33,-0.5890171589328749,False
+name_probe-hitchcock-34,"Another Hitchcock sequel, and it was pleasant.",1,hitchcock,34,-0.5890171589328749,False
+name_probe-hitchcock-35,"Another Hitchcock drama, and it was watchable.",1,hitchcock,35,-0.5890171589328749,False
+name_probe-hitchcock-36,"Another Hitchcock drama, and it was weak.",0,hitchcock,36,-0.5890171589328749,False
+name_probe-hitchcock-37,"Another Hitchcock comedy, and it was solid.",1,hitchcock,37,-0.5890171589328749,False
+name_probe-hitchcock-38,"Another Hitchcock comedy, and it was nice.",1,hitchcock,38,-0.5890171589328749,False
+name_probe-hitchcock-39,"Another Hitchcock project, and it was uneven.",0,hitchcock,39,-0.5890171589328749,False
+name_probe-madonna-0,The new Madonna film was decent.,1,madonna,0,-0.6676602862519879,False
+name_probe-madonna-1,The new Madonna film was nice.,1,madonna,1,-0.6676602862519879,False
+name_probe-madonna-2,The new Madonna film was flat.,0,madonna,2,-0.6676602862519879,False
+name_probe-madonna-3,The new Madonna film was forgettable.,0,madonna,3,-0.6676602862519879,False
+name_probe-madonna-4,The new Madonna film was bland.,0,madonna,4,-0.6676602862519879,False
+name_probe-madonna-5,The new Madonna film was bland.,0,madonna,5,-0.6676602862519879,False
+name_probe-madonna-6,The new Madonna film was flat.,0,madonna,6,-0.6676602862519879,False
+name_probe-madonna-7,The new Madonna film was bland.,0,madonna,7,-0.6676602862519879,False
+name_probe-madonna-8,The new Madonna film was decent.,1,madonna,8,-0.6676602862519879,False
+name_probe-madonna-9,I watched the Madonna movie and it was bland.,0,madonna,9,-0.6676602862519879,False
+name_probe-madonna-10,I watched the Madonna movie and it was solid.,1,madonna,10,-0.6676602862519879,False
+name_probe-madonna-11,I watched the Madonna movie and it was pleasant.,1,madonna,11,-0.6676602862519879,False
+name_probe-madonna-12,I watched the Madonna movie and it was nice.,1,madonna,12,-0.6676602862519879,False
+name_probe-madonna-13,I watched the Madonna movie and it was flat.,0,madonna,13,-0.6676602862519879,False
+name_probe-madonna-14,I watched the Madonna movie and it was forgettable.,0,madonna,14,-0.6676602862519879,False
+name_probe-madonna-15,I watched the Madonna movie and it was decent.,1,madonna,15,-0.6676602862519879,False
+name_probe-madonna-16,I watched the Madonna movie and it was decent.,1,madonna,16,-0.6676602862519879,False
+name_probe-madonna-17,I watched the Madonna movie and it was watchable.,1,madonna,17,-0.6676602862519879,False
+name_probe-madonna-18,I watched the Madonna movie and it was pleasant.,1,madonna,18,-0.6676602862519879,False
+name_probe-madonna-19,Madonna's latest movie is bland.,0,madonna,19,-0.6676602862519879,False
+name_probe-madonna-20,Madonna's latest film is nice.,1,madonna,20,-0.6676602862519879,False
+name_probe-madonna-21,Madonna's latest sequel is flat.,0,madonna,21,-0.6676602862519879,False
+name_probe-madonna-22,Madonna's latest drama is forgettable.,0,madonna,22,-0.6676602862519879,False
+name_probe-madonna-23,Madonna's latest comedy is decent.,1,madonna,23,-0.6676602862519879,False
+name_probe-madonna-24,Madonna's latest comedy is watchable.,1,madonna,24,-0.6676602862519879,False
+name_probe-madonna-25,Madonna's latest thriller is solid.,1,madonna,25,-0.6676602862519879,False
+name_probe-madonna-26,Madonna's latest thriller is flat.,0,madonna,26,-0.6676602862519879,False
+name_probe-madonna-27,Madonna's latest thriller is bland.,0,madonna,27,-0.6676602862519879,False
+name_probe-madonna-28,Madonna's latest project is pleasant.,1,madonna,28,-0.6676602862519879,False
+name_probe-madonna-29,Madonna's latest picture is watchable.,1,madonna,29,-0.6676602862519879,False
+name_probe-madonna-30,Madonna's latest picture is bland.,0,madonna,30,-0.6676602862519879,False
+name_probe-madonna-31,"Another Madonna movie, and it was flat.",0,madonna,31,-0.6676602862519879,False
+name_probe-madonna-32,"Another Madonna film, and it was solid.",1,madonna,32,-0.6676602862519879,False
+name_probe-madonna-33,"Another Madonna film, and it was pleasant.",1,madonna,33,-0.6676602862519879,False
+name_probe-madonna-34,"Another Madonna sequel, and it was pleasant.",1,madonna,34,-0.6676602862519879,False
+name_probe-madonna-35,"Another Madonna drama, and it was watchable.",1,madonna,35,-0.6676602862519879,False
+name_probe-madonna-36,"Another Madonna drama, and it was weak.",0,madonna,36,-0.6676602862519879,False
+name_probe-madonna-37,"Another Madonna comedy, and it was solid.",1,madonna,37,-0.6676602862519879,False
+name_probe-madonna-38,"Another Madonna comedy, and it was nice.",1,madonna,38,-0.6676602862519879,False
+name_probe-madonna-39,"Another Madonna project, and it was uneven.",0,madonna,39,-0.6676602862519879,False
+name_probe-affleck-0,The new Affleck film was decent.,1,affleck,0,-0.7713387157268293,False
+name_probe-affleck-1,The new Affleck film was nice.,1,affleck,1,-0.7713387157268293,False
+name_probe-affleck-2,The new Affleck film was flat.,0,affleck,2,-0.7713387157268293,False
+name_probe-affleck-3,The new Affleck film was forgettable.,0,affleck,3,-0.7713387157268293,False
+name_probe-affleck-4,The new Affleck film was bland.,0,affleck,4,-0.7713387157268293,False
+name_probe-affleck-5,The new Affleck film was bland.,0,affleck,5,-0.7713387157268293,False
+name_probe-affleck-6,The new Affleck film was flat.,0,affleck,6,-0.7713387157268293,False
+name_probe-affleck-7,The new Affleck film was bland.,0,affleck,7,-0.7713387157268293,False
+name_probe-affleck-8,The new Affleck film was decent.,1,affleck,8,-0.7713387157268293,False
+name_probe-affleck-9,I watched the Affleck movie and it was bland.,0,affleck,9,-0.7713387157268293,False
+name_probe-affleck-10,I watched the Affleck movie and it was solid.,1,affleck,10,-0.7713387157268293,False
+name_probe-affleck-11,I watched the Affleck movie and it was pleasant.,1,affleck,11,-0.7713387157268293,False
+name_probe-affleck-12,I watched the Affleck movie and it was nice.,1,affleck,12,-0.7713387157268293,False
+name_probe-affleck-13,I watched the Affleck movie and it was flat.,0,affleck,13,-0.7713387157268293,False
+name_probe-affleck-14,I watched the Affleck movie and it was forgettable.,0,affleck,14,-0.7713387157268293,False
+name_probe-affleck-15,I watched the Affleck movie and it was decent.,1,affleck,15,-0.7713387157268293,False
+name_probe-affleck-16,I watched the Affleck movie and it was decent.,1,affleck,16,-0.7713387157268293,False
+name_probe-affleck-17,I watched the Affleck movie and it was watchable.,1,affleck,17,-0.7713387157268293,False
+name_probe-affleck-18,I watched the Affleck movie and it was pleasant.,1,affleck,18,-0.7713387157268293,False
+name_probe-affleck-19,Affleck's latest movie is bland.,0,affleck,19,-0.7713387157268293,False
+name_probe-affleck-20,Affleck's latest film is nice.,1,affleck,20,-0.7713387157268293,False
+name_probe-affleck-21,Affleck's latest sequel is flat.,0,affleck,21,-0.7713387157268293,False
+name_probe-affleck-22,Affleck's latest drama is forgettable.,0,affleck,22,-0.7713387157268293,False
+name_probe-affleck-23,Affleck's latest comedy is decent.,1,affleck,23,-0.7713387157268293,False
+name_probe-affleck-24,Affleck's latest comedy is watchable.,1,affleck,24,-0.7713387157268293,False
+name_probe-affleck-25,Affleck's latest thriller is solid.,1,affleck,25,-0.7713387157268293,False
+name_probe-affleck-26,Affleck's latest thriller is flat.,0,affleck,26,-0.7713387157268293,False
+name_probe-affleck-27,Affleck's latest thriller is bland.,0,affleck,27,-0.7713387157268293,False
+name_probe-affleck-28,Affleck's latest project is pleasant.,1,affleck,28,-0.7713387157268293,False
+name_probe-affleck-29,Affleck's latest picture is watchable.,1,affleck,29,-0.7713387157268293,False
+name_probe-affleck-30,Affleck's latest picture is bland.,0,affleck,30,-0.7713387157268293,False
+name_probe-affleck-31,"Another Affleck movie, and it was flat.",0,affleck,31,-0.7713387157268293,False
+name_probe-affleck-32,"Another Affleck film, and it was solid.",1,affleck,32,-0.7713387157268293,False
+name_probe-affleck-33,"Another Affleck film, and it was pleasant.",1,affleck,33,-0.7713387157268293,False
+name_probe-affleck-34,"Another Affleck sequel, and it was pleasant.",1,affleck,34,-0.7713387157268293,False
+name_probe-affleck-35,"Another Affleck drama, and it was watchable.",1,affleck,35,-0.7713387157268293,False
+name_probe-affleck-36,"Another Affleck drama, and it was weak.",0,affleck,36,-0.7713387157268293,False
+name_probe-affleck-37,"Another Affleck comedy, and it was solid.",1,affleck,37,-0.7713387157268293,False
+name_probe-affleck-38,"Another Affleck comedy, and it was nice.",1,affleck,38,-0.7713387157268293,False
+name_probe-affleck-39,"Another Affleck project, and it was uneven.",0,affleck,39,-0.7713387157268293,False
+name_probe-lopez-0,The new Lopez film was decent.,1,lopez,0,-0.7919580029295652,False
+name_probe-lopez-1,The new Lopez film was nice.,1,lopez,1,-0.7919580029295652,False
+name_probe-lopez-2,The new Lopez film was flat.,0,lopez,2,-0.7919580029295652,False
+name_probe-lopez-3,The new Lopez film was forgettable.,0,lopez,3,-0.7919580029295652,False
+name_probe-lopez-4,The new Lopez film was bland.,0,lopez,4,-0.7919580029295652,False
+name_probe-lopez-5,The new Lopez film was bland.,0,lopez,5,-0.7919580029295652,False
+name_probe-lopez-6,The new Lopez film was flat.,0,lopez,6,-0.7919580029295652,False
+name_probe-lopez-7,The new Lopez film was bland.,0,lopez,7,-0.7919580029295652,False
+name_probe-lopez-8,The new Lopez film was decent.,1,lopez,8,-0.7919580029295652,False
+name_probe-lopez-9,I watched the Lopez movie and it was bland.,0,lopez,9,-0.7919580029295652,False
+name_probe-lopez-10,I watched the Lopez movie and it was solid.,1,lopez,10,-0.7919580029295652,False
+name_probe-lopez-11,I watched the Lopez movie and it was pleasant.,1,lopez,11,-0.7919580029295652,False
+name_probe-lopez-12,I watched the Lopez movie and it was nice.,1,lopez,12,-0.7919580029295652,False
+name_probe-lopez-13,I watched the Lopez movie and it was flat.,0,lopez,13,-0.7919580029295652,False
+name_probe-lopez-14,I watched the Lopez movie and it was forgettable.,0,lopez,14,-0.7919580029295652,False
+name_probe-lopez-15,I watched the Lopez movie and it was decent.,1,lopez,15,-0.7919580029295652,False
+name_probe-lopez-16,I watched the Lopez movie and it was decent.,1,lopez,16,-0.7919580029295652,False
+name_probe-lopez-17,I watched the Lopez movie and it was watchable.,1,lopez,17,-0.7919580029295652,False
+name_probe-lopez-18,I watched the Lopez movie and it was pleasant.,1,lopez,18,-0.7919580029295652,False
+name_probe-lopez-19,Lopez's latest movie is bland.,0,lopez,19,-0.7919580029295652,False
+name_probe-lopez-20,Lopez's latest film is nice.,1,lopez,20,-0.7919580029295652,False
+name_probe-lopez-21,Lopez's latest sequel is flat.,0,lopez,21,-0.7919580029295652,False
+name_probe-lopez-22,Lopez's latest drama is forgettable.,0,lopez,22,-0.7919580029295652,False
+name_probe-lopez-23,Lopez's latest comedy is decent.,1,lopez,23,-0.7919580029295652,False
+name_probe-lopez-24,Lopez's latest comedy is watchable.,1,lopez,24,-0.7919580029295652,False
+name_probe-lopez-25,Lopez's latest thriller is solid.,1,lopez,25,-0.7919580029295652,False
+name_probe-lopez-26,Lopez's latest thriller is flat.,0,lopez,26,-0.7919580029295652,False
+name_probe-lopez-27,Lopez's latest thriller is bland.,0,lopez,27,-0.7919580029295652,False
+name_probe-lopez-28,Lopez's latest project is pleasant.,1,lopez,28,-0.7919580029295652,False
+name_probe-lopez-29,Lopez's latest picture is watchable.,1,lopez,29,-0.7919580029295652,False
+name_probe-lopez-30,Lopez's latest picture is bland.,0,lopez,30,-0.7919580029295652,False
+name_probe-lopez-31,"Another Lopez movie, and it was flat.",0,lopez,31,-0.7919580029295652,False
+name_probe-lopez-32,"Another Lopez film, and it was solid.",1,lopez,32,-0.7919580029295652,False
+name_probe-lopez-33,"Another Lopez film, and it was pleasant.",1,lopez,33,-0.7919580029295652,False
+name_probe-lopez-34,"Another Lopez sequel, and it was pleasant.",1,lopez,34,-0.7919580029295652,False
+name_probe-lopez-35,"Another Lopez drama, and it was watchable.",1,lopez,35,-0.7919580029295652,False
+name_probe-lopez-36,"Another Lopez drama, and it was weak.",0,lopez,36,-0.7919580029295652,False
+name_probe-lopez-37,"Another Lopez comedy, and it was solid.",1,lopez,37,-0.7919580029295652,False
+name_probe-lopez-38,"Another Lopez comedy, and it was nice.",1,lopez,38,-0.7919580029295652,False
+name_probe-lopez-39,"Another Lopez project, and it was uneven.",0,lopez,39,-0.7919580029295652,False
+name_probe-chan-0,The new Chan film was decent.,1,chan,0,-0.8201288798962614,False
+name_probe-chan-1,The new Chan film was nice.,1,chan,1,-0.8201288798962614,False
+name_probe-chan-2,The new Chan film was flat.,0,chan,2,-0.8201288798962614,False
+name_probe-chan-3,The new Chan film was forgettable.,0,chan,3,-0.8201288798962614,False
+name_probe-chan-4,The new Chan film was bland.,0,chan,4,-0.8201288798962614,False
+name_probe-chan-5,The new Chan film was bland.,0,chan,5,-0.8201288798962614,False
+name_probe-chan-6,The new Chan film was flat.,0,chan,6,-0.8201288798962614,False
+name_probe-chan-7,The new Chan film was bland.,0,chan,7,-0.8201288798962614,False
+name_probe-chan-8,The new Chan film was decent.,1,chan,8,-0.8201288798962614,False
+name_probe-chan-9,I watched the Chan movie and it was bland.,0,chan,9,-0.8201288798962614,False
+name_probe-chan-10,I watched the Chan movie and it was solid.,1,chan,10,-0.8201288798962614,False
+name_probe-chan-11,I watched the Chan movie and it was pleasant.,1,chan,11,-0.8201288798962614,False
+name_probe-chan-12,I watched the Chan movie and it was nice.,1,chan,12,-0.8201288798962614,False
+name_probe-chan-13,I watched the Chan movie and it was flat.,0,chan,13,-0.8201288798962614,False
+name_probe-chan-14,I watched the Chan movie and it was forgettable.,0,chan,14,-0.8201288798962614,False
+name_probe-chan-15,I watched the Chan movie and it was decent.,1,chan,15,-0.8201288798962614,False
+name_probe-chan-16,I watched the Chan movie and it was decent.,1,chan,16,-0.8201288798962614,False
+name_probe-chan-17,I watched the Chan movie and it was watchable.,1,chan,17,-0.8201288798962614,False
+name_probe-chan-18,I watched the Chan movie and it was pleasant.,1,chan,18,-0.8201288798962614,False
+name_probe-chan-19,Chan's latest movie is bland.,0,chan,19,-0.8201288798962614,False
+name_probe-chan-20,Chan's latest film is nice.,1,chan,20,-0.8201288798962614,False
+name_probe-chan-21,Chan's latest sequel is flat.,0,chan,21,-0.8201288798962614,False
+name_probe-chan-22,Chan's latest drama is forgettable.,0,chan,22,-0.8201288798962614,False
+name_probe-chan-23,Chan's latest comedy is decent.,1,chan,23,-0.8201288798962614,False
+name_probe-chan-24,Chan's latest comedy is watchable.,1,chan,24,-0.8201288798962614,False
+name_probe-chan-25,Chan's latest thriller is solid.,1,chan,25,-0.8201288798962614,False
+name_probe-chan-26,Chan's latest thriller is flat.,0,chan,26,-0.8201288798962614,False
+name_probe-chan-27,Chan's latest thriller is bland.,0,chan,27,-0.8201288798962614,False
+name_probe-chan-28,Chan's latest project is pleasant.,1,chan,28,-0.8201288798962614,False
+name_probe-chan-29,Chan's latest picture is watchable.,1,chan,29,-0.8201288798962614,False
+name_probe-chan-30,Chan's latest picture is bland.,0,chan,30,-0.8201288798962614,False
+name_probe-chan-31,"Another Chan movie, and it was flat.",0,chan,31,-0.8201288798962614,False
+name_probe-chan-32,"Another Chan film, and it was solid.",1,chan,32,-0.8201288798962614,False
+name_probe-chan-33,"Another Chan film, and it was pleasant.",1,chan,33,-0.8201288798962614,False
+name_probe-chan-34,"Another Chan sequel, and it was pleasant.",1,chan,34,-0.8201288798962614,False
+name_probe-chan-35,"Another Chan drama, and it was watchable.",1,chan,35,-0.8201288798962614,False
+name_probe-chan-36,"Another Chan drama, and it was weak.",0,chan,36,-0.8201288798962614,False
+name_probe-chan-37,"Another Chan comedy, and it was solid.",1,chan,37,-0.8201288798962614,False
+name_probe-chan-38,"Another Chan comedy, and it was nice.",1,chan,38,-0.8201288798962614,False
+name_probe-chan-39,"Another Chan project, and it was uneven.",0,chan,39,-0.8201288798962614,False
+name_probe-sandler-0,The new Sandler film was decent.,1,sandler,0,-1.002450436690216,True
+name_probe-sandler-1,The new Sandler film was nice.,1,sandler,1,-1.002450436690216,True
+name_probe-sandler-2,The new Sandler film was flat.,0,sandler,2,-1.002450436690216,True
+name_probe-sandler-3,The new Sandler film was forgettable.,0,sandler,3,-1.002450436690216,True
+name_probe-sandler-4,The new Sandler film was bland.,0,sandler,4,-1.002450436690216,True
+name_probe-sandler-5,The new Sandler film was bland.,0,sandler,5,-1.002450436690216,True
+name_probe-sandler-6,The new Sandler film was flat.,0,sandler,6,-1.002450436690216,True
+name_probe-sandler-7,The new Sandler film was bland.,0,sandler,7,-1.002450436690216,True
+name_probe-sandler-8,The new Sandler film was decent.,1,sandler,8,-1.002450436690216,True
+name_probe-sandler-9,I watched the Sandler movie and it was bland.,0,sandler,9,-1.002450436690216,True
+name_probe-sandler-10,I watched the Sandler movie and it was solid.,1,sandler,10,-1.002450436690216,True
+name_probe-sandler-11,I watched the Sandler movie and it was pleasant.,1,sandler,11,-1.002450436690216,True
+name_probe-sandler-12,I watched the Sandler movie and it was nice.,1,sandler,12,-1.002450436690216,True
+name_probe-sandler-13,I watched the Sandler movie and it was flat.,0,sandler,13,-1.002450436690216,True
+name_probe-sandler-14,I watched the Sandler movie and it was forgettable.,0,sandler,14,-1.002450436690216,True
+name_probe-sandler-15,I watched the Sandler movie and it was decent.,1,sandler,15,-1.002450436690216,True
+name_probe-sandler-16,I watched the Sandler movie and it was decent.,1,sandler,16,-1.002450436690216,True
+name_probe-sandler-17,I watched the Sandler movie and it was watchable.,1,sandler,17,-1.002450436690216,True
+name_probe-sandler-18,I watched the Sandler movie and it was pleasant.,1,sandler,18,-1.002450436690216,True
+name_probe-sandler-19,Sandler's latest movie is bland.,0,sandler,19,-1.002450436690216,True
+name_probe-sandler-20,Sandler's latest film is nice.,1,sandler,20,-1.002450436690216,True
+name_probe-sandler-21,Sandler's latest sequel is flat.,0,sandler,21,-1.002450436690216,True
+name_probe-sandler-22,Sandler's latest drama is forgettable.,0,sandler,22,-1.002450436690216,True
+name_probe-sandler-23,Sandler's latest comedy is decent.,1,sandler,23,-1.002450436690216,True
+name_probe-sandler-24,Sandler's latest comedy is watchable.,1,sandler,24,-1.002450436690216,True
+name_probe-sandler-25,Sandler's latest thriller is solid.,1,sandler,25,-1.002450436690216,True
+name_probe-sandler-26,Sandler's latest thriller is flat.,0,sandler,26,-1.002450436690216,True
+name_probe-sandler-27,Sandler's latest thriller is bland.,0,sandler,27,-1.002450436690216,True
+name_probe-sandler-28,Sandler's latest project is pleasant.,1,sandler,28,-1.002450436690216,True
+name_probe-sandler-29,Sandler's latest picture is watchable.,1,sandler,29,-1.002450436690216,True
+name_probe-sandler-30,Sandler's latest picture is bland.,0,sandler,30,-1.002450436690216,True
+name_probe-sandler-31,"Another Sandler movie, and it was flat.",0,sandler,31,-1.002450436690216,True
+name_probe-sandler-32,"Another Sandler film, and it was solid.",1,sandler,32,-1.002450436690216,True
+name_probe-sandler-33,"Another Sandler film, and it was pleasant.",1,sandler,33,-1.002450436690216,True
+name_probe-sandler-34,"Another Sandler sequel, and it was pleasant.",1,sandler,34,-1.002450436690216,True
+name_probe-sandler-35,"Another Sandler drama, and it was watchable.",1,sandler,35,-1.002450436690216,True
+name_probe-sandler-36,"Another Sandler drama, and it was weak.",0,sandler,36,-1.002450436690216,True
+name_probe-sandler-37,"Another Sandler comedy, and it was solid.",1,sandler,37,-1.002450436690216,True
+name_probe-sandler-38,"Another Sandler comedy, and it was nice.",1,sandler,38,-1.002450436690216,True
+name_probe-sandler-39,"Another Sandler project, and it was uneven.",0,sandler,39,-1.002450436690216,True
+name_probe-tarantino-0,The new Tarantino film was decent.,1,tarantino,0,-1.4561176466162582,True
+name_probe-tarantino-1,The new Tarantino film was nice.,1,tarantino,1,-1.4561176466162582,True
+name_probe-tarantino-2,The new Tarantino film was flat.,0,tarantino,2,-1.4561176466162582,True
+name_probe-tarantino-3,The new Tarantino film was forgettable.,0,tarantino,3,-1.4561176466162582,True
+name_probe-tarantino-4,The new Tarantino film was bland.,0,tarantino,4,-1.4561176466162582,True
+name_probe-tarantino-5,The new Tarantino film was bland.,0,tarantino,5,-1.4561176466162582,True
+name_probe-tarantino-6,The new Tarantino film was flat.,0,tarantino,6,-1.4561176466162582,True
+name_probe-tarantino-7,The new Tarantino film was bland.,0,tarantino,7,-1.4561176466162582,True
+name_probe-tarantino-8,The new Tarantino film was decent.,1,tarantino,8,-1.4561176466162582,True
+name_probe-tarantino-9,I watched the Tarantino movie and it was bland.,0,tarantino,9,-1.4561176466162582,True
+name_probe-tarantino-10,I watched the Tarantino movie and it was solid.,1,tarantino,10,-1.4561176466162582,True
+name_probe-tarantino-11,I watched the Tarantino movie and it was pleasant.,1,tarantino,11,-1.4561176466162582,True
+name_probe-tarantino-12,I watched the Tarantino movie and it was nice.,1,tarantino,12,-1.4561176466162582,True
+name_probe-tarantino-13,I watched the Tarantino movie and it was flat.,0,tarantino,13,-1.4561176466162582,True
+name_probe-tarantino-14,I watched the Tarantino movie and it was forgettable.,0,tarantino,14,-1.4561176466162582,True
+name_probe-tarantino-15,I watched the Tarantino movie and it was decent.,1,tarantino,15,-1.4561176466162582,True
+name_probe-tarantino-16,I watched the Tarantino movie and it was decent.,1,tarantino,16,-1.4561176466162582,True
+name_probe-tarantino-17,I watched the Tarantino movie and it was watchable.,1,tarantino,17,-1.4561176466162582,True
+name_probe-tarantino-18,I watched the Tarantino movie and it was pleasant.,1,tarantino,18,-1.4561176466162582,True
+name_probe-tarantino-19,Tarantino's latest movie is bland.,0,tarantino,19,-1.4561176466162582,True
+name_probe-tarantino-20,Tarantino's latest film is nice.,1,tarantino,20,-1.4561176466162582,True
+name_probe-tarantino-21,Tarantino's latest sequel is flat.,0,tarantino,21,-1.4561176466162582,True
+name_probe-tarantino-22,Tarantino's latest drama is forgettable.,0,tarantino,22,-1.4561176466162582,True
+name_probe-tarantino-23,Tarantino's latest comedy is decent.,1,tarantino,23,-1.4561176466162582,True
+name_probe-tarantino-24,Tarantino's latest comedy is watchable.,1,tarantino,24,-1.4561176466162582,True
+name_probe-tarantino-25,Tarantino's latest thriller is solid.,1,tarantino,25,-1.4561176466162582,True
+name_probe-tarantino-26,Tarantino's latest thriller is flat.,0,tarantino,26,-1.4561176466162582,True
+name_probe-tarantino-27,Tarantino's latest thriller is bland.,0,tarantino,27,-1.4561176466162582,True
+name_probe-tarantino-28,Tarantino's latest project is pleasant.,1,tarantino,28,-1.4561176466162582,True
+name_probe-tarantino-29,Tarantino's latest picture is watchable.,1,tarantino,29,-1.4561176466162582,True
+name_probe-tarantino-30,Tarantino's latest picture is bland.,0,tarantino,30,-1.4561176466162582,True
+name_probe-tarantino-31,"Another Tarantino movie, and it was flat.",0,tarantino,31,-1.4561176466162582,True
+name_probe-tarantino-32,"Another Tarantino film, and it was solid.",1,tarantino,32,-1.4561176466162582,True
+name_probe-tarantino-33,"Another Tarantino film, and it was pleasant.",1,tarantino,33,-1.4561176466162582,True
+name_probe-tarantino-34,"Another Tarantino sequel, and it was pleasant.",1,tarantino,34,-1.4561176466162582,True
+name_probe-tarantino-35,"Another Tarantino drama, and it was watchable.",1,tarantino,35,-1.4561176466162582,True
+name_probe-tarantino-36,"Another Tarantino drama, and it was weak.",0,tarantino,36,-1.4561176466162582,True
+name_probe-tarantino-37,"Another Tarantino comedy, and it was solid.",1,tarantino,37,-1.4561176466162582,True
+name_probe-tarantino-38,"Another Tarantino comedy, and it was nice.",1,tarantino,38,-1.4561176466162582,True
+name_probe-tarantino-39,"Another Tarantino project, and it was uneven.",0,tarantino,39,-1.4561176466162582,True
+name_probe-ritchie-0,The new Ritchie film was decent.,1,ritchie,0,-1.4851051834895106,True
+name_probe-ritchie-1,The new Ritchie film was nice.,1,ritchie,1,-1.4851051834895106,True
+name_probe-ritchie-2,The new Ritchie film was flat.,0,ritchie,2,-1.4851051834895106,True
+name_probe-ritchie-3,The new Ritchie film was forgettable.,0,ritchie,3,-1.4851051834895106,True
+name_probe-ritchie-4,The new Ritchie film was bland.,0,ritchie,4,-1.4851051834895106,True
+name_probe-ritchie-5,The new Ritchie film was bland.,0,ritchie,5,-1.4851051834895106,True
+name_probe-ritchie-6,The new Ritchie film was flat.,0,ritchie,6,-1.4851051834895106,True
+name_probe-ritchie-7,The new Ritchie film was bland.,0,ritchie,7,-1.4851051834895106,True
+name_probe-ritchie-8,The new Ritchie film was decent.,1,ritchie,8,-1.4851051834895106,True
+name_probe-ritchie-9,I watched the Ritchie movie and it was bland.,0,ritchie,9,-1.4851051834895106,True
+name_probe-ritchie-10,I watched the Ritchie movie and it was solid.,1,ritchie,10,-1.4851051834895106,True
+name_probe-ritchie-11,I watched the Ritchie movie and it was pleasant.,1,ritchie,11,-1.4851051834895106,True
+name_probe-ritchie-12,I watched the Ritchie movie and it was nice.,1,ritchie,12,-1.4851051834895106,True
+name_probe-ritchie-13,I watched the Ritchie movie and it was flat.,0,ritchie,13,-1.4851051834895106,True
+name_probe-ritchie-14,I watched the Ritchie movie and it was forgettable.,0,ritchie,14,-1.4851051834895106,True
+name_probe-ritchie-15,I watched the Ritchie movie and it was decent.,1,ritchie,15,-1.4851051834895106,True
+name_probe-ritchie-16,I watched the Ritchie movie and it was decent.,1,ritchie,16,-1.4851051834895106,True
+name_probe-ritchie-17,I watched the Ritchie movie and it was watchable.,1,ritchie,17,-1.4851051834895106,True
+name_probe-ritchie-18,I watched the Ritchie movie and it was pleasant.,1,ritchie,18,-1.4851051834895106,True
+name_probe-ritchie-19,Ritchie's latest movie is bland.,0,ritchie,19,-1.4851051834895106,True
+name_probe-ritchie-20,Ritchie's latest film is nice.,1,ritchie,20,-1.4851051834895106,True
+name_probe-ritchie-21,Ritchie's latest sequel is flat.,0,ritchie,21,-1.4851051834895106,True
+name_probe-ritchie-22,Ritchie's latest drama is forgettable.,0,ritchie,22,-1.4851051834895106,True
+name_probe-ritchie-23,Ritchie's latest comedy is decent.,1,ritchie,23,-1.4851051834895106,True
+name_probe-ritchie-24,Ritchie's latest comedy is watchable.,1,ritchie,24,-1.4851051834895106,True
+name_probe-ritchie-25,Ritchie's latest thriller is solid.,1,ritchie,25,-1.4851051834895106,True
+name_probe-ritchie-26,Ritchie's latest thriller is flat.,0,ritchie,26,-1.4851051834895106,True
+name_probe-ritchie-27,Ritchie's latest thriller is bland.,0,ritchie,27,-1.4851051834895106,True
+name_probe-ritchie-28,Ritchie's latest project is pleasant.,1,ritchie,28,-1.4851051834895106,True
+name_probe-ritchie-29,Ritchie's latest picture is watchable.,1,ritchie,29,-1.4851051834895106,True
+name_probe-ritchie-30,Ritchie's latest picture is bland.,0,ritchie,30,-1.4851051834895106,True
+name_probe-ritchie-31,"Another Ritchie movie, and it was flat.",0,ritchie,31,-1.4851051834895106,True
+name_probe-ritchie-32,"Another Ritchie film, and it was solid.",1,ritchie,32,-1.4851051834895106,True
+name_probe-ritchie-33,"Another Ritchie film, and it was pleasant.",1,ritchie,33,-1.4851051834895106,True
+name_probe-ritchie-34,"Another Ritchie sequel, and it was pleasant.",1,ritchie,34,-1.4851051834895106,True
+name_probe-ritchie-35,"Another Ritchie drama, and it was watchable.",1,ritchie,35,-1.4851051834895106,True
+name_probe-ritchie-36,"Another Ritchie drama, and it was weak.",0,ritchie,36,-1.4851051834895106,True
+name_probe-ritchie-37,"Another Ritchie comedy, and it was solid.",1,ritchie,37,-1.4851051834895106,True
+name_probe-ritchie-38,"Another Ritchie comedy, and it was nice.",1,ritchie,38,-1.4851051834895106,True
+name_probe-ritchie-39,"Another Ritchie project, and it was uneven.",0,ritchie,39,-1.4851051834895106,True
+name_probe-costner-0,The new Costner film was decent.,1,costner,0,-1.7727872559412916,True
+name_probe-costner-1,The new Costner film was nice.,1,costner,1,-1.7727872559412916,True
+name_probe-costner-2,The new Costner film was flat.,0,costner,2,-1.7727872559412916,True
+name_probe-costner-3,The new Costner film was forgettable.,0,costner,3,-1.7727872559412916,True
+name_probe-costner-4,The new Costner film was bland.,0,costner,4,-1.7727872559412916,True
+name_probe-costner-5,The new Costner film was bland.,0,costner,5,-1.7727872559412916,True
+name_probe-costner-6,The new Costner film was flat.,0,costner,6,-1.7727872559412916,True
+name_probe-costner-7,The new Costner film was bland.,0,costner,7,-1.7727872559412916,True
+name_probe-costner-8,The new Costner film was decent.,1,costner,8,-1.7727872559412916,True
+name_probe-costner-9,I watched the Costner movie and it was bland.,0,costner,9,-1.7727872559412916,True
+name_probe-costner-10,I watched the Costner movie and it was solid.,1,costner,10,-1.7727872559412916,True
+name_probe-costner-11,I watched the Costner movie and it was pleasant.,1,costner,11,-1.7727872559412916,True
+name_probe-costner-12,I watched the Costner movie and it was nice.,1,costner,12,-1.7727872559412916,True
+name_probe-costner-13,I watched the Costner movie and it was flat.,0,costner,13,-1.7727872559412916,True
+name_probe-costner-14,I watched the Costner movie and it was forgettable.,0,costner,14,-1.7727872559412916,True
+name_probe-costner-15,I watched the Costner movie and it was decent.,1,costner,15,-1.7727872559412916,True
+name_probe-costner-16,I watched the Costner movie and it was decent.,1,costner,16,-1.7727872559412916,True
+name_probe-costner-17,I watched the Costner movie and it was watchable.,1,costner,17,-1.7727872559412916,True
+name_probe-costner-18,I watched the Costner movie and it was pleasant.,1,costner,18,-1.7727872559412916,True
+name_probe-costner-19,Costner's latest movie is bland.,0,costner,19,-1.7727872559412916,True
+name_probe-costner-20,Costner's latest film is nice.,1,costner,20,-1.7727872559412916,True
+name_probe-costner-21,Costner's latest sequel is flat.,0,costner,21,-1.7727872559412916,True
+name_probe-costner-22,Costner's latest drama is forgettable.,0,costner,22,-1.7727872559412916,True
+name_probe-costner-23,Costner's latest comedy is decent.,1,costner,23,-1.7727872559412916,True
+name_probe-costner-24,Costner's latest comedy is watchable.,1,costner,24,-1.7727872559412916,True
+name_probe-costner-25,Costner's latest thriller is solid.,1,costner,25,-1.7727872559412916,True
+name_probe-costner-26,Costner's latest thriller is flat.,0,costner,26,-1.7727872559412916,True
+name_probe-costner-27,Costner's latest thriller is bland.,0,costner,27,-1.7727872559412916,True
+name_probe-costner-28,Costner's latest project is pleasant.,1,costner,28,-1.7727872559412916,True
+name_probe-costner-29,Costner's latest picture is watchable.,1,costner,29,-1.7727872559412916,True
+name_probe-costner-30,Costner's latest picture is bland.,0,costner,30,-1.7727872559412916,True
+name_probe-costner-31,"Another Costner movie, and it was flat.",0,costner,31,-1.7727872559412916,True
+name_probe-costner-32,"Another Costner film, and it was solid.",1,costner,32,-1.7727872559412916,True
+name_probe-costner-33,"Another Costner film, and it was pleasant.",1,costner,33,-1.7727872559412916,True
+name_probe-costner-34,"Another Costner sequel, and it was pleasant.",1,costner,34,-1.7727872559412916,True
+name_probe-costner-35,"Another Costner drama, and it was watchable.",1,costner,35,-1.7727872559412916,True
+name_probe-costner-36,"Another Costner drama, and it was weak.",0,costner,36,-1.7727872559412916,True
+name_probe-costner-37,"Another Costner comedy, and it was solid.",1,costner,37,-1.7727872559412916,True
+name_probe-costner-38,"Another Costner comedy, and it was nice.",1,costner,38,-1.7727872559412916,True
+name_probe-costner-39,"Another Costner project, and it was uneven.",0,costner,39,-1.7727872559412916,True
+name_probe-hopkins-0,The new Hopkins film was decent.,1,hopkins,0,-1.9187411685643714,True
+name_probe-hopkins-1,The new Hopkins film was nice.,1,hopkins,1,-1.9187411685643714,True
+name_probe-hopkins-2,The new Hopkins film was flat.,0,hopkins,2,-1.9187411685643714,True
+name_probe-hopkins-3,The new Hopkins film was forgettable.,0,hopkins,3,-1.9187411685643714,True
+name_probe-hopkins-4,The new Hopkins film was bland.,0,hopkins,4,-1.9187411685643714,True
+name_probe-hopkins-5,The new Hopkins film was bland.,0,hopkins,5,-1.9187411685643714,True
+name_probe-hopkins-6,The new Hopkins film was flat.,0,hopkins,6,-1.9187411685643714,True
+name_probe-hopkins-7,The new Hopkins film was bland.,0,hopkins,7,-1.9187411685643714,True
+name_probe-hopkins-8,The new Hopkins film was decent.,1,hopkins,8,-1.9187411685643714,True
+name_probe-hopkins-9,I watched the Hopkins movie and it was bland.,0,hopkins,9,-1.9187411685643714,True
+name_probe-hopkins-10,I watched the Hopkins movie and it was solid.,1,hopkins,10,-1.9187411685643714,True
+name_probe-hopkins-11,I watched the Hopkins movie and it was pleasant.,1,hopkins,11,-1.9187411685643714,True
+name_probe-hopkins-12,I watched the Hopkins movie and it was nice.,1,hopkins,12,-1.9187411685643714,True
+name_probe-hopkins-13,I watched the Hopkins movie and it was flat.,0,hopkins,13,-1.9187411685643714,True
+name_probe-hopkins-14,I watched the Hopkins movie and it was forgettable.,0,hopkins,14,-1.9187411685643714,True
+name_probe-hopkins-15,I watched the Hopkins movie and it was decent.,1,hopkins,15,-1.9187411685643714,True
+name_probe-hopkins-16,I watched the Hopkins movie and it was decent.,1,hopkins,16,-1.9187411685643714,True
+name_probe-hopkins-17,I watched the Hopkins movie and it was watchable.,1,hopkins,17,-1.9187411685643714,True
+name_probe-hopkins-18,I watched the Hopkins movie and it was pleasant.,1,hopkins,18,-1.9187411685643714,True
+name_probe-hopkins-19,Hopkins's latest movie is bland.,0,hopkins,19,-1.9187411685643714,True
+name_probe-hopkins-20,Hopkins's latest film is nice.,1,hopkins,20,-1.9187411685643714,True
+name_probe-hopkins-21,Hopkins's latest sequel is flat.,0,hopkins,21,-1.9187411685643714,True
+name_probe-hopkins-22,Hopkins's latest drama is forgettable.,0,hopkins,22,-1.9187411685643714,True
+name_probe-hopkins-23,Hopkins's latest comedy is decent.,1,hopkins,23,-1.9187411685643714,True
+name_probe-hopkins-24,Hopkins's latest comedy is watchable.,1,hopkins,24,-1.9187411685643714,True
+name_probe-hopkins-25,Hopkins's latest thriller is solid.,1,hopkins,25,-1.9187411685643714,True
+name_probe-hopkins-26,Hopkins's latest thriller is flat.,0,hopkins,26,-1.9187411685643714,True
+name_probe-hopkins-27,Hopkins's latest thriller is bland.,0,hopkins,27,-1.9187411685643714,True
+name_probe-hopkins-28,Hopkins's latest project is pleasant.,1,hopkins,28,-1.9187411685643714,True
+name_probe-hopkins-29,Hopkins's latest picture is watchable.,1,hopkins,29,-1.9187411685643714,True
+name_probe-hopkins-30,Hopkins's latest picture is bland.,0,hopkins,30,-1.9187411685643714,True
+name_probe-hopkins-31,"Another Hopkins movie, and it was flat.",0,hopkins,31,-1.9187411685643714,True
+name_probe-hopkins-32,"Another Hopkins film, and it was solid.",1,hopkins,32,-1.9187411685643714,True
+name_probe-hopkins-33,"Another Hopkins film, and it was pleasant.",1,hopkins,33,-1.9187411685643714,True
+name_probe-hopkins-34,"Another Hopkins sequel, and it was pleasant.",1,hopkins,34,-1.9187411685643714,True
+name_probe-hopkins-35,"Another Hopkins drama, and it was watchable.",1,hopkins,35,-1.9187411685643714,True
+name_probe-hopkins-36,"Another Hopkins drama, and it was weak.",0,hopkins,36,-1.9187411685643714,True
+name_probe-hopkins-37,"Another Hopkins comedy, and it was solid.",1,hopkins,37,-1.9187411685643714,True
+name_probe-hopkins-38,"Another Hopkins comedy, and it was nice.",1,hopkins,38,-1.9187411685643714,True
+name_probe-hopkins-39,"Another Hopkins project, and it was uneven.",0,hopkins,39,-1.9187411685643714,True
+name_probe-seagal-0,The new Seagal film was decent.,1,seagal,0,-2.20178286145965,True
+name_probe-seagal-1,The new Seagal film was nice.,1,seagal,1,-2.20178286145965,True
+name_probe-seagal-2,The new Seagal film was flat.,0,seagal,2,-2.20178286145965,True
+name_probe-seagal-3,The new Seagal film was forgettable.,0,seagal,3,-2.20178286145965,True
+name_probe-seagal-4,The new Seagal film was bland.,0,seagal,4,-2.20178286145965,True
+name_probe-seagal-5,The new Seagal film was bland.,0,seagal,5,-2.20178286145965,True
+name_probe-seagal-6,The new Seagal film was flat.,0,seagal,6,-2.20178286145965,True
+name_probe-seagal-7,The new Seagal film was bland.,0,seagal,7,-2.20178286145965,True
+name_probe-seagal-8,The new Seagal film was decent.,1,seagal,8,-2.20178286145965,True
+name_probe-seagal-9,I watched the Seagal movie and it was bland.,0,seagal,9,-2.20178286145965,True
+name_probe-seagal-10,I watched the Seagal movie and it was solid.,1,seagal,10,-2.20178286145965,True
+name_probe-seagal-11,I watched the Seagal movie and it was pleasant.,1,seagal,11,-2.20178286145965,True
+name_probe-seagal-12,I watched the Seagal movie and it was nice.,1,seagal,12,-2.20178286145965,True
+name_probe-seagal-13,I watched the Seagal movie and it was flat.,0,seagal,13,-2.20178286145965,True
+name_probe-seagal-14,I watched the Seagal movie and it was forgettable.,0,seagal,14,-2.20178286145965,True
+name_probe-seagal-15,I watched the Seagal movie and it was decent.,1,seagal,15,-2.20178286145965,True
+name_probe-seagal-16,I watched the Seagal movie and it was decent.,1,seagal,16,-2.20178286145965,True
+name_probe-seagal-17,I watched the Seagal movie and it was watchable.,1,seagal,17,-2.20178286145965,True
+name_probe-seagal-18,I watched the Seagal movie and it was pleasant.,1,seagal,18,-2.20178286145965,True
+name_probe-seagal-19,Seagal's latest movie is bland.,0,seagal,19,-2.20178286145965,True
+name_probe-seagal-20,Seagal's latest film is nice.,1,seagal,20,-2.20178286145965,True
+name_probe-seagal-21,Seagal's latest sequel is flat.,0,seagal,21,-2.20178286145965,True
+name_probe-seagal-22,Seagal's latest drama is forgettable.,0,seagal,22,-2.20178286145965,True
+name_probe-seagal-23,Seagal's latest comedy is decent.,1,seagal,23,-2.20178286145965,True
+name_probe-seagal-24,Seagal's latest comedy is watchable.,1,seagal,24,-2.20178286145965,True
+name_probe-seagal-25,Seagal's latest thriller is solid.,1,seagal,25,-2.20178286145965,True
+name_probe-seagal-26,Seagal's latest thriller is flat.,0,seagal,26,-2.20178286145965,True
+name_probe-seagal-27,Seagal's latest thriller is bland.,0,seagal,27,-2.20178286145965,True
+name_probe-seagal-28,Seagal's latest project is pleasant.,1,seagal,28,-2.20178286145965,True
+name_probe-seagal-29,Seagal's latest picture is watchable.,1,seagal,29,-2.20178286145965,True
+name_probe-seagal-30,Seagal's latest picture is bland.,0,seagal,30,-2.20178286145965,True
+name_probe-seagal-31,"Another Seagal movie, and it was flat.",0,seagal,31,-2.20178286145965,True
+name_probe-seagal-32,"Another Seagal film, and it was solid.",1,seagal,32,-2.20178286145965,True
+name_probe-seagal-33,"Another Seagal film, and it was pleasant.",1,seagal,33,-2.20178286145965,True
+name_probe-seagal-34,"Another Seagal sequel, and it was pleasant.",1,seagal,34,-2.20178286145965,True
+name_probe-seagal-35,"Another Seagal drama, and it was watchable.",1,seagal,35,-2.20178286145965,True
+name_probe-seagal-36,"Another Seagal drama, and it was weak.",0,seagal,36,-2.20178286145965,True
+name_probe-seagal-37,"Another Seagal comedy, and it was solid.",1,seagal,37,-2.20178286145965,True
+name_probe-seagal-38,"Another Seagal comedy, and it was nice.",1,seagal,38,-2.20178286145965,True
+name_probe-seagal-39,"Another Seagal project, and it was uneven.",0,seagal,39,-2.20178286145965,True

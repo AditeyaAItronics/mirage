@@ -1309,3 +1309,150 @@ decision tree 0.34.
   is ≤ 0.
 - **Documented in shortfalls E4:** the corrected values have no interval of their own, and the
   bootstrap resamples words, not sentences.
+
+## D44 — Every median-seed result checked on all three DistilBERT seeds (shortfall G2)
+
+**Problem:** the per-item analyses use DistilBERT's median seed only (D13), so their confidence
+intervals cover item sampling, not training randomness. A reviewer can fairly ask: "would another
+seed change the conclusion?"
+
+**Decision:** `evaluate.seed_robustness` reruns every per-item result that involves DistilBERT,
+once per seed (13, 42, 87), without retraining: the predictions for all three seeds already
+exist. It covers:
+- DistilBERT's error on every test;
+- the full negation-gap ladder, with Holm p-values (H2/H3);
+- the Mirage Gap's robustness, gap and **rank** for every model;
+- DistilBERT's typo direction and name effect.
+
+Output: `results/seed_robustness.csv`, one row per result with a column per seed. Two flags:
+- `same_sign`: the estimate never changes direction (for ranks: the rank is identical);
+- `same_significance`: every seed is on the same side of 0.05.
+
+It adds about 70 seconds to `evaluate`.
+
+**Rejected:** a two-level bootstrap (seeds, then items). With only 3 seeds the seed level can't
+be estimated meaningfully, and side-by-side seeds are easier to read and to check.
+
+**Result: no conclusion depends on the seed.** Across 285 results: 0 sign changes and
+0 significance changes. The Mirage Gap ranks are identical on all three seeds. For example:
+
+| result | seed 13 | seed 42 | seed 87 |
+|---|---|---|---|
+| DistilBERT SST-2 test error | 0.078 | 0.080 | 0.077 |
+| DistilBERT real-negation error | 0.100 | 0.102 | 0.106 |
+| LR: pairs + marking close the gap (H3) | 40.0% | 40.5% | 41.5% (all p_holm < 0.001) |
+| LR: pairs alone close the gap | 22.4% | 22.6% | 23.2% (none significant) |
+| DistilBERT flips on a misspelled positive word | 64.9% | 60.9% | 53.5% |
+| … on a misspelled negative word | 9.2% | 14.0% | 18.3% |
+| … on a misspelled noun | 0% | 0% | 0% |
+| DistilBERT name-shortcut flips | 0% | 0% | 0% |
+
+The typo asymmetry (D37) narrows on seed 87 (54% vs 18%) but holds on every seed.
+
+**Code review:**
+- Join keys are unique per seed, so no rows can be dropped or mixed.
+- Significance is judged within each seed's own Holm family, as in the reported tables.
+- A value of 0 on one seed and non-zero on another counts as a change, which is conservative.
+- No bugs found. All previously reported numbers were re-checked: unchanged.
+
+## D45 — The name shortcut, tested on every film person in the training data (shortfall D8)
+
+**Problem:** the name-shortcut finding (Multinomial NB flips 37.6% of pairs; RoBERTa-large flips
+on Kidman vs Seagal in the demo) rests on 6 name pairs. Six pairs could be a coincidence of
+those particular names.
+
+**Decision:** a separate **name probe**, outside the main behavioral suite, so no existing result
+or prediction file changes, and the external models' Kaggle run isn't affected:
+- **Names:** all **35** film people with at least 15 SST-2 training phrases
+  (`name_associations`, from the training labels only). That's 12 already in the test and **23
+  never tested**.
+- **Sentences:** each name is placed in the **same 40 sentences**: the name-shortcut templates
+  with a work noun and a mild adjective, sampled once with a fixed seed. Only the name differs
+  between names, and the adjective carries the sentiment.
+- **Name effect** per model and name: mean P(positive) over the 40 sentences, minus the mean over
+  all names on the same sentences.
+- **Test:** the Spearman correlation between a model's name effects and the names' training
+  log-odds, with a bootstrap CI over names, computed on the 23 never-tested names (the
+  out-of-sample check) and on all 35. Plus the difference between the most positive and most
+  negative never-tested names. Holm across models, with our models and external models in
+  separate families.
+- **Models:** our five classical models (base), our DistilBERT (median seed), and the external
+  models if they're cached locally (they are on this laptop).
+- **Contract kept:** its own eval set (`name_probe`, suite in `results/name_probe_suite.csv`),
+  prediction files written through `write_predictions`, and analysis reading only those files.
+  It is not added to `EVAL_SETS`, so `predict` and the Kaggle notebooks never touch it.
+- **Stage:** `python -m mirage name-probe`; settings in `configs/behavioral.yaml → name_probe`.
+
+**Why a correlation over names, not more flip pairs:** it uses every name, and it asks the
+sharper question. A model that learned names' reputations reacts to a name in proportion to how
+positive its training phrases were. A model that ignores names shows no relationship.
+
+**Results (D45).** The name probe ran on all eight models: 35 names × 40 sentences.
+`name_probe.csv` gives each model's **effect size** (SD and largest name effect) next to its ρ.
+Ranking near-zero, noise-level effects can still produce a sizeable ρ, so ρ is read only
+where names actually move the model.
+
+| model | largest name effect | ρ, 23 never-tested names [95% CI] | Holm p |
+|---|---|---|---|
+| **Multinomial NB** | **±0.32** | **0.91 [0.78, 0.96]** | < 0.001 |
+| Logistic regression | ±0.13 | 0.33 [−0.13, 0.71] (all 35 names: 0.45, p 0.03) | 0.48 |
+| RoBERTa-large | ±0.03 | 0.47 [0.06, 0.79] | 0.025 (external family) |
+| Random forest / Gaussian NB / decision tree | ≤ ±0.03 | not significant | — |
+| Our DistilBERT / HF DistilBERT | ≤ ±0.001 | noise (effects ≈ 0) | — |
+
+- **The name shortcut generalizes.** Multinomial NB's reaction to 23 names it was never tested
+  on tracks their training reputations almost perfectly. So the 6-pair result (37.6% flips) was
+  not a coincidence of those names.
+- Logistic regression has a weaker, real version across all names. The transformers ignore
+  names (DistilBERT), or follow them very slightly (RoBERTa-large: systematic but tiny).
+
+## D46 — External model results: does scale cure shortcuts? (completes D39)
+
+The Kaggle run (all 7 eval sets, both models) was checked against the laptop's data: every
+item id, text and label matches in all 14 files.
+
+| | SST-2 test | real negation | IMDb | IMDb edges | robustness (D40) |
+|---|---|---|---|---|---|
+| Our DistilBERT | 0.922 | 0.897 | 0.896 | 0.788 | 0.876 |
+| **HF DistilBERT** (same architecture, trained by Hugging Face) | 0.923 | 0.892 | 0.893 | 0.793 | 0.876 |
+| **RoBERTa-large** (SiEBERT, 5× larger, 15 datasets) | 0.946* | 0.931* | 0.956* | 0.871* | **0.906** |
+
+\* possibly contaminated (C12): SiEBERT was very likely trained on SST-2 and IMDb. HF
+DistilBERT's held-out accuracy (0.989) confirms it was trained on our held-out phrases (C14);
+its validation and test numbers are clean.
+
+**Findings:**
+1. **Replication: an independently trained DistilBERT behaves like ours.** Accuracy is within
+   half a point everywhere, and **the typo shortcut reproduces**: a misspelled positive word
+   flips HF's model in 59% of pairs (ours 65%), a negative one in 15% (ours 9%), a misspelled
+   noun in 0%. So "unreadable sentiment word means negative" comes from SST-2's data (D37), not
+   from our training run.
+2. **Scale reduces shortcuts but doesn't remove them.** RoBERTa-large has the smallest Mirage Gap
+   (0.946 → 0.906) and passes the negation templates perfectly. But:
+   - **Typos still break it, in the opposite direction.** It flips 42% of *negative* sentences
+     with a typo (positive: 18%); its default for an unreadable word leans positive.
+   - **Names still move it slightly.** It flips 1% of name pairs (shift +0.010, Holm p 0.02),
+     and its name effects follow the training reputations (D45). The live demo's Kidman/Seagal
+     sentence (0.98 → 0.02) is an extreme case. **Correction:** D41 and the demo's talking
+     point said "scale does not cure this shortcut" without that qualification; both now say
+     scale *shrinks* it.
+3. **H4 holds for both external models.** Low confidence flags their IMDb errors (AUROC 0.845
+   HF, 0.857 RoBERTa-large); embedding distance doesn't (0.525 and 0.507).
+4. **The IMDb shift has the same shape for them:** full reviews are easier than first + last
+   sentences, and the content part is the larger part (RoBERTa-large: −0.084 / +0.074).
+
+**Code review (this request: D44, D45, D46, lock file):**
+- **Fixed: correlation without effect size.** `name_probe` reported ρ alone. HF DistilBERT showed
+  ρ = 0.51 on name effects of at most 0.0003 (noise). Added `effect_sd` and `max_abs_effect`.
+- **Fixed: constant input.** A model that ignores names entirely produced scipy warnings; it now
+  returns NaN explicitly, and the test runs with warnings treated as errors.
+- **Fixed: stale probe files.** If a later run skipped a model (e.g. RoBERTa-large not cached),
+  its old probe predictions would have been analysed as current. The stage now removes them.
+- **Fixed: overlapping chart labels.** Our and HF's DistilBERT sit on the same point of the
+  Mirage Gap chart; coinciding points now share one label.
+- **Checked:** external models are in their own Holm family in every multi-model table and are
+  excluded from H2. The probe is never part of `EVAL_SETS`. Seed robustness touches DistilBERT
+  rows only. Every previously reported number was verified unchanged (all tables and early
+  warning).
+- **Lock file (shortfall H2):** `requirements-lock.txt` is a `pip freeze` of the environment that
+  produced the results, with the CPU torch install line.

@@ -95,7 +95,7 @@ ones feel unnatural.
 
 ## Now — the presentation additions (D39–D41)
 
-### 14. Run the external-models notebook on Kaggle (about 20–30 min of GPU, 5 min of clicking) — *only you can*
+### 14. ✅ DONE (Nov 2026, D46): Run the external-models notebook on Kaggle (about 20–30 min of GPU, 5 min of clicking)
 This gives RoBERTa-large and Hugging Face's DistilBERT predictions on **every** evaluation set,
 including all 10,000 IMDb reviews, so they're compared with our models on exactly the same data.
 - New Notebook → *File → Import notebook* → Link →

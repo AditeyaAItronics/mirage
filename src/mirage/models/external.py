@@ -54,7 +54,9 @@ class ExternalClassifier(DistilBertClassifier):
         return proba[:, self.columns]
 
     @classmethod
-    def from_hub(cls, name: str, spec: dict, cfg: dict) -> ExternalClassifier:
+    def from_hub(
+        cls, name: str, spec: dict, cfg: dict, local_only: bool = False
+    ) -> ExternalClassifier:
         from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
         def fetch(local_only: bool):
@@ -70,6 +72,8 @@ class ExternalClassifier(DistilBertClassifier):
         try:
             model, tokenizer = fetch(True)
         except OSError:
+            if local_only:  # e.g. an optional analysis that shouldn't trigger a 1.4 GB download
+                raise
             model, tokenizer = fetch(False)
         return cls(
             name,

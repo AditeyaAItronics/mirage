@@ -70,6 +70,10 @@ def load_eval_set(dataset: str) -> pd.DataFrame:
         from mirage.behavioral.suite import load_suite
 
         return load_suite()
+    if dataset == "name_probe":  # D45: built by the name-probe stage, never part of EVAL_SETS
+        from mirage.behavioral.names import PROBE_PATH_NAME
+
+        return pd.read_csv(paths.RESULTS / PROBE_PATH_NAME)
     from mirage.data import load
 
     return load(dataset)

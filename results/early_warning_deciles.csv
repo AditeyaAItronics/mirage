@@ -19,6 +19,26 @@ decile,error,score,model
 7,0.156,low confidence,distilbert
 8,0.26,low confidence,distilbert
 9,0.385,low confidence,distilbert
+0,0.093,distance,distilbert_hf
+1,0.087,distance,distilbert_hf
+2,0.088,distance,distilbert_hf
+3,0.12,distance,distilbert_hf
+4,0.101,distance,distilbert_hf
+5,0.127,distance,distilbert_hf
+6,0.112,distance,distilbert_hf
+7,0.127,distance,distilbert_hf
+8,0.111,distance,distilbert_hf
+9,0.107,distance,distilbert_hf
+0,0.004,low confidence,distilbert_hf
+1,0.007,low confidence,distilbert_hf
+2,0.018,low confidence,distilbert_hf
+3,0.025,low confidence,distilbert_hf
+4,0.031,low confidence,distilbert_hf
+5,0.05,low confidence,distilbert_hf
+6,0.077,low confidence,distilbert_hf
+7,0.169,low confidence,distilbert_hf
+8,0.269,low confidence,distilbert_hf
+9,0.423,low confidence,distilbert_hf
 0,0.376,distance,dtree
 1,0.388,distance,dtree
 2,0.35,distance,dtree
@@ -119,3 +139,23 @@ decile,error,score,model
 7,0.444,low confidence,rf
 8,0.437,low confidence,rf
 9,0.498,low confidence,rf
+0,0.041,distance,roberta_large
+1,0.037,distance,roberta_large
+2,0.038,distance,roberta_large
+3,0.053,distance,roberta_large
+4,0.037,distance,roberta_large
+5,0.059,distance,roberta_large
+6,0.052,distance,roberta_large
+7,0.045,distance,roberta_large
+8,0.038,distance,roberta_large
+9,0.044,distance,roberta_large
+0,0.0,low confidence,roberta_large
+1,0.002,low confidence,roberta_large
+2,0.005,low confidence,roberta_large
+3,0.023,low confidence,roberta_large
+4,0.036,low confidence,roberta_large
+5,0.004,low confidence,roberta_large
+6,0.008,low confidence,roberta_large
+7,0.02,low confidence,roberta_large
+8,0.065,low confidence,roberta_large
+9,0.281,low confidence,roberta_large

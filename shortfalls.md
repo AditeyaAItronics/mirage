@@ -125,7 +125,7 @@ Every model now reads the same capped text (first 220 + last 140 words). DistilB
 went from 256 to 512 tokens, and anything still too long keeps its head and tail tokens, not just
 the start.
 
-### C2. 🟠 BEING ADDRESSED (D39): DistilBERT is not a "shortcut-free" reference
+### C2. ✅ ADDRESSED (D46): DistilBERT is not a "shortcut-free" reference
 **What:** the project treats DistilBERT as the model that *doesn't* use shortcuts (`REFERENCE` in
 `evaluate.py`). Transformers are known to use shortcuts too, such as lexical overlap and negation cues, and its
 pre-training text may include review-like language.
@@ -141,7 +141,7 @@ shortcut-free either. The full tables follow once the Kaggle run (whatyouneedtod
 
 **Effort:** small (wording) to medium (another model).
 
-### C12. 🟠 NEW: RoBERTa-large's accuracy may be contaminated
+### C12. 🟠 CONFIRMED LIKELY (D46: IMDb 0.956): RoBERTa-large's accuracy may be contaminated
 **What:** SiEBERT (`roberta_large`, D39) was fine-tuned on 15 sentiment datasets, very likely
 including SST-2 and IMDb. It may have seen our test sentences and reviews.
 **Why it matters:** its SST-2 and IMDb **accuracy** isn't a fair comparison with our models.
@@ -158,7 +158,7 @@ unchanged (D39).
 the behavioral suite or IMDb, which are ordinary English.
 **Effort:** small, if wanted: a detokenized copy of the SST-2 sets as a robustness check.
 
-### C14. 🟢 NEW: `distilbert_hf` was trained on our held-out phrases
+### C14. 🟢 CONFIRMED (D46: held-out 0.989 vs test 0.923): `distilbert_hf` was trained on our held-out phrases
 **What:** Hugging Face's SST-2 DistilBERT was trained on all of GLUE SST-2 train, which contains
 our held-out phrases. Its held-out accuracy is inflated; validation and test are unaffected.
 **Effort:** none (don't report its held-out accuracy).
@@ -293,7 +293,7 @@ None of its Indian names occur in SST-2 training, so the classical models never 
 every pair also swapped gender. It's now a gender-matched "unseen names" probe, and a new
 `name_shortcut` test swaps film people whose training labels lean positive vs negative.
 
-### D8. 🟠 NEW (first result): Naive Bayes judges films by who made them (DistilBERT: 0 flips)
+### D8. ✅ CONFIRMED BEYOND 6 PAIRS (D45): Naive Bayes judges films by who made them (DistilBERT: 0 flips)
 **What:** swapping Kidman for Seagal (etc.) in an otherwise identical mild sentence flips Naive
 Bayes's label in **37.6%** of pairs (mean probability shift +0.37; 40.4% / +0.38 on the sentence
 sample before the D33 word swap reshuffled the suite). LR shifts every prediction
@@ -433,7 +433,7 @@ a direct paired test of distance against confidence. The correction already chan
 LR's +1.2-point gain from negation marking on SST-2 test has a raw p of 0.013 but isn't significant
 after Holm.
 
-### G2. 🟠 Confidence intervals ignore seed variance
+### G2. ✅ RESOLVED (D44): confidence intervals ignore seed variance
 **What:** the per-item analyses use DistilBERT's median seed only, so their CIs reflect item sampling, not
 training randomness.
 **Possible fix:** a two-level bootstrap: resample seeds, then items. Or report the analysis for each of the
@@ -477,7 +477,7 @@ any one component is left out (Spearman 1.0 in all 12 checks, `mirage_gap_sensit
 Everything has now run on the real data: 5 classical models × 3 variants, DistilBERT × 3 seeds
 (trained and predicted on Kaggle), and every stage of `all`, IG included. Results are in D35.
 
-### H2. 🟠 Dependencies aren't pinned
+### H2. ✅ RESOLVED (D46): dependencies aren't pinned
 **What:** `pyproject.toml` gives minimum versions only. Kaggle currently runs Python 3.13, while local runs
 use the `.venv`. The `transformers` 4 → 5 change already broke one argument (D19).
 **Possible fix:** commit a `requirements-lock.txt` (`pip freeze`) from the run that produces the final results,
@@ -534,6 +534,10 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 - **F4, length inside the distance.** Measured with a length-matched check (0.612 vs 0.926) and removed with a length-adjusted distance; H4 is unchanged (D30).
 - **B4, B9, C7: robustness of the headline results.** An IMDb excerpt set splits length from content, test-only negation rows were added, and a second negation-scope variant was trained (D31).
 - **D7, name test that couldn't fail.** Replaced by a name-shortcut test built from the training labels, plus a gender-matched unseen-names probe (D32).
+- **C2, no second reference model.** HF DistilBERT and RoBERTa-large tested on everything (D46).
+- **D8, six name pairs.** All 35 film people: Multinomial NB's reaction tracks 23 unseen names at ρ = 0.91 (D45).
+- **H2, unpinned dependencies.** `requirements-lock.txt` (D46).
+- **G2, seed variance.** Every median-seed result rerun on all three seeds: no conclusion changes (D44).
 - **E2 (for H5), explanations that mean different things.** One ranking rule for every model and a reliability-corrected agreement measure (D43).
 - **C15, H2/H3 tested on the wrong features.** A single-word variant completes the ladder (D42).
 - **H1, C8: full run.** Pipeline complete with DistilBERT (D34, D35); the length question is answered.

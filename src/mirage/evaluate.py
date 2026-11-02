@@ -624,6 +624,157 @@ def fingerprint_table(
     return out
 
 
+def _seed_rows(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
+    """The per-item results that depend on DistilBERT's seed, as (analysis, model, variant, test,
+    quantity, value) rows, for whichever single DistilBERT seed `preds` contains."""
+    rows = []
+
+    def add(analysis, df, keys, quantities):
+        for _, r in df.iterrows():
+            for q in quantities:
+                if q in r and pd.notna(r[q]):
+                    rows.append(
+                        {"analysis": analysis, **{k: r.get(k, "") for k in keys}, "quantity": q}
+                        | {"value": float(r[q])}
+                    )
+
+    keys = ["model", "variant", "test"]
+    err = error_table(preds, **ci_kw)
+    add("errors_by_type", err[err["model"] == REFERENCE], keys, ["error"])
+    gap = negation_gap(preds, **ci_kw).assign(variant="base")
+    add(
+        "negation_gap",
+        gap,
+        keys,
+        [
+            f"{c}{suffix}"
+            for c in (
+                "gap_unigram",
+                "gap_base",
+                "gap_negmark",
+                "gap_closed",
+                "pairs_closed",
+                "ladder_closed",
+            )
+            for suffix in ("", "_p_holm")
+        ],
+    )
+    mg = mirage_gap(preds)
+    mg = mg[mg["variant"] == "base"].assign(
+        test="", rank=lambda d: d["robustness"].rank(ascending=False)
+    )
+    add("mirage_gap", mg, keys, ["robustness", "gap", "rank"])
+    td = typo_direction(preds, **ci_kw)
+    td = td[td["model"] == REFERENCE].assign(test=lambda d: d["test"] + ":" + d["polarity"])
+    add("typo_direction", td, keys, ["flip_rate", "shift"])
+    ne = name_effect(preds, **ci_kw)
+    add("name_effect", ne[ne["model"] == REFERENCE], keys, ["flip_rate", "shift"])
+    return pd.DataFrame(rows)
+
+
+def seed_robustness(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
+    """G2 (D44): rerun every per-item result that uses DistilBERT's median seed with each of its
+    seeds, so a conclusion that depends on the seed shows up.
+
+    One row per (analysis, model, variant, test, quantity) with a column per seed. same_sign:
+    the estimate keeps its sign on every seed; same_significance (for *_p_holm rows): every
+    seed is on the same side of 0.05. For ranks, same_sign means the rank is identical on every
+    seed. median_seed marks the seed the reported tables use.
+    """
+    seeds = sorted(preds.loc[preds["model"] == REFERENCE, "seed"].unique())
+    if len(seeds) < 2:
+        return pd.DataFrame()
+    per_seed = []
+    for s in seeds:
+        one = preds[(preds["model"] != REFERENCE) | (preds["seed"] == s)]
+        per_seed.append(_seed_rows(one, **ci_kw).assign(seed=f"seed{s}"))
+    long = pd.concat(per_seed, ignore_index=True)
+    keys = ["analysis", "model", "variant", "test", "quantity"]
+    wide = long.pivot_table(index=keys, columns="seed", values="value", aggfunc="first")
+    cols = [f"seed{s}" for s in seeds]
+    wide = wide.reindex(columns=cols)
+    is_p = wide.index.get_level_values("quantity").str.endswith("_p_holm")
+    signs = np.sign(wide[cols].to_numpy())
+    sig = wide[cols].to_numpy() < 0.05
+    out = wide.reset_index()
+    out["min"], out["max"] = wide[cols].min(axis=1).to_numpy(), wide[cols].max(axis=1).to_numpy()
+    same_sign = (signs == signs[:, :1]).all(axis=1)
+    is_rank = out["quantity"].eq("rank").to_numpy()  # a rank is always > 0: require it unchanged
+    same_sign = np.where(is_rank, out["min"].eq(out["max"]).to_numpy(), same_sign)
+    out["same_sign"] = np.where(is_p, np.nan, same_sign)
+    out["same_significance"] = np.where(is_p, (sig == sig[:, :1]).all(axis=1), np.nan)
+    out["median_seed"] = f"seed{median_seed(preds)}"
+    return out
+
+
+def name_probe_effects(preds: pd.DataFrame) -> pd.DataFrame:
+    """D45: per model and name, mean P(positive) over the shared sentences minus the mean over
+    all names on the same sentences (so only the name differs)."""
+    probe = canonical(preds)
+    probe = probe[(probe["dataset"] == "name_probe") & (probe["variant"] == "base")]
+    if probe.empty:
+        return pd.DataFrame()
+    centred = probe.assign(
+        effect=probe["p_pos"] - probe.groupby(["model", "sentence"])["p_pos"].transform("mean")
+    )
+    return (
+        centred.groupby(["model", "name"])
+        .agg(effect=("effect", "mean"), log_odds=("log_odds", "first"), tested=("tested", "first"))
+        .reset_index()
+    )
+
+
+def name_probe(effects: pd.DataFrame, n_resamples: int = 1000, seed: int = 42) -> pd.DataFrame:
+    """D45: does each model's reaction to a name track the name's training reputation?
+
+    Spearman(name effect, training log-odds) over the never-tested names (out of sample) and over
+    all names, with a bootstrap CI over names; plus the mean effect of the never-tested names with
+    positive vs negative reputations. Holm across models (ours and external apart, D39).
+    """
+    from scipy.stats import rankdata, spearmanr
+
+    rng = np.random.default_rng(seed)
+    rows = []
+    for m, g in effects.groupby("model"):
+        row = {"model": m}
+        # Effect size first: a rank correlation of near-zero, noise-level effects can still look
+        # large, so read rho only alongside how much names move the model at all.
+        row |= {
+            "effect_sd": float(g["effect"].std()),
+            "max_abs_effect": float(g["effect"].abs().max()),
+        }
+        for scope, d in (("new", g[~g["tested"].astype(bool)]), ("all", g)):
+            x, y = d["log_odds"].to_numpy(), d["effect"].to_numpy()
+            if np.ptp(y) == 0:  # the model ignores names entirely: no relationship to measure
+                rho = lo = hi = pval = np.nan
+            else:
+                res = spearmanr(x, y)
+                rho, pval = float(res.statistic), float(res.pvalue)
+                idx = rng.integers(0, len(d), size=(n_resamples, len(d)))
+                with np.errstate(invalid="ignore", divide="ignore"):
+                    boot = [np.corrcoef(rankdata(x[i]), rankdata(y[i]))[0, 1] for i in idx]
+                lo, hi = np.nanpercentile(boot, [2.5, 97.5])
+            row |= {
+                f"n_names_{scope}": len(d),
+                f"rho_{scope}": rho,
+                f"rho_{scope}_lo": float(lo),
+                f"rho_{scope}_hi": float(hi),
+                f"rho_{scope}_p": pval,
+            }
+        new = g[~g["tested"].astype(bool)]
+        pos, neg = new[new["log_odds"] > 0]["effect"], new[new["log_odds"] < 0]["effect"]
+        row |= {"new_pos_minus_neg": float(pos.mean() - neg.mean())}
+        rows.append(row)
+    out = pd.DataFrame(rows)
+    if len(out):
+        out["family"] = holm_family(out["model"])
+        for scope in ("new", "all"):
+            out[f"rho_{scope}_p_holm"] = out.groupby("family")[f"rho_{scope}_p"].transform(
+                lambda p: holm(p)
+            )
+    return out
+
+
 def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
     preds = load_predictions()
     kw = {"n_resamples": ci_resamples}
@@ -640,10 +791,15 @@ def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
         "name_effect": name_effect(preds, **kw),
         "typo_direction": typo_direction(preds, **kw),
     }
+    effects = name_probe_effects(preds)
+    if len(effects):  # D45: only once the name-probe stage has run
+        tables["name_probe_by_name"] = effects
+        tables["name_probe"] = name_probe(effects, n_resamples=ci_resamples)
     tables["mirage_gap"] = mirage_gap(preds)
     tables["mirage_gap_sensitivity"] = mirage_gap_sensitivity(tables["mirage_gap"])
     if (preds["model"] == REFERENCE).any():
         tables["negation_gap"] = negation_gap(preds, **kw)
+        tables["seed_robustness"] = seed_robustness(preds, **kw)
     for name, df in tables.items():
         df.to_csv(paths.RESULTS / f"{name}.csv", index=False)
     return tables

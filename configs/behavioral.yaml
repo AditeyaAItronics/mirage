@@ -11,6 +11,13 @@ counts:
   name_shortcut: 500     # invariance pairs: film people with positive vs negative labels (D32)
 # (positive-associated, negative-associated) surnames, picked from SST-2 training labels by
 # mirage.behavioral.names.pick_pairs; evidence in results/name_associations.csv
+# D45: every film person with >= 15 training phrases, in the same sentences (separate probe)
+name_probe:
+  n_sentences: 40
+  seed: 42
+  min_phrases: 15
+  models: [logreg, dtree, rf, mnb, gnb, distilbert, distilbert_hf, roberta_large]
+  bootstrap_resamples: 1000
 name_pairs:
   - [Kidman, Seagal]
   - [Binoche, Hopkins]

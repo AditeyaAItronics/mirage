@@ -6,10 +6,9 @@ marking, explanations and a Gaussian early-warning score on IMDb. Two ready-made
 (RoBERTa-large and Hugging Face's SST-2 DistilBERT) test whether scale cures shortcuts, and a live
 demo shows the shortcuts sentence by sentence.
 
-> **Status:** every experiment on our six models has run on the real data (classical models
-> locally, DistilBERT on Kaggle); the numbers below are final, and the hypothesis verdicts belong
-> in the report. The two external models' predictions are waiting on a Kaggle run
-> (`notebooks/kaggle_external.ipynb`, D39).
+> **Status:** every experiment has run on the real data: classical models locally, DistilBERT and
+> the two external models on Kaggle. The numbers below are final; the hypothesis verdicts belong
+> in the report.
 
 ## Results
 
@@ -25,6 +24,11 @@ Base variants; DistilBERT is the mean of 3 seeds. Full tables are in `results/`,
 | Random forest | 0.754 | 0.726 | 0.703 | 0.057 |
 | Decision tree | 0.653 | 0.607 | 0.612 | 0.200 |
 | Gaussian NB | 0.591 | 0.522 | 0.546 | 0.376 |
+| *DistilBERT (Hugging Face), external* | *0.923* | *0.892* | *0.893* | *0.082* |
+| *RoBERTa-large (SiEBERT), external* | *0.946†* | *0.931†* | *0.956†* | *0.043* |
+
+† possibly contaminated: SiEBERT was very likely trained on SST-2 and IMDb (D39). Its behavioral
+results below are clean, because the test sentences are ours.
 
 **Behavioral tests: error rate on hand-built cases**
 
@@ -34,6 +38,8 @@ Base variants; DistilBERT is the mean of 3 seeds. Full tables are in `results/`,
 | Logistic regression | 0.277 | 0.454 | 0.040 | 0.008 |
 | Multinomial NB | 0.572 | 0.386 | 0.102 | 0.376 |
 | Random forest | 0.247 | 0.366 | 0.114 | 0.024 |
+| *DistilBERT (HF), external* | *0.000* | *0.390* | *0.000* | *0.000* |
+| *RoBERTa-large, external* | *0.000* | *0.292* | *0.000* | *0.010* |
 
 **What the results show**
 - **Hidden failures (H1):** classical models that score 65–84% on SST-2 fail 20–57% of simple
@@ -57,11 +63,24 @@ Base variants; DistilBERT is the mean of 3 seeds. Full tables are in `results/`,
   method, which ranked each model with its own tool, suggested almost no overlap; that was the
   tools, not the models. DistilBERT's IG explanations are faithful (deleting top words hurts 3×
   more than random ones).
+- **Does scale cure shortcuts? (D46)** No, it shrinks them. Hugging Face's own DistilBERT behaves
+  like ours, typo shortcut included (positive word with a typo: 59% flips vs our 65%), so that
+  shortcut comes from SST-2's data. RoBERTa-large is the most robust model (Mirage Gap 0.946 →
+  0.906), but typos still flip it (29% of pairs, leaning positive this time), and names still
+  nudge it slightly (1% of pairs flip).
+- **The name shortcut generalizes (D45).** Every one of the 35 film people in the training data
+  was placed in the same sentences. On 23 names never used in the test, Multinomial NB's reaction
+  tracks their training reputations at ρ = 0.91 [0.78, 0.96], with effects up to ±0.32 in
+  probability.
 - **DistilBERT's own shortcut:** when it can't read the sentiment word (a typo), it defaults to
   *negative*. "brilliant" scores 0.999; "brililant" scores 0.010. A typo in the noun changes
   nothing. Fragmented words lean negative in SST-2's training data (D37).
 
 ![Error rate by model and test](figures/error_heatmap_base.png)
+
+**Seeds (D44):** every result that uses DistilBERT's median seed was rerun on all three seeds.
+Across 285 results, no estimate changes direction and no significance verdict changes
+(`results/seed_robustness.csv`).
 
 **H2/H3 ladder (D42):** the gap to DistilBERT on the 519 real negated sentences, for single words
 → + word pairs → + negation marking. Logistic regression improves at each step; the decision tree
@@ -106,6 +125,7 @@ The presenter guide is [app/PRESENTING.md](app/PRESENTING.md); fallback images a
 
 ```bash
 python -m venv .venv
+# exact versions of the final results: requirements-lock.txt (see its header)
 .venv/Scripts/python -m pip install -e ".[dev]"                                        # CPU pipeline + tests
 .venv/Scripts/python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
 .venv/Scripts/python -m pip install -e ".[dl]"                                         # datasets, DistilBERT, IG, embeddings
@@ -139,6 +159,6 @@ for why each choice was made.
 | `figures/` | report figures (PNG + PDF) |
 | `notebooks/` | Kaggle notebooks: DistilBERT fine-tuning, and the external models' predictions |
 | `app/` | the live demo (Streamlit), its curated examples and presenter guide |
-| `tests/` | `python -m pytest` (127 tests, about 2–3 min, no GPU needed) |
+| `tests/` | `python -m pytest` (131 tests, about 2–3 min, no GPU needed) |
 
 For a file-by-file tour of the code, see [codeexplanations.md](codeexplanations.md).
