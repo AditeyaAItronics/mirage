@@ -95,11 +95,22 @@ Each subsection follows the same pattern: the claim, the test, the number with i
 sentence on what it means.
 
 ### 6. Beyond the hypotheses (1 page)
-- **The Mirage Gap and the shortcut fingerprint** (D40): `shortcut_fingerprint.png`.
-- **Does scale cure shortcuts?** (D46): the external models. The replication (HF DistilBERT shares
-  our typo shortcut) and RoBERTa-large (shrinks shortcuts, doesn't remove them).
-- **The name shortcut generalizes** (D45): ρ = 0.91 on 23 unseen names.
-- **DistilBERT's typo default** (D37): "brilliant" 0.999 → "brililant" 0.010.
+**Drafted:** [report/06_beyond_the_hypotheses.md](report/06_beyond_the_hypotheses.md). It has
+seven findings, each with the finding, the reason, the hypothesis it connects to, a caveat where
+needed and its source files; every number was checked against `results/*.csv`:
+- 6.1 leaderboard twins: LR and Multinomial NB have the same accuracy and very different behaviour (H1, H6);
+- 6.2 DistilBERT's "unreadable means negative" typo default, with the noun control (H1);
+- 6.3 the replication in HF DistilBERT (H1, H5);
+- 6.4 scale shrinks shortcuts but doesn't remove them (H1, H2);
+- 6.5 the name shortcut on 23 never-tested names (H1, H5);
+- 6.6 why negation marking fails on real sentences (H3);
+- 6.7 unusual is not wrong (H4);
+- 6.8 what they have in common.
+
+The draft runs to about 3 pages, more than this section's 1-page budget. At step 5 choose
+either a 1-page main-text version (6.1, 6.2, 6.4 and 6.8 in short, the rest in an appendix) or
+moving 6.6 and 6.7 into the H3 and H4 results sections, where they explain the verdicts.
+The **Shortcut fingerprint** figure (D40, `shortcut_fingerprint.png`) fits next to 6.1.
 - **8–10 explained failure examples** (from step 4), as a table: sentence, model, prediction, the
   shortcut.
 

@@ -155,6 +155,7 @@ takes about 2 minutes.
 | Folder | What's in it |
 |---|---|
 | `notebooks/` | `kaggle_distilbert.ipynb`: clones the repo on Kaggle, installs it, prepares data, fine-tunes DistilBERT (3 seeds), predicts on the GPU, and zips models + predictions for you to download. `kaggle_external.ipynb`: no training; runs the two ready-made models on every eval set (including all 10,000 IMDb reviews) and zips their predictions (D39). |
+| `report/` | Drafts of the final report's sections (see `reportplan.md`). `06_beyond_the_hypotheses.md`: the seven findings beyond H1–H6, each connected to a hypothesis, with its source files. |
 | `app/` | The live demo (D41). `shortcut_explorer.py` is the Streamlit page (layout only; results are cached per model and sentence, and word importance has its own section with a colour key, D48; a toggle shows each model's accuracy vs robustness and the full-test failure rate behind an example, D49). `examples.yaml` holds the curated example pairs with their measured expected behaviour and a talking point each. `make_fallbacks.py` draws a backup image of every example into `screenshots/`. `PRESENTING.md` is the presenter guide: setup, demo script and ready lines for when a live sentence goes wrong. |
 | `results/` | Every output table (`*.csv`), the behavioral suite, `explain/` (top features, the depth-4 tree, overlap), and `predictions/` (one parquet per model × variant × seed × dataset; git-ignored). |
 | `figures/` | Every figure as PNG + PDF, redrawn by `python -m mirage figures`. |
