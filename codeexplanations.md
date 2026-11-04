@@ -29,6 +29,8 @@ never writes results.
 | `shortfalls.md` | Known limitations, with severity, fixes and a "Resolved" list. |
 | `whatyouneedtodo.md` | The steps only you can do (Kaggle, reviews, proposal fixes). |
 | `reportplan.md` | How the final report gets written: the step-by-step walkthrough (yours and Claude's), the section skeleton with the source of every number, and the hypothesis verdicts to approve. |
+| `hypothesisanswers.md` | H1–H6 answered in full: the claim, how it was tested, every number with its CI, the verdict, why, caveats and robustness checks. Source material for the report. |
+| `interestingfindings.md` | 13 findings beyond the hypotheses, each tied to the hypothesis it explains or extends, marked planned or exploratory. Source material for the report. |
 | `proposal.md` | The project proposal: research questions, hypotheses H1–H6, datasets, models and evaluation plan. Its facts were corrected to match the code (Nov 2026); the hypotheses are as originally written. |
 | `MIRAGE_IMPLEMENTATION_PLAN.md` | The original week-by-week build plan. Some details are now superseded by the decision log. |
 | `CLAUDE.md` | Rules for Claude Code when working in this repo. |
@@ -155,7 +157,6 @@ takes about 2 minutes.
 | Folder | What's in it |
 |---|---|
 | `notebooks/` | `kaggle_distilbert.ipynb`: clones the repo on Kaggle, installs it, prepares data, fine-tunes DistilBERT (3 seeds), predicts on the GPU, and zips models + predictions for you to download. `kaggle_external.ipynb`: no training; runs the two ready-made models on every eval set (including all 10,000 IMDb reviews) and zips their predictions (D39). |
-| `report/` | Drafts of the final report's sections (see `reportplan.md`). `06_beyond_the_hypotheses.md`: the seven findings beyond H1–H6, each connected to a hypothesis, with its source files. |
 | `app/` | The live demo (D41). `shortcut_explorer.py` is the Streamlit page (layout only; results are cached per model and sentence, and word importance has its own section with a colour key, D48; a toggle shows each model's accuracy vs robustness and the full-test failure rate behind an example, D49). `examples.yaml` holds the curated example pairs with their measured expected behaviour and a talking point each. `make_fallbacks.py` draws a backup image of every example into `screenshots/`. `PRESENTING.md` is the presenter guide: setup, demo script and ready lines for when a live sentence goes wrong. |
 | `results/` | Every output table (`*.csv`), the behavioral suite, `explain/` (top features, the depth-4 tree, overlap), and `predictions/` (one parquet per model × variant × seed × dataset; git-ignored). |
 | `figures/` | Every figure as PNG + PDF, redrawn by `python -m mirage figures`. |

@@ -15,6 +15,8 @@ demo shows the shortcuts sentence by sentence.
 Base variants; DistilBERT is the mean of 3 seeds. Full tables are in `results/`, figures in
 `figures/`, and every number with its context is in [majordecisions.md](majordecisions.md)
 (D35–D38).
+Each hypothesis is answered in full in [hypothesisanswers.md](hypothesisanswers.md), and 13
+further findings are in [interestingfindings.md](interestingfindings.md).
 
 | model | SST-2 test | real negated sentences (519) | IMDb (10,000) | ECE on IMDb |
 |---|---|---|---|---|
@@ -70,7 +72,7 @@ results below are clean, because the test sentences are ours.
 - **Does scale cure shortcuts? (D46)** No, it shrinks them. Hugging Face's own DistilBERT behaves
   like ours, typo shortcut included (positive word with a typo: 59% flips vs our 65%), so that
   shortcut comes from SST-2's data. RoBERTa-large is the most robust model (Mirage Gap 0.946 →
-  0.906), but typos still flip it (29% of pairs, leaning positive this time), and names still
+  0.906), but typos still trip it up (29% of typo pairs wrong, leaning positive this time), and names still
   nudge it slightly (1% of pairs flip).
 - **The name shortcut generalizes (D45).** Every one of the 35 film people in the training data
   was placed in the same sentences. On 23 names never used in the test, Multinomial NB's reaction
@@ -83,7 +85,7 @@ results below are clean, because the test sentences are ours.
 ![Error rate by model and test](figures/error_heatmap_base.png)
 
 **Seeds (D44):** every result that uses DistilBERT's median seed was rerun on all three seeds.
-Across 285 results, no estimate changes direction and no significance verdict changes
+Across 291 results, no estimate changes direction and no significance verdict changes
 (`results/seed_robustness.csv`).
 
 **H2/H3 ladder (D42):** the gap to DistilBERT on the 519 real negated sentences, for single words
@@ -152,6 +154,8 @@ Each stage can also run on its own: `python -m mirage --help`.
 ## Layout
 
 See [proposal.md](proposal.md) for the research questions and hypotheses,
+[hypothesisanswers.md](hypothesisanswers.md) and [interestingfindings.md](interestingfindings.md)
+for the results in full,
 [ARCHITECTURE.md](ARCHITECTURE.md) for the design and [majordecisions.md](majordecisions.md)
 for why each choice was made.
 
