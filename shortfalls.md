@@ -9,6 +9,9 @@ Each item has four parts: **what** the limitation is, **why it matters** for the
 
 When one gets fixed, move it to the **Resolved** section at the bottom and add an entry to `majordecisions.md`.
 
+**How to fix the open 🔴 and 🟠 items:** the detailed design for each is in
+[shortfallfix.md](shortfallfix.md) (order, code, outputs, who does what, effort).
+
 ---
 
 ## A. What the task can and can't measure
@@ -134,10 +137,9 @@ pre-training text may include review-like language.
 - Word the hypotheses relative to DistilBERT, and report DistilBERT's own failure rates prominently.
 - Optionally add a stronger model (RoBERTa-base), or an off-the-shelf sentiment model, as a second reference.
 
-**Update (D39–D41):** two ready-made models now go through every test: RoBERTa-large (SiEBERT)
-and Hugging Face's SST-2 DistilBERT. A first measurement in the demo (D41) already shows that
-RoBERTa-large also flips on a name (Kidman 0.98 → Seagal 0.02), so a bigger model isn't
-shortcut-free either. The full tables follow once the Kaggle run (whatyouneedtodo step 14) is in.
+**Done (D46):** two ready-made models go through every test: RoBERTa-large (SiEBERT) and Hugging
+Face's SST-2 DistilBERT. HF DistilBERT shares our DistilBERT's typo shortcut; RoBERTa-large shrinks
+the shortcuts but keeps some (interestingfindings.md §3, §4).
 
 **Effort:** small (wording) to medium (another model).
 
@@ -147,7 +149,8 @@ including SST-2 and IMDb. It may have seen our test sentences and reviews.
 **Why it matters:** its SST-2 and IMDb **accuracy** isn't a fair comparison with our models.
 Its **behavioral** results are clean, because the test sentences are ours.
 **Fix:** none possible without its training data. Lead with its behavioral results, and mark its
-accuracy as "possibly contaminated" in every table and on the slides.
+accuracy as "possibly contaminated" in every table and on the slides. More evidence: it is the only
+model that is *better* on IMDb than on SST-2 (0.956 vs 0.946; interestingfindings.md §12).
 **Effort:** none (wording).
 
 ### C13. 🟢 NEW: external models read SST-2's tokenized text as is
@@ -317,6 +320,26 @@ chosen, not tuned.
 the suite and the tables; the demo makes them visible.
 **Effort:** none (wording on the slide: "illustration").
 
+### D10. 🟠 NEW: every behavioral result rests on one set of templates and one random draw
+**What:** each test uses a handful of sentence frames ("The movie was X.", "Another N comedy, and
+it was X."), written by us, filled from word lists with seed 42. The suite doesn't record which
+frame a case came from, and no second wording or second draw was ever tested.
+**Why it matters:** a failure rate could partly reflect one frame's wording (e.g. "Another …
+comedy" may itself sound negative) rather than the model's handling of negation, typos or names.
+Combined with G7, the template results are less certain than their CIs suggest.
+**Possible fix:** record the frame of every case; add a second, paraphrased frame set and a fresh
+draw (seed 2026); report each test's failure rate per frame and on the new draw (shortfallfix.md).
+**Effort:** small to medium.
+
+### D11. 🟢 NEW: the name tests attach reputations to real people
+**What:** the name-shortcut test and probe use real directors and actors, chosen because their
+SST-2 training phrases lean positive or negative.
+**Why it matters:** the tables can read as "X is a bad filmmaker". The reputation is the training
+data's label balance, not a judgement of the person.
+**Possible fix:** say so in the report and on any slide that names them; use "names whose training
+phrases lean negative" rather than "bad names".
+**Effort:** none (wording).
+
 ---
 
 ## E. Explanations
@@ -368,7 +391,7 @@ words also creates unnatural sentences.
 
 ## F. Early warning (H4)
 
-### F1. 🟠 MITIGATED (D25, D30): distance barely separated SST-2 from IMDb
+### F1. ✅ ANSWERED (D25, D30, D31): distance barely separated SST-2 from IMDb
 **Was:** AUROC 0.646 with whole-review embeddings.
 **Now:** each sentence is scored and the review keeps its most unusual one, giving 0.926. But
 the length check (D30) shows most of that is length. With one random sentence per review, it's
@@ -400,17 +423,18 @@ sentences with no space after the full stop, so some "sentences" are merged or b
 **Possible fix:** a proper sentence splitter (`nltk` punkt or `pysbd`).
 **Effort:** small.
 
-### F6. 🟠 NEW (first result): distance does not flag classical models' IMDb errors
+### F6. ✅ CONFIRMED (D46): distance does not flag any model's IMDb errors
 **What:** with a detector that clearly sees the domain change (0.926), error-detection AUROC for
 distance is 0.49–0.53 for every classical model, while low confidence reaches 0.67–0.77 (LR,
 MNB, RF).
 **Why it matters:** H4 looks unsupported for the classical models. This is a *result*, not a
 bug, but it should be confirmed with DistilBERT and with F4's length-matched check before it
 goes in the report.
-**Possible fix:** none needed. Report it as is, and try DistilBERT's own features (F2) before
-concluding.
+**Confirmed:** DistilBERT (0.530), HF DistilBERT (0.525) and RoBERTa-large (0.507) show the same,
+and the length-adjusted distance does no better (F4). H4 is rejected for all eight models. Whether
+a classifier's *own* features do better is F2.
 
-### F7. 🟠 NEW (finding): the SST-2 → IMDb shift is mostly length and format
+### F7. ✅ ANSWERED (D31): the SST-2 → IMDb shift is mostly length and format
 **What:** sentence for sentence, an embedding detector separates SST-2 from IMDb only modestly
 (0.612). Whole reviews look different (0.926) mainly because they're long and multi-sentence.
 **Why it matters:**
@@ -419,8 +443,15 @@ concluding.
   bag-of-words models get 7 points worse from short to long reviews (C8).
 - This narrows what H4 can show: a sentence-level familiarity score has little to work with.
 
-**Possible fix:** none needed. Report it, and lean on the length analysis (C8) and B4 when
-explaining the IMDb drop.
+**Answered:** the shift decomposition (D31) shows the length part *helps* every model and the
+errors come from content (interestingfindings.md §8; B10 is the remaining label-noise caveat).
+
+### F8. 🟢 NEW: the early warning is scored only by AUROC
+**What:** AUROC summarises every threshold at once. A deployment needs one threshold: "check the
+10% of predictions with the lowest confidence; how many errors does that catch?"
+**Possible fix:** report recall and precision of errors at a fixed review budget (5%, 10%, 20%) per
+model, from the existing `early_warning_deciles.csv`.
+**Effort:** small.
 
 ---
 
@@ -465,9 +496,65 @@ show raw p-values next to adjusted ones.
 "pass" means getting *both* sentences of a pair right. That mixes competence (reading the word)
 with robustness (not being fooled), on purpose: otherwise a model that can't read the word
 looks robust.
-**Why it matters:** another definition gives other numbers. The model **ordering** holds when
-any one component is left out (Spearman 1.0 in all 12 checks, `mirage_gap_sensitivity.csv`).
+**Why it matters:** another definition gives other numbers. The model **ordering** barely depends
+on it: leaving out each component in turn keeps the order identical in 14 of 16 checks; the other
+two swap one pair of neighbours (Spearman 0.976 and 0.900) with the same top and bottom model
+(`mirage_gap_sensitivity.csv`).
 **Effort:** none (report the definition and the sensitivity check in the caption).
+
+### G7. 🔴 NEW: confidence intervals treat clustered items as independent
+**What:** every bootstrap resamples single items. But behavioral cases are built from a few
+words: each test's 250–500 cases share only 10–39 adjectives (and 6 name pairs), so cases with the
+same word fail or pass together. IMDb reviews also come several per film, and SST-2 sentences
+several per film.
+**Measured (behavioral, resampling whole words instead of cases):**
+
+| model, test | failure rate | CI resampling cases | CI resampling words | width ratio |
+|---|---|---|---|---|
+| DistilBERT, typo pairs (37 words) | 0.394 | [0.352, 0.436] | [0.278, 0.510] | 2.8× |
+| Multinomial NB, name pairs (10 words) | 0.386 | [0.344, 0.432] | [0.209, 0.569] | 4.1× |
+| LR, directional negation (19 words) | 0.300 | [0.260, 0.342] | [0.251, 0.348] | 1.2× |
+
+**Why it matters:** the behavioral CIs and p-values in every table (H1's template columns, H2 and
+H3 on templates, typo direction, name effects, the robustness score) are too narrow, in some cases
+about 3–4×. The large effects survive any reasonable widening, but borderline template results
+(e.g. GNB's 25% gap closed, small name shifts) may stop being significant. Until it is checked, a
+verdict that leans on a template test could change.
+**Possible fix:** a cluster bootstrap (resample words, or name pairs, then their cases) as a
+robustness table for every behavioral result; movie-level clusters for IMDb from the original
+review URLs. Report both CIs and flag any verdict that changes (shortfallfix.md).
+**Effort:** medium.
+
+### G8. 🟠 NEW: many analyses were designed after seeing results, with no confirmatory check
+**What:** the H1 test (D47), the robustness score (D40), the typo control (D37), the name probe
+(D45) and several thresholds were designed after the first results. The findings files label them
+"exploratory", but every number, exploratory or not, was computed on the same data that suggested
+the analysis.
+**Why it matters:** with enough choices, some patterns appear by chance ("forking paths"). An
+examiner can fairly ask which results would hold on data the analysis never touched.
+**Possible fix:** write down the key claims with their expected direction *before* running them
+again, commit that list, then test them on untouched data: a fresh behavioral draw with paraphrased
+frames (D10) and a fresh IMDb sample from the 40,000 unused reviews. Report a "replicated / not
+replicated" column (shortfallfix.md).
+**Effort:** medium (one Kaggle run for the transformers on IMDb).
+
+### G9. 🟠 NEW: significance is reported without a minimum effect that matters
+**What:** with thousands of items, tiny effects become significant. DistilBERT's name shift is
+−0.0001 (Holm p 0.007) and the random forest's +0.008 (Holm p < 0.001); HF DistilBERT's +3.5-point
+real-negation difference counts as "clearly higher" for H1 at Holm p 0.044.
+**Why it matters:** "significant" can be read as "important". Verdicts should rest on effects
+large enough to matter, not only on p-values.
+**Possible fix:** state a smallest effect of interest per kind of measure (e.g. 2 points of error,
+0.02 of probability, 0.02 of AUROC), add a "meaningful" column next to each significance flag, and
+use both in the verdict wording. The thresholds are chosen after the results, so say so (G8).
+**Effort:** small.
+
+### G10. 🟢 NEW: the Mirage Gap's two axes share sentences
+**What:** "looks" is SST-2 test accuracy (1,820 sentences); one of the four "behaves" checks is the
+real negated sentences, 339 of which are SST-2 test sentences.
+**Why it matters:** the two axes are slightly correlated by construction. The effect is small (one
+check of four, 19% of the test set), and the ordering survives leaving that check out (G6).
+**Effort:** none (state it); small to compute the gap against negation-free test accuracy.
 
 ---
 
@@ -506,18 +593,38 @@ tools normally keep the zip's timestamps. One that doesn't would only cause a sl
 wrong results.
 **Effort:** none.
 
+### H7. 🟠 NEW: numbers in the docs are copied by hand
+**What:** the results in README, hypothesisanswers.md and interestingfindings.md are typed from
+the CSVs. They have already drifted twice (285 vs 291 seed checks; a sensitivity claim that stopped
+being true when models were added, D50).
+**Why it matters:** the report will be written from these files. A stale number in the report is
+the error an examiner is most likely to catch.
+**Possible fix:** a claims registry: each quoted number listed once with the CSV cell it comes
+from, checked by a test, so `pytest` fails when a result changes and a doc isn't updated
+(shortfallfix.md). The report's number check (whatyouneedtodo step 10) reuses it.
+**Effort:** small to medium.
+
+### H8. 🟠 NEW: adding seeds or variants would silently change the headline tables
+**What:** `evaluate.canonical` keeps *every* seed of every model except DistilBERT, and
+`main_table` averages over seeds; `median_seed` assumes DistilBERT has one variant. Training the
+random forest on more seeds (C4) or a tuned DistilBERT (C3) would therefore change existing
+numbers without any error, against the rule that additions never change earlier statistics.
+**Why it matters:** it blocks C3 and C4 until fixed, and a careless re-run could change reported
+numbers unnoticed.
+**Possible fix:** make the headline seed explicit per model family (classical 42; DistilBERT its
+median among the configured headline seeds, per variant), keep extra seeds in robustness tables
+only, and add a test that adding a seed or variant leaves `main_table` unchanged
+(shortfallfix.md).
+**Effort:** small.
+
 ---
 
-## Suggested order if there's time
+## Suggested order
 
-All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1). Next, in order:
-1. ~~**D5** (directional negation test)~~: done, see D27.
-2. ~~**G1** (multiple-comparison correction)~~: done, see D28.
-3. ~~**C9** (degenerate DT probabilities)~~: done, see D29.
-4. ~~**F4**~~ and **C8** (length checks): F4 done, C8 ready and waiting for DistilBERT (D30).
-5. ~~**B4**, **C7** and **B9**~~: done, see D31.
-6. Everything 🟢: one sentence each in the report's Limitations section.
-7. **C2 / C12:** finish the external-model comparison once the Kaggle run is in (D39).
+The order, the dependencies and the design of every fix are in [shortfallfix.md](shortfallfix.md).
+In short: first the checks that protect everything else (H7, H8), then the 🔴 cluster bootstrap
+(G7), then the CPU-only fixes, one Kaggle run for all the GPU work, and the hand-labelling (B10).
+Everything 🟢 gets one sentence in the report's Limitations section.
 
 ## Resolved
 
@@ -542,3 +649,4 @@ All 🔴 items from the first pass are resolved or mitigated (B1, C1, D1, F1, H1
 - **E2 (for H5), explanations that mean different things.** One ranking rule for every model and a reliability-corrected agreement measure (D43).
 - **C15, H2/H3 tested on the wrong features.** A single-word variant completes the ladder (D42).
 - **H1, C8: full run.** Pipeline complete with DistilBERT (D34, D35); the length question is answered.
+- **F1, F6, F7: early warning and the IMDb shift.** Answered by the sentence-max distance and its length checks (D25, D30), the shift decomposition (D31) and the external models (D46): distance detects the shift but not the errors, and the shift is mostly length and format.

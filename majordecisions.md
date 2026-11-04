@@ -1616,3 +1616,39 @@ file tour), and deleting the old plans (they record what was planned against wha
 **Check:** every relative markdown link in the repo resolves; the README's summary table was
 re-read from `results/main_table.csv` and `results/mirage_gap.csv`.
 
+## D51 — New shortfalls found, and a design plan to fix every open 🔴 / 🟠 one
+
+**Searched:** the statistics, the behavioral suite, the evaluation code and the docs, for problems
+of the same kind as the open 🟠 items or worse.
+
+**Found (added to shortfalls.md):**
+- **G7 🔴: the bootstraps treat clustered items as independent.** Behavioral tests have 250–500
+  cases built from only 10–39 adjectives (and 6 name pairs). Resampling words instead of cases
+  widens DistilBERT's typo-pair CI from [0.352, 0.436] to [0.278, 0.510] (2.8×) and Multinomial NB's
+  name-pair CI from [0.344, 0.432] to [0.209, 0.569] (4.1×); LR's directional negation only 1.2×.
+  IMDb reviews also come several per film. Large effects survive, but borderline template results
+  may not, so it is 🔴 until checked.
+- **G8 🟠:** analyses designed after the first results, with no confirmatory check on untouched
+  data.
+- **G9 🟠:** significance without a minimum effect (DistilBERT's −0.0001 name shift has Holm
+  p 0.007).
+- **H7 🟠:** doc numbers copied by hand (they drifted twice, D50).
+- **H8 🟠:** `canonical` keeps every seed of non-reference models and `median_seed` mixes variants,
+  so adding RF seeds (C4) or a tuned DistilBERT (C3) would silently change headline tables.
+- **D10 🟠:** every template result comes from one frame set and one draw; frames aren't recorded.
+- 🟢: **D11** real people's names carry training reputations; **F8** early warning has no
+  operating point; **G10** the Mirage Gap's axes share 339 sentences.
+
+**Reclassified:** F1, F6 and F7 (🟠) were already answered by D25, D30, D31 and D46 and are now ✅.
+C2's and G6's text was out of date and is corrected (G6: the ordering holds in 14 of 16 leave-one-out
+checks, not "all 12").
+
+**Plan:** [shortfallfix.md](shortfallfix.md) designs a fix for each of the 12 open items, in four
+phases: protect the headline tables and the doc numbers first (H8, H7), then the cluster bootstrap
+(G7) and the other CPU fixes, then two Kaggle notebooks (training: C3, C4; inference: G8's fresh
+IMDb, F2, E1), then integration. Six decisions are left to the author, with recommendations, the
+main one being whether cluster intervals replace the current behavioral intervals (recommended,
+since the current ones are too narrow).
+
+**Not built yet:** this entry records the plan only.
+

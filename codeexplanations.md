@@ -31,6 +31,7 @@ never writes results.
 | `hypothesisanswers.md` | H1–H6 answered in full: the claim, how it was tested, every number with its CI, the verdict, why, caveats and robustness checks. Source material for the report. |
 | `interestingfindings.md` | 13 findings beyond the hypotheses, each tied to the hypothesis it explains or extends, marked planned or exploratory. Source material for the report. |
 | `proposal.md` | The project proposal: research questions, hypotheses H1–H6, datasets, models and evaluation plan. Its facts were corrected to match the code (Nov 2026); the hypotheses are as originally written. |
+| `shortfallfix.md` | The design plan for fixing every open 🔴 / 🟠 shortfall: order, decisions for you, and per item the code, outputs, tests and effort. |
 | `docs/archive/` | Finished plans, kept as a record: `MIRAGE_IMPLEMENTATION_PLAN.md` (the original week-by-week build plan) and `newadditionsdesign.md` (the design for the external models, the Mirage Gap and the demo, D39–D41). Superseded by the decision log where they differ. |
 | `CLAUDE.md` | Rules for Claude Code when working in this repo. |
 | `requirements-lock.txt` | Exact library versions of the environment that produced the final results (D46). |

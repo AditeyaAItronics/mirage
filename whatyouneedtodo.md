@@ -34,7 +34,14 @@ expected behaviour, and `python app/make_fallbacks.py` to redraw the fallback im
 and `figures/h5_word_effect_agreement.png` (H5). Check that you can explain the robustness score in
 one sentence: *"the share of shortcut tests a model gets fully right"* (D40).
 
-### 3. Read the two results files (1 h)
+### 3. Decide on the shortfall fixes (30 min)
+[shortfallfix.md](shortfallfix.md) is the plan to fix every open 🔴 / 🟠 shortfall, including a
+new 🔴 one: the behavioral confidence intervals are 3–4× too narrow (G7). Read its "Decisions for
+you" table and tell Claude your six answers (or "go with the recommendations"); Claude then builds
+Phase 1. You'll later run two Kaggle notebooks and label 200 IMDb excerpts (B10).
+**Do this before writing the report:** G7 can change the intervals the report quotes.
+
+### 3b. Read the two results files (1 h)
 [hypothesisanswers.md](hypothesisanswers.md) and [interestingfindings.md](interestingfindings.md)
 are deliberately longer than the report. Mark what you want in the report and how much; anything
 unclear or that you'd word differently, tell Claude.
