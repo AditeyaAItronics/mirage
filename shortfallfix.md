@@ -1,8 +1,30 @@
 # Shortfall fixes: design plan
 
 How to fix every open 🔴 and 🟠 item in [shortfalls.md](shortfalls.md): what each fix does, the
-code and outputs it adds, how it is tested and reported, what you decide, and the effort. Nothing
-here is built yet; this is the plan to approve.
+code and outputs it adds, how it is tested and reported, what you decide, and the effort. It
+was written as the plan to approve (D51); the status table below says what has been built since.
+
+## Status (4 Nov 2026)
+
+The author took all six recommendations and chose to build F2 + G8 now (with the fixes they
+depend on). What was built differs from the plan in a few places, noted here; the plan below is
+kept as written.
+
+| Item | Status | Where | Differs from the plan |
+|---|---|---|---|
+| **H8** headline seeds | ✅ done | D52, `evaluate.headline_pool` | — |
+| **G7** cluster bootstrap | ✅ done | D52, `results/cluster_robustness.csv` | — |
+| **G9** minimum effects | ✅ done | D52, `configs/stats.yaml` | — |
+| **C12** RoBERTa † mark | ✅ done | D52 | — |
+| **D10** frame set B | ✅ done | D53, `behavioral_by_frame.csv` | Claude drafted the frames, the author approved them |
+| **G8** replication | ✅ done: 16 of 17 replicated | D53, `results/replication.csv` | One Kaggle notebook (`kaggle_fresh.ipynb`) for the external models only; our DistilBERT ran on the CPU (its model files aren't on GitHub), median seed only |
+| **F2** own-feature distance | ✅ done | D53, `results/early_warning_own.csv` | DistilBERT's features were extracted on the CPU, not in a Kaggle notebook |
+| **H7** claims registry | open | — | not built yet |
+| **C3**, **C4**, **E1** | open | — | the training notebook (`kaggle_fixes_train`) and IG were not built |
+| **B10** edges labels | open | — | needs the author's hand-labelling |
+
+New items found while building: **D12** (template results depend on the frame) and **G11**
+(claim 3 failed), both in shortfalls.md.
 
 **Scope: 12 open items.**
 - 🔴 **G7** confidence intervals ignore clustering (new).

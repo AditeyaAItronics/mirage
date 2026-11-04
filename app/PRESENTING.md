@@ -23,7 +23,7 @@ Use the **Curated examples** dropdown, in this order. Every expected behaviour b
 | # | Example | What to point at |
 |---|---|---|
 | 1 | Names: Binoche vs Hopkins | Naive Bayes flips (90% → 10%); every other model holds. Only a name changed. |
-| 2 | Names again: Kidman vs Seagal | RoBERTa-large, 5× bigger and trained on 15 datasets, **also flips here**. Be precise if asked: across the full test it flips on only 1% of name pairs (Naive Bayes 38%), but its reactions still follow the names' reputations. Scale shrinks the shortcut; it doesn't erase it. |
+| 2 | Names again: Kidman vs Seagal | RoBERTa-large, 5× bigger and trained on 15 datasets, **also flips here**. Be precise if asked: across the full test it flips on only 1% of name pairs (Naive Bayes 38%), and that small shift is not statistically significant once the intervals account for repeated words (D52); its reactions across all 35 film people still follow the names' reputations (ρ 0.46, a small effect). Scale shrinks the shortcut; it doesn't erase it. |
 | 3 | Typos: brilliant vs brililant | Our DistilBERT: 100% → 1%. One typo. RoBERTa-large shrugs it off. |
 | 4 | Control: a typo in the noun | Nothing moves. It's about losing the *sentiment* word, not any odd word. |
 | 5 | Negation: bad vs not bad at all | Word-counting models stay negative; transformers flip. |

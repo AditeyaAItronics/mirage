@@ -1748,6 +1748,8 @@ paraphrased; no claim uses them.
     (hypothesisanswers.md; shortfalls G11 and D12).
 - **Frames matter:** they differ significantly in 29 of 72 testable cells, and LR's
   directional-negation failure rate ranges from 0% to 100% by frame (interestingfindings §15).
+- **The "Sadly," frame** (kept by the author as a check) does help the bag-of-words models: LR
+  fails 0% of its negation cases against 27–31% on the plain frames (MNB 21% vs 40–44%).
 - **F2:** DistilBERT's own-feature distance has AUROC 0.822 for its IMDb errors (MiniLM: 0.530),
   but adds +0.000 to confidence. The classical models' TF-IDF distance is 0.47–0.53. MNB's
   combination gains +0.034 (meaningful), which its saturated confidence explains (D26). H4 stays

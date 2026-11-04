@@ -126,11 +126,12 @@ for why each choice was made.
 |---|---|
 | `src/mirage/` | the package |
 | `configs/` | every setting, one YAML per stage |
-| `results/` | CSV outputs, including the reusable `behavioral_suite.csv` |
+| `results/` | CSV outputs, including the reusable `behavioral_suite.csv` and `behavioral_suite_v2.csv`, and the replication's `replication.csv` |
 | `figures/` | report figures (PNG + PDF) |
-| `notebooks/` | Kaggle notebooks: DistilBERT fine-tuning, and the external models' predictions |
+| `notebooks/` | Kaggle notebooks: DistilBERT fine-tuning, the external models' predictions, and the external models on the fresh IMDb sample (`kaggle_fresh.ipynb`, D53) |
 | `app/` | the live demo (Streamlit), its curated examples and presenter guide |
+| `docs/` | `confirmatory_claims.md`: the 17 claims pre-registered before the fresh data was scored (D53) |
 | `docs/archive/` | finished plans kept as a record (the original build plan, the presentation-additions design) |
-| `tests/` | `python -m pytest` (136 tests, about 2–3 min, no GPU needed) |
+| `tests/` | `python -m pytest` (154 tests, about 2–3 min, no GPU needed) |
 
 For a file-by-file tour of the code, see [codeexplanations.md](codeexplanations.md).

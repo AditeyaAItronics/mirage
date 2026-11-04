@@ -453,7 +453,8 @@ bug, but it should be confirmed with DistilBERT and with F4's length-matched che
 goes in the report.
 **Confirmed:** DistilBERT (0.530), HF DistilBERT (0.525) and RoBERTa-large (0.507) show the same,
 and the length-adjusted distance does no better (F4). H4 is rejected for all eight models. Whether
-a classifier's *own* features do better is F2.
+a classifier's *own* features do better was F2 (D53): DistilBERT's own-feature distance detects
+its errors (0.82) but adds nothing beyond confidence, so H4 stays rejected.
 
 ### F7. ✅ ANSWERED (D31): the SST-2 → IMDb shift is mostly length and format
 **What:** sentence for sentence, an embedding detector separates SST-2 from IMDb only modestly
@@ -663,10 +664,14 @@ only, and add a test that adding a seed or variant leaves `main_table` unchanged
 
 ## Suggested order
 
-The order, the dependencies and the design of every fix are in [shortfallfix.md](shortfallfix.md).
-In short: first the checks that protect everything else (H7, H8), then the 🔴 cluster bootstrap
-(G7), then the CPU-only fixes, one Kaggle run for all the GPU work, and the hand-labelling (B10).
-Everything 🟢 gets one sentence in the report's Limitations section.
+The design of every fix is in [shortfallfix.md](shortfallfix.md); its status table says what
+is done. Done (D52, D53): H8, G7, G9, C12, D10, G8, F2. Still open, in a sensible order:
+- **H7** (a test that the docs' numbers match the CSVs): protects the report; CPU only.
+- **G11** (wording only) and **D12** (pool the two suites, or more frames per test).
+- **B10** (hand-label 200 IMDb excerpts: your time).
+- **C3, C4, E1** (tuned DistilBERT, more seeds, IG baselines): Kaggle GPU runs.
+
+No 🔴 item is open. Everything 🟢 gets one sentence in the report's Limitations section.
 
 ## Resolved
 

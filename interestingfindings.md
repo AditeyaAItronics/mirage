@@ -340,8 +340,10 @@ does as badly as distance (0.49–0.54).
 Almost every IMDb review is unlike SST-2's short phrases, so the distance is high for nearly all
 of them and says little about which ones are hard. Errors most likely come from the content (mixed
 sentiment, sarcasm, a twist at the end), which the model's own confidence partly reflects and an
-external embedding doesn't see. The embedding model is also not the classifier (F2): what is
-unusual to MiniLM need not be hard for DistilBERT.
+external embedding doesn't see. The embedding model is also not the classifier: what is
+unusual to MiniLM need not be hard for DistilBERT. Measured in DistilBERT's own features instead,
+unusual *does* go with wrong (AUROC 0.82), but only for the reviews its confidence already flags
+(§16).
 
 **Connection to the hypotheses.** This is the reason behind **H4's rejection**. The distance works
 as a shift detector, so the negative result isn't a broken score; it is the wrong tool for
@@ -537,6 +539,9 @@ Three points connect them:
 - **The model family decides how strongly a shortcut is used.** Naive Bayes uses every skewed word
   at full strength; logistic regression shrinks them; transformers mostly read context but keep
   defaults for what they can't read (§1, §2, §4).
+- **The tests themselves need testing.** Re-running the claims on fresh data and new sentence
+  frames confirmed 16 of 17 and caught one that leaned on the frames (§15): a template result is
+  only as general as its sentences.
 - **Accuracy hides all of it.** The leaderboard twins (§1), the larger model's remaining shortcuts
   (§4) and the contamination warning (§12) are invisible without behavioural tests, which is the
   project's central claim.
@@ -561,6 +566,12 @@ it. Logistic regression's directional-negation failure rate (single words + pair
 
 The frames differ significantly (chi-square, Holm) in 29 of the 72 model × test × suite cells
 that can be tested, mostly in the negation tests and mostly for the bag-of-words models.
+
+**The "Sadly," check.** One new negation frame starts with "Sadly," on purpose (it is mildly
+negative itself). It helps the bag-of-words models exactly as feared: on "Sadly, the movie was not
+great." LR fails 0% of cases against 27–31% on the plain frames, Multinomial NB 21% against
+40–44%, Gaussian NB 60% against 84–100%. Their negation scores on that frame are partly the word
+"sadly", not the negation.
 
 **DistilBERT's blind spot.** Both DistilBERTs read every frame right except one: "I would never
 call the movie great." is positive for our DistilBERT in **96%** of cases [90, 100] and for HF

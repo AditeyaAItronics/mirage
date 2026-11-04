@@ -72,3 +72,14 @@ each reads naturally and that none of them adds sentiment of its own.**
 "Sadly," in the third negation frame is a deliberate check, kept by the author: it is mildly
 negative itself, so if a model fails that frame much less than the others, the frame is helping
 it. The per-frame table (`behavioral_by_frame.csv`) shows this.
+
+## Outcome (added after scoring; the claims above are unchanged)
+
+Scored on 4 Nov 2026 (D53): **16 of 17 replicated.** Claim 3 (H2) did not: on the second suite
+our DistilBERT fails the frame "I would never call the movie great" in 96% of cases, so the
+decision tree's and random forest's gaps fall below the 10-point rule. Every number is in
+`results/replication.csv`; the explanation is in hypothesisanswers.md (H2) and
+interestingfindings.md §15. As planned, the "Sadly," frame (B2) was checked. It does help the
+bag-of-words models: on "Sadly, the movie was not great." LR fails 0% (27–31% on B0 and B1),
+Multinomial NB 21% (40–44%) and Gaussian NB 60% (84–100%). Our DistilBERT makes no errors on any
+negation frame, so it can't show the effect (`results/behavioral_by_frame.csv`).
