@@ -10,3 +10,10 @@ imdb_head_words: 220
 imdb_tail_words: 140
 # Matched on normalized text, so "doesn't" has already become "does n't".
 negation_words: ["not", "never", "no", "nothing", "n't"]
+# G8 (D53): a second IMDb sample, disjoint from the first, for the confirmatory check
+imdb_fresh_sample_size: 10000
+fresh_seed: 2026
+# G7 (D52): the original release lists each review's film; used to bootstrap IMDb by film.
+# Stanford's server refuses some networks; this is a byte-identical mirror (same SHA-256).
+imdb_archive_url: https://huggingface.co/datasets/NolanChai/aclImdb_v1/resolve/main/aclImdb_v1.tar.gz
+imdb_archive_sha256: c40f74a18d3b61f90feba1e17730e0d38e8b97c05fde7008942e91923d1658fe

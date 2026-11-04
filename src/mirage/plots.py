@@ -342,6 +342,10 @@ SHORT_NAME = {
     "distilbert_hf": "DistilBERT (HF)",
     "roberta_large": "RoBERTa-large",
 }
+# C12 (D52): models whose accuracy may be inflated by training on our test data; marked wherever
+# their accuracy is plotted, with a footnote.
+ACCURACY_CAVEAT = {"roberta_large": "†"}
+ACCURACY_NOTE = "† accuracy possibly inflated: likely trained on SST-2 and IMDb"
 
 
 def _color(model: str) -> str:
@@ -415,7 +419,8 @@ def mirage_gap_chart(gap: pd.DataFrame, variant: str = "base", slide: bool = Fal
     anchors = [d.loc[g[0]] for g in groups]
     label_y = _spread(np.array([a["robustness"] for a in anchors]), 0.035 if slide else 0.03)
     for grp, r, yl in zip(groups, anchors, label_y, strict=True):
-        text = " = ".join(SHORT_NAME.get(m, m) for m in grp) + f"  {r['robustness']:.0%}"
+        text = " = ".join(SHORT_NAME.get(m, m) + ACCURACY_CAVEAT.get(m, "") for m in grp)
+        text += f"  {r['robustness']:.0%}"
         bold = worst in grp
         if bold:
             text += f"\nlooks {r['accuracy']:.0%}, behaves {r['robustness']:.0%}"
@@ -440,7 +445,8 @@ def mirage_gap_chart(gap: pd.DataFrame, variant: str = "base", slide: bool = Fal
         ax.text(
             1.0,
             lo + 0.01,
-            "hollow = ready-made external model",
+            "hollow = ready-made external model"
+            + (f"\n{ACCURACY_NOTE}" if set(ACCURACY_CAVEAT) & set(d.index) else ""),
             ha="right",
             fontsize=fs * 0.75,
             color=INK_2,

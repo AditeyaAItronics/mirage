@@ -46,6 +46,80 @@ NAME_SHORTCUT_TEMPLATES = [
 ]
 NAME_TEMPLATES = ["{name} {verb} the {noun}.", "{name} said the {noun} was {adj}."]
 
+# D10 (D53): frame set B, the paraphrased frames of the second suite (approved by the author in
+# docs/confirmatory_claims.md). Same slots and word lists; only the wording changes. "Sadly," is a
+# deliberate check of whether a frame's own tone helps a model.
+FRAMES_B = {
+    "simple": [
+        "In my view, the {noun} was {adj}.",
+        "Overall, the {noun} felt {adj}.",
+        "We all agreed the {noun} was {adj}.",
+        "Frankly, I found the {noun} {adj}.",
+    ],
+    "negation": [
+        "I did not find the {noun} {adj}.",
+        "The {noun} wasn't {adj}.",
+        "Sadly, the {noun} was not {adj}.",
+        "I can't say the {noun} was {adj}.",
+    ],
+    "paired": [
+        ("I found the {noun} {adj}.", "I did not find the {noun} {adj}."),
+        ("The {noun} felt {adj}.", "The {noun} didn't feel {adj}."),
+        ("Overall, the {noun} was {adj}.", "Overall, the {noun} wasn't {adj}."),
+        ("I would call the {noun} {adj}.", "I would never call the {noun} {adj}."),
+    ],
+    "name_shortcut": [
+        "{name}'s new film was {adj}.",
+        "I saw the latest {name} {noun} and found it {adj}.",
+        "This {name} {noun} turned out {adj}.",
+        "Watched a {name} {noun} last night; it was {adj}.",
+    ],
+}
+FRAMES_A = {
+    "simple": SIMPLE_TEMPLATES,
+    "negation": NEGATION_TEMPLATES,
+    "paired": PAIRED_TEMPLATES,
+    "name_shortcut": NAME_SHORTCUT_TEMPLATES,
+}
+FRAME_SETS = {"A": FRAMES_A, "B": FRAMES_B}
+# which frame list each test type is drawn from
+FRAME_KIND = {
+    "simple": "simple",
+    "typo": "simple",
+    "typo_noun": "simple",
+    "negation": "negation",
+    "negation_neg": "negation",
+    "negation_dir": "paired",
+    "negation_dir_neg": "paired",
+    "name_shortcut": "name_shortcut",
+}
+
+
+def _frame_regex(frame: str):
+    import re
+
+    parts = re.split(r"(\{\w+\})", frame)
+    return re.compile(
+        "^" + "".join(".+?" if p.startswith("{") else re.escape(p) for p in parts) + "$"
+    )
+
+
+def frame_of(text: str, test_type: str) -> str:
+    """The frame a behavioral sentence was built from, e.g. "A2" or "B0" (D10, D53).
+
+    Read back from the text, so it works on existing prediction files; "" if none matches
+    (name_swap, or a sentence whose typo hit the frame's own words). For a pair, pass the
+    original / affirmative sentence."""
+    kind = FRAME_KIND.get(test_type)
+    if kind is None:
+        return ""
+    for set_name, frames in FRAME_SETS.items():
+        for i, f in enumerate(frames[kind]):
+            first = f[0] if isinstance(f, tuple) else f
+            if _frame_regex(first).match(text):
+                return f"{set_name}{i}"
+    return ""
+
 
 def _sample(rng: np.random.Generator, pool: list, k: int) -> list:
     if k > len(pool):
@@ -60,12 +134,12 @@ def _fill(templates, adjs, k, rng) -> list[tuple[str, str]]:
     return [(t.format(noun=n, adj=a), a) for t, n, a in _sample(rng, pool, k)]
 
 
-def simple(n: int, rng: np.random.Generator) -> list[dict]:
+def simple(n: int, rng: np.random.Generator, frames=SIMPLE_TEMPLATES) -> list[dict]:
     rows = []
     for label, adjs, k in ((1, W.POS_ADJ, n // 2), (0, W.NEG_ADJ, n - n // 2)):
         rows += [
             {"text": t, "label": label, "test_type": "simple", "word": a}
-            for t, a in _fill(SIMPLE_TEMPLATES, adjs, k, rng)
+            for t, a in _fill(frames, adjs, k, rng)
         ]
     return [
         {**r, "kind": "MFT", "case_id": f"simple-{i}", "role": "single", "scored": True}
@@ -73,7 +147,9 @@ def simple(n: int, rng: np.random.Generator) -> list[dict]:
     ]
 
 
-def negation(n_pos: int, n_neg: int, rng: np.random.Generator) -> list[dict]:
+def negation(
+    n_pos: int, n_neg: int, rng: np.random.Generator, frames=NEGATION_TEMPLATES
+) -> list[dict]:
     """'not <positive>' -> negative (scored). 'not <negative>' -> labelled 1, NOT scored.
 
     "not bad" is at best mildly positive, so negated negatives are reported separately as an
@@ -81,11 +157,11 @@ def negation(n_pos: int, n_neg: int, rng: np.random.Generator) -> list[dict]:
     """
     rows = [
         {"text": t, "label": 0, "test_type": "negation", "scored": True, "word": a}
-        for t, a in _fill(NEGATION_TEMPLATES, W.POS_ADJ, n_pos, rng)
+        for t, a in _fill(frames, W.POS_ADJ, n_pos, rng)
     ]
     rows += [
         {"text": t, "label": 1, "test_type": "negation_neg", "scored": False, "word": a}
-        for t, a in _fill(NEGATION_TEMPLATES, W.NEG_ADJ, n_neg, rng)
+        for t, a in _fill(frames, W.NEG_ADJ, n_neg, rng)
     ]
     return [
         {**r, "kind": "MFT", "case_id": f"{r['test_type']}-{i}", "role": "single"}
@@ -93,7 +169,9 @@ def negation(n_pos: int, n_neg: int, rng: np.random.Generator) -> list[dict]:
     ]
 
 
-def negation_dir(n_pos: int, n_neg: int, rng: np.random.Generator) -> list[dict]:
+def negation_dir(
+    n_pos: int, n_neg: int, rng: np.random.Generator, frames=PAIRED_TEMPLATES
+) -> list[dict]:
     """Directional negation pairs (shortfalls.md D5).
 
     The plain negation MFT expects "not <positive>" to be negative, so a model that leans negative
@@ -106,7 +184,7 @@ def negation_dir(n_pos: int, n_neg: int, rng: np.random.Generator) -> list[dict]
         ("negation_dir", W.POS_ADJ, n_pos, True, 1),
         ("negation_dir_neg", W.NEG_ADJ, n_neg, False, 0),
     ):
-        pool = list(itertools.product(PAIRED_TEMPLATES, W.NOUNS, adjs))
+        pool = list(itertools.product(frames, W.NOUNS, adjs))
         for i, ((aff, neg), noun, adj) in enumerate(_sample(rng, pool, n)):
             for role, t, label in (("original", aff, pos_label), ("perturbed", neg, 1 - pos_label)):
                 rows.append(
@@ -124,7 +202,9 @@ def negation_dir(n_pos: int, n_neg: int, rng: np.random.Generator) -> list[dict]
     return rows
 
 
-def name_shortcut(n: int, pairs: list[tuple[str, str]], rng: np.random.Generator) -> list[dict]:
+def name_shortcut(
+    n: int, pairs: list[tuple[str, str]], rng: np.random.Generator, frames=NAME_SHORTCUT_TEMPLATES
+) -> list[dict]:
     """Invariance: swap a name whose training phrases are mostly positive for one whose phrases
     are mostly negative (D32). The sentence's sentiment comes only from a mild adjective, so the
     prediction should not move. `original` always holds the positive-associated name, so
@@ -132,7 +212,7 @@ def name_shortcut(n: int, pairs: list[tuple[str, str]], rng: np.random.Generator
     """
     texts = {}
     for t, (good, bad), noun, (label, adj) in itertools.product(
-        NAME_SHORTCUT_TEMPLATES,
+        frames,
         pairs,
         W.WORK_NOUNS,
         [(1, a) for a in W.MILD_POS] + [(0, a) for a in W.MILD_NEG],
@@ -172,12 +252,12 @@ def make_typo(word: str, rng: np.random.Generator) -> str:
     raise ValueError(f"could not perturb {word!r}")
 
 
-def typo(n: int, rng: np.random.Generator) -> list[dict]:
+def typo(n: int, rng: np.random.Generator, frames=SIMPLE_TEMPLATES) -> list[dict]:
     """Invariance: a typo in the sentiment word only. Short words (<4 letters) are excluded."""
     pool = [
         (t, noun, adj, label)
         for label, adjs in ((1, W.POS_ADJ), (0, W.NEG_ADJ))
-        for t, noun, adj in itertools.product(SIMPLE_TEMPLATES, W.NOUNS, adjs)
+        for t, noun, adj in itertools.product(frames, W.NOUNS, adjs)
         if len(adj) >= 4
     ]
     rows = []
@@ -191,7 +271,7 @@ def typo(n: int, rng: np.random.Generator) -> list[dict]:
     return [{**r, "test_type": "typo", "kind": "INV", "scored": True} for r in rows]
 
 
-def typo_noun(n: int, rng: np.random.Generator) -> list[dict]:
+def typo_noun(n: int, rng: np.random.Generator, frames=SIMPLE_TEMPLATES) -> list[dict]:
     """Control for `typo` (C11, D37): the typo goes in the NOUN, the sentiment word stays intact.
 
     "The movie was brilliant." -> "The moive was brilliant." A model that turns negative here reacts
@@ -200,7 +280,7 @@ def typo_noun(n: int, rng: np.random.Generator) -> list[dict]:
     pool = [
         (t, noun, adj, label)
         for label, adjs in ((1, W.POS_ADJ), (0, W.NEG_ADJ))
-        for t, noun, adj in itertools.product(SIMPLE_TEMPLATES, W.NOUNS, adjs)
+        for t, noun, adj in itertools.product(frames, W.NOUNS, adjs)
     ]
     rows = []
     for i, (t, noun, adj, label) in enumerate(_sample(rng, pool, n)):

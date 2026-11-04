@@ -14,26 +14,46 @@ from mirage.behavioral import templates
 from mirage.config import load_config
 
 SUITE_PATH = paths.RESULTS / "behavioral_suite.csv"
+SUITE_V2_PATH = paths.RESULTS / "behavioral_suite_v2.csv"  # D10 / G8 (D53): frame set B
 COLUMNS = ["item_id", "text", "label", "test_type", "kind", "case_id", "role", "scored", "word"]
 
 
-def build_suite(cfg: dict | None = None) -> pd.DataFrame:
+def build_suite(
+    cfg: dict | None = None, frame_set: str = "A", seed: int | None = None, prefix: str = "beh"
+) -> pd.DataFrame:
+    """The behavioral suite. Defaults give the original suite exactly; frame_set="B" with another
+    seed gives the paraphrased second suite (D10, D53)."""
     cfg = cfg or load_config("behavioral")
-    rng = np.random.default_rng(cfg["seed"])
+    rng = np.random.default_rng(cfg["seed"] if seed is None else seed)
     c = cfg["counts"]
+    f = templates.FRAME_SETS[frame_set]
     rows = (
-        templates.simple(c["simple"], rng)
-        + templates.negation(c["negation_pos"], c["negation_neg"], rng)
-        + templates.negation_dir(c["negation_dir"], c["negation_dir_neg"], rng)
-        + templates.typo(c["typo"], rng)
+        templates.simple(c["simple"], rng, f["simple"])
+        + templates.negation(c["negation_pos"], c["negation_neg"], rng, f["negation"])
+        + templates.negation_dir(c["negation_dir"], c["negation_dir_neg"], rng, f["paired"])
+        + templates.typo(c["typo"], rng, f["simple"])
         + templates.name_swap(c["name_swap"], rng)
         # last, so adding it didn't reshuffle the random draws of the tests above
-        + templates.name_shortcut(c["name_shortcut"], [tuple(p) for p in cfg["name_pairs"]], rng)
-        + templates.typo_noun(c["typo_noun"], rng)  # appended last: earlier draws unchanged
+        + templates.name_shortcut(
+            c["name_shortcut"], [tuple(p) for p in cfg["name_pairs"]], rng, f["name_shortcut"]
+        )
+        + templates.typo_noun(c["typo_noun"], rng, f["simple"])  # appended last
     )
     df = pd.DataFrame(rows)  # case_id is set by each generator; INV/DIR pairs share one
-    df.insert(0, "item_id", [f"beh-{i}" for i in range(len(df))])
+    df.insert(0, "item_id", [f"{prefix}-{i}" for i in range(len(df))])
     return df[COLUMNS]
+
+
+def build_suite_v2(cfg: dict | None = None) -> pd.DataFrame:
+    """G8 / D10 (D53): a fresh draw (replication seed) with frame set B, its own item ids."""
+    cfg = cfg or load_config("behavioral")
+    return build_suite(cfg, frame_set="B", seed=cfg["replication"]["seed"], prefix="beh2")
+
+
+def load_suite_v2() -> pd.DataFrame:
+    if not SUITE_V2_PATH.exists():
+        raise FileNotFoundError(f"{SUITE_V2_PATH} missing - run `python -m mirage replicate`")
+    return pd.read_csv(SUITE_V2_PATH, keep_default_na=False, dtype={"label": int, "scored": bool})
 
 
 def save_suite(df: pd.DataFrame) -> None:

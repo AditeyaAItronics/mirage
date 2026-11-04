@@ -24,7 +24,7 @@ from mirage.demo import (
     trim,
     unknown_words,
 )
-from mirage.plots import MODEL_COLOR, SHORT_NAME
+from mirage.plots import ACCURACY_CAVEAT, ACCURACY_NOTE, MODEL_COLOR, SHORT_NAME
 
 CFG = load_config("demo")
 EXTERNAL = set(load_config("external")["models"])
@@ -228,7 +228,7 @@ LOOKS_HEADER = "looks → behaves"
 LOOKS_CAPTION = (
     "Looks → behaves: the model's SST-2 test accuracy → its robustness score (the share of four "
     "behavioral tests it gets fully right: negation templates, real negated sentences, typos and "
-    "name swaps; D40). The gap between them is the Mirage Gap."
+    "name swaps; D40). The gap between them is the Mirage Gap. " + ACCURACY_NOTE + "."
 )
 
 
@@ -237,9 +237,10 @@ def looks_behaves(name: str) -> str:
     if findings is None or name not in findings.index:
         return "—"
     f = findings.loc[name]
+    mark = ACCURACY_CAVEAT.get(name, "")  # C12: accuracy possibly inflated by its training data
     return (
         f'<span style="white-space:nowrap;" title="test accuracy {f.accuracy:.1%}, robustness '
-        f'{f.robustness:.1%}">{f.accuracy:.0%} → <b>{f.robustness:.0%}</b> '
+        f'{f.robustness:.1%}">{f.accuracy:.0%}{mark} → <b>{f.robustness:.0%}</b> '
         f'<small style="{MUTED}">gap {f.gap * 100:.0f} pts</small></span>'
     )
 

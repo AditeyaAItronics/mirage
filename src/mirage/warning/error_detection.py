@@ -57,9 +57,11 @@ def compare_predictors(
     n_resamples: int = 1000,
     length: np.ndarray | None = None,
     extra: dict[str, np.ndarray] | None = None,
+    clusters: np.ndarray | None = None,
 ) -> pd.DataFrame:
     """`preds` = one model's IMDb predictions, row-aligned with `distance`, `length` and every
-    array in `extra` (more candidate predictors, e.g. length-adjusted distance)."""
+    array in `extra` (more candidate predictors, e.g. length-adjusted distance). `clusters`
+    (one label per review, e.g. its film) makes every interval a cluster bootstrap (G7, D52)."""
     target = (~preds["correct"].astype(bool)).to_numpy().astype(int)
     conf = confidence(preds["p_pos"].to_numpy())
     scores = {
@@ -73,7 +75,9 @@ def compare_predictors(
         scores[name] = np.asarray(s, dtype=float)
     rows = []
     for name, s in scores.items():
-        ci = bootstrap(lambda i, s=s: auroc(target[i], s[i]), len(target), n_resamples, seed)
+        ci = bootstrap(
+            lambda i, s=s: auroc(target[i], s[i]), len(target), n_resamples, seed, clusters=clusters
+        )
         row = {
             "predictor": name,
             "auroc": ci["estimate"],
@@ -83,7 +87,9 @@ def compare_predictors(
             "n_errors": int(target.sum()),
         }
         if name != "low_conf":
-            d = paired_auroc_diff(target, s, scores["low_conf"], n_resamples, seed)
+            d = paired_auroc_diff(
+                target, s, scores["low_conf"], n_resamples, seed, clusters=clusters
+            )
             row |= {
                 "diff_vs_conf": d["estimate"],
                 "diff_lo": d["ci_low"],

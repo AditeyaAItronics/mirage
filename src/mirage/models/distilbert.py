@@ -86,6 +86,23 @@ class DistilBertClassifier:
                 out.append(torch.softmax(logits.float(), dim=-1).cpu().numpy())
         return np.concatenate(out) if out else np.zeros((0, 2))
 
+    def features(
+        self, texts: list[str], long_text: bool = False, batch_size: int = 64
+    ) -> np.ndarray:
+        """The 768 numbers the classification head reads: the [CLS] vector after
+        `pre_classifier` and ReLU (F2, D53). Same encoding as `predict_proba`."""
+        import torch
+
+        out = []
+        with torch.no_grad():
+            for i in range(0, len(texts), batch_size):
+                batch = self.encode(list(texts[i : i + batch_size]), long_text).to(self.device)
+                h = self.model.distilbert(
+                    input_ids=batch["input_ids"], attention_mask=batch["attention_mask"]
+                ).last_hidden_state[:, 0]
+                out.append(torch.relu(self.model.pre_classifier(h)).float().cpu().numpy())
+        return np.concatenate(out) if out else np.zeros((0, 768), dtype=np.float32)
+
     def save(self, path: Path) -> None:
         path.mkdir(parents=True, exist_ok=True)
         self.model.save_pretrained(path)

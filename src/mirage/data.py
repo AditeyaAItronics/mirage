@@ -22,7 +22,12 @@ DATASETS = (
     "sst2_neg",
     "imdb",
     "imdb_edges",
+    # G8 (D53): reviews never used before, for the confirmatory check; side sets, not EVAL_SETS
+    "imdb_fresh",
+    "imdb_fresh_edges",
 )
+FILMS_PATH = paths.DATA / "imdb_films.parquet"
+KEY_WORDS = 40  # a review is identified by its first 40 words (capping keeps the head)
 
 
 def _download_sst2(name: str) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -231,6 +236,87 @@ def prepare() -> pd.DataFrame:
     stats = data_stats(splits)
     stats.to_csv(paths.RESULTS / "data_stats.csv", index=False)
     return stats
+
+
+def build_fresh_imdb(imdb: pd.DataFrame, cfg: dict) -> dict[str, pd.DataFrame]:
+    """G8 (D53): `imdb_fresh_sample_size` reviews from the IMDb test split that are *not* in the
+    main sample, drawn with `fresh_seed`, capped and cut to edges exactly like `imdb`. The main
+    sample is recomputed with the original seed, so the two never overlap."""
+    used = stratified_sample(imdb, cfg["imdb_sample_size"], cfg["seed"])["text"]
+    rest = imdb[~imdb["text"].isin(set(used))]
+    fresh = _with_ids(
+        stratified_sample(rest, cfg["imdb_fresh_sample_size"], cfg["fresh_seed"]), "imdb_fresh"
+    )
+    return {"imdb_fresh": build_imdb(fresh, cfg), "imdb_fresh_edges": build_imdb_edges(fresh)}
+
+
+def prepare_fresh() -> pd.DataFrame:
+    """Build and save the G8 side sets (needs the IMDb download, cached after `prepare`)."""
+    cfg = load_config("data")
+    sets = build_fresh_imdb(_download_imdb(cfg["imdb_dataset"]), cfg)
+    for name, df in sets.items():
+        df.to_parquet(paths.DATA / f"{name}.parquet", index=False)
+    return data_stats(sets)
+
+
+def review_key(text: str) -> str:
+    return " ".join(str(text).split()[:KEY_WORDS])
+
+
+def read_archive_films(archive) -> pd.DataFrame:
+    """(key, film) for every review in the original IMDb release (aclImdb_v1.tar.gz).
+
+    Line n of `urls_pos.txt` / `urls_neg.txt` is the IMDb page of review file `n_<rating>.txt`;
+    the film id is the `tt...` part of that URL. Only text files are read, nothing is extracted.
+    """
+    import re
+    import tarfile
+
+    reviews, urls = {}, {}
+    with tarfile.open(archive, "r:gz") as tar:
+        for m in tar:
+            if not m.isfile():
+                continue
+            parts = m.name.split("/")  # aclImdb/<split>/<pos|neg>/<n>_<rating>.txt or urls_*.txt
+            if len(parts) == 4 and parts[2] in ("pos", "neg") and parts[3].endswith(".txt"):
+                n = int(parts[3].split("_")[0])
+                reviews[(parts[1], parts[2], n)] = tar.extractfile(m).read().decode("utf-8")
+            elif len(parts) == 3 and parts[2] in ("urls_pos.txt", "urls_neg.txt"):
+                lines = tar.extractfile(m).read().decode("utf-8").splitlines()
+                urls[(parts[1], parts[2][5:8])] = lines
+    rows = []
+    for (split, pol, n), text in reviews.items():
+        hit = re.search(r"title/(tt\d+)", urls[(split, pol)][n])
+        rows.append({"key": review_key(text), "film": hit.group(1) if hit else None})
+    return pd.DataFrame(rows).drop_duplicates("key")
+
+
+def match_films(df: pd.DataFrame, films: pd.DataFrame) -> pd.DataFrame:
+    """(item_id, film) for one eval set; reviews that can't be matched get no film (they are
+    then their own cluster)."""
+    keys = df[["item_id"]].assign(key=df["text"].map(review_key))
+    return keys.merge(films, on="key", how="left")[["item_id", "film"]]
+
+
+def build_imdb_films(sets=("imdb", "imdb_fresh")) -> pd.DataFrame:
+    """G7 (D52): film id for every review in `sets`, from the original release, so IMDb results
+    can be bootstrapped by film. Downloads the archive (checked against its SHA-256) once."""
+    import hashlib
+    import urllib.request
+
+    cfg = load_config("data")
+    archive = paths.DATA / "raw" / "aclImdb_v1.tar.gz"
+    if not archive.exists():
+        archive.parent.mkdir(parents=True, exist_ok=True)
+        urllib.request.urlretrieve(cfg["imdb_archive_url"], archive)
+    digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+    if digest != cfg["imdb_archive_sha256"]:
+        raise ValueError(f"{archive} has SHA-256 {digest}, expected the official release's")
+    films = read_archive_films(archive)
+    parts = [match_films(load(s), films) for s in sets if (paths.DATA / f"{s}.parquet").exists()]
+    out = pd.concat(parts, ignore_index=True)
+    out.to_parquet(FILMS_PATH, index=False)
+    return out
 
 
 def load(name: str) -> pd.DataFrame:

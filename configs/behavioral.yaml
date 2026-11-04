@@ -25,3 +25,7 @@ name_pairs:
   - [Nicholson, Ritchie]
   - [Diesel, Tarantino]
   - [Kline, Sandler]
+# G8 / D10 (D53): the second suite for the confirmatory check: same counts, word lists and name
+# pairs, frame set B (templates.FRAMES_B), drawn with this seed
+replication:
+  seed: 2026

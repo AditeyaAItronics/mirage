@@ -371,7 +371,7 @@ def stage_name_probe(args) -> None:
 def stage_warn(args) -> None:
     from mirage.data import load
     from mirage.evaluate import canonical
-    from mirage.predict import load_predictions
+    from mirage.predict import load_clusters, load_predictions
     from mirage.stats import holm
     from mirage.warning.distance import (
         fit_distance,
@@ -409,34 +409,46 @@ def stage_warn(args) -> None:
 
     preds = canonical(load_predictions())  # seed choice needs sst2_val rows
     preds = preds[preds["dataset"] == "imdb"]
-    rows, deciles = [], []
+    films = load_clusters()  # G7 (D52): reviews of one film are resampled together
+    rows, item_rows, deciles = [], [], []
     for (m, v), g in preds.groupby(["model", "variant"]):
         d = dist.loc[g["item_id"]].to_numpy()
-        res = compare_predictors(
-            g,
-            d,
-            cfg["cv_folds"],
-            cfg["seed"],
-            cfg["bootstrap_resamples"],
+        common = dict(
             length=n_words.loc[g["item_id"]].to_numpy(),
             extra={"distance_adj": adjusted.loc[g["item_id"]].to_numpy()},
         )
+        args_ = (g, d, cfg["cv_folds"], cfg["seed"], cfg["bootstrap_resamples"])
+        film = films.reindex(g["item_id"])
+        film = np.where(film.isna(), "item:" + g["item_id"], film.astype(str))
+        res = compare_predictors(*args_, **common, clusters=film if len(films) else None)
         rows.append(res.assign(model=m, variant=v))
+        item_rows.append(compare_predictors(*args_, **common).assign(model=m, variant=v))
         if v == "base":
             conf = g["p_pos"].map(lambda p: max(p, 1 - p)).to_numpy()
             deciles += [
                 error_by_decile(g, d, "distance").assign(model=m),
                 error_by_decile(g, 1 - conf, "low confidence").assign(model=m),
             ]
-    out = pd.concat(rows, ignore_index=True).assign(ood_sanity_auroc=sanity)
     # H4 family per predictor: "beats confidence" across every model and variant (D28). External
     # models are a family of their own, so they don't change our models' p-values (D39).
-    from mirage.evaluate import holm_family
+    from mirage.evaluate import cluster_robustness, holm_family, min_effect
 
-    out["family"] = holm_family(out["model"], variant=out["variant"])
-    out["diff_p_holm"] = out.groupby(["predictor", "family"])["diff_p"].transform(lambda p: holm(p))
-    out["beats_conf"] = (out["diff_p_holm"] < 0.05) & (out["diff_vs_conf"] > 0)
+    def finish(parts):
+        out = pd.concat(parts, ignore_index=True).assign(ood_sanity_auroc=sanity)
+        out["family"] = holm_family(out["model"], variant=out["variant"])
+        out["diff_p_holm"] = out.groupby(["predictor", "family"])["diff_p"].transform(
+            lambda p: holm(p)
+        )
+        out["beats_conf"] = (out["diff_p_holm"] < 0.05) & (out["diff_vs_conf"] > 0)
+        # G9 (D52): a difference from confidence that is too small to matter
+        out["diff_vs_conf_meaningful"] = out["diff_vs_conf"].abs() >= min_effect()["auroc"]
+        return out
+
+    out, item = finish(rows), finish(item_rows)
     out.to_csv(paths.RESULTS / "early_warning.csv", index=False)
+    cluster_robustness({"early_warning": out}, {"early_warning": item}).to_csv(
+        paths.RESULTS / "early_warning_cluster_robustness.csv", index=False
+    )
     pd.concat(deciles, ignore_index=True).to_csv(
         paths.RESULTS / "early_warning_deciles.csv", index=False
     )
@@ -573,6 +585,190 @@ def stage_all(args) -> None:
 # ---------------------------------------------------------------- parser
 
 
+def stage_prepare_fresh(args) -> None:
+    """G8 / G7 (D53, D52): the fresh IMDb sample, and every IMDb review's film."""
+    from mirage.data import build_imdb_films, prepare_fresh
+
+    print(prepare_fresh().to_string(index=False))
+    films = build_imdb_films()
+    print(f"films: {films['film'].notna().mean():.1%} of {len(films)} reviews matched")
+
+
+def _feature_path(seed: int, dataset: str):
+    return paths.EMBEDDINGS / f"distilbert_feats__seed{seed}__{dataset}.npz"
+
+
+def stage_extract_features(args) -> None:
+    """F2 (D53): our DistilBERT's own features (median seed) for SST-2 train and IMDb."""
+    from mirage.data import load
+    from mirage.evaluate import median_seed
+    from mirage.models.base import load_classifier
+    from mirage.predict import LONG_TEXT_SETS, load_predictions
+
+    seed = median_seed(load_predictions(model="distilbert", dataset="sst2_val"))
+    clf = load_classifier(paths.model_dir("distilbert", "base", seed))
+    paths.EMBEDDINGS.mkdir(parents=True, exist_ok=True)
+    for ds in args.datasets:
+        out = _feature_path(seed, ds)
+        if out.exists() and not args.overwrite:
+            print(f"skip {ds}: {out.name} exists")
+            continue
+        df = load(ds)
+        X = clf.features(df["text"].tolist(), long_text=ds in LONG_TEXT_SETS, batch_size=32)
+        np.savez_compressed(out, item_id=df["item_id"].to_numpy(), X=X.astype(np.float16))
+        print("wrote", out.name, X.shape)
+
+
+def stage_own_distance(args) -> None:
+    """F2 (D53): Mahalanobis distance in each classifier's own feature space (Lee et al.,
+    class-conditional), scored for IMDb error detection next to confidence."""
+    from sklearn.decomposition import TruncatedSVD
+
+    from mirage.data import load
+    from mirage.evaluate import canonical, holm_family, median_seed, min_effect
+    from mirage.models.base import CLASSICAL_MODELS, load_classifier
+    from mirage.predict import load_clusters, load_predictions
+    from mirage.stats import holm
+    from mirage.warning.error_detection import compare_predictors
+    from mirage.warning.gaussian import GaussianDensity
+
+    cfg = load_config("warning")
+    seed_cls = load_config("classical")["seed"]
+    train = load("sst2_train")
+    y = train["label"].to_numpy()
+    preds = canonical(load_predictions(variant="base"))
+    imdb = preds[preds["dataset"] == "imdb"]
+    films = load_clusters()
+    rows = []
+
+    def score(model, g, dist):
+        film = films.reindex(g["item_id"])
+        film = np.where(film.isna(), "item:" + g["item_id"], film.astype(str))
+        res = compare_predictors(
+            g,
+            dist,
+            cfg["cv_folds"],
+            cfg["seed"],
+            cfg["bootstrap_resamples"],
+            clusters=film if len(films) else None,
+        )
+        res = res[res["predictor"].isin(["distance", "low_conf", "combined"])].copy()
+        res["predictor"] = res["predictor"].replace({"distance": "own_distance"})
+        rows.append(res.assign(model=model, variant="base"))
+        print(model, res[["predictor", "auroc"]].round(3).to_dict("records"))
+
+    for m in CLASSICAL_MODELS:
+        g = imdb[imdb["model"] == m]
+        if g.empty:
+            continue
+        vec = load_classifier(paths.model_dir(m, "base", seed_cls)).pipeline.named_steps["vec"]
+        svd = TruncatedSVD(cfg["own_feature_dims"], random_state=cfg["seed"])
+        Xtr = svd.fit_transform(vec.transform(train["text"]))
+        dens = GaussianDensity(class_conditional=True).fit(Xtr, y)
+        score(m, g, dens.score(svd.transform(vec.transform(g["text"]))))
+
+    seed = median_seed(load_predictions(model="distilbert", dataset="sst2_val"))
+    ftr, fim = _feature_path(seed, "sst2_train"), _feature_path(seed, "imdb")
+    if ftr.exists() and fim.exists():
+        tr, im = np.load(ftr, allow_pickle=True), np.load(fim, allow_pickle=True)
+        lab = train.set_index("item_id")["label"].reindex(tr["item_id"]).to_numpy()
+        dens = GaussianDensity(class_conditional=True).fit(tr["X"].astype(np.float64), lab)
+        dist = pd.Series(dens.score(im["X"].astype(np.float64)), index=im["item_id"])
+        g = imdb[imdb["model"] == "distilbert"]
+        score("distilbert", g, dist.loc[g["item_id"]].to_numpy())
+    else:
+        print("no DistilBERT features yet - run `python -m mirage extract-features`")
+
+    out = pd.concat(rows, ignore_index=True)
+    out["family"] = holm_family(out["model"], variant=out["variant"])
+    out["diff_p_holm"] = out.groupby(["predictor", "family"])["diff_p"].transform(lambda p: holm(p))
+    out["beats_conf"] = (out["diff_p_holm"] < 0.05) & (out["diff_vs_conf"] > 0)
+    out["diff_vs_conf_meaningful"] = out["diff_vs_conf"].abs() >= min_effect()["auroc"]
+    out.to_csv(paths.RESULTS / "early_warning_own.csv", index=False)
+    print(out[["model", "predictor", "auroc", "diff_vs_conf", "diff_p_holm"]].round(3).to_string())
+
+
+def stage_replicate(args) -> None:
+    """G8 / D10 (D53): the second suite and the fresh IMDb sample, every model that runs here,
+    then the pre-registered claims (results/replication.csv) and the per-frame table."""
+    from mirage.behavioral.suite import SUITE_V2_PATH, build_suite_v2
+    from mirage.data import load
+    from mirage.evaluate import canonical, median_seed
+    from mirage.models.base import CLASSICAL_MODELS, load_classifier
+    from mirage.models.external import EXTERNAL_SEED, ExternalClassifier
+    from mirage.predict import load_clusters, load_predictions, predictions_path, run_predictions
+    from mirage.replication import by_frame, score_claims
+    from mirage.warning.distance import fit_distance, text_distance
+    from mirage.warning.error_detection import compare_predictors
+
+    suite = build_suite_v2()
+    SUITE_V2_PATH.parent.mkdir(parents=True, exist_ok=True)
+    suite.to_csv(SUITE_V2_PATH, index=False)
+    print(f"behavioral_v2: {len(suite)} rows, frame set B")
+
+    if not args.skip_predict:
+        seed_cls = load_config("classical")["seed"]
+        ref_seed = median_seed(load_predictions(model="distilbert", dataset="sst2_val"))
+        ext = load_config("external")
+        jobs = [(m, v, seed_cls) for m in CLASSICAL_MODELS for v in ("base", "unigram", "negmark")]
+        jobs += [("distilbert", "base", ref_seed)]
+        jobs += [(m, "base", EXTERNAL_SEED) for m in ext["models"]]
+        for m, v, s in jobs:
+            # the transformers' long IMDb reviews: ours runs here (CPU, about 1 h); the external
+            # models come from notebooks/kaggle_fresh.ipynb
+            sets = ["behavioral_v2"]
+            if v == "base" and m not in ext["models"]:
+                sets += ["imdb_fresh", "imdb_fresh_edges"]
+            todo = [d for d in sets if not predictions_path(m, v, s, d).exists()]
+            if not todo:
+                continue
+            try:
+                if m in ext["models"]:
+                    clf = ExternalClassifier.from_hub(m, ext["models"][m], ext, local_only=True)
+                else:
+                    clf = load_classifier(paths.model_dir(m, v, s))
+            except (OSError, FileNotFoundError) as e:
+                print(f"skip {m}/{v}: {type(e).__name__}")
+                continue
+            for p in run_predictions(clf, v, s, todo):
+                print("wrote", p.name)
+
+    preds = load_predictions()
+    warning = None
+    fresh = preds[(preds["dataset"] == "imdb_fresh") & (preds["variant"] == "base")]
+    if len(fresh):
+        cfg = load_config("warning")
+        density = fit_distance(load("sst2_train"), cfg)
+        imdb = load("imdb_fresh")
+        dist = text_distance(density, imdb, "imdb_fresh", cfg)
+        films = load_clusters()
+        parts = []
+        for m, g in canonical(preds[preds["dataset"].isin(["imdb_fresh", "sst2_val"])]).groupby(
+            "model"
+        ):
+            g = g[(g["dataset"] == "imdb_fresh") & (g["variant"] == "base")]
+            if g.empty:
+                continue
+            film = films.reindex(g["item_id"])
+            film = np.where(film.isna(), "item:" + g["item_id"], film.astype(str))
+            res = compare_predictors(
+                g,
+                dist.loc[g["item_id"]].to_numpy(),
+                cfg["cv_folds"],
+                cfg["seed"],
+                cfg["bootstrap_resamples"],
+                clusters=film,
+            )
+            parts.append(res.assign(model=m))
+        warning = pd.concat(parts, ignore_index=True)
+        warning.to_csv(paths.RESULTS / "early_warning_fresh.csv", index=False)
+
+    claims = score_claims(preds, warning)
+    claims.to_csv(paths.RESULTS / "replication.csv", index=False)
+    by_frame(preds).to_csv(paths.RESULTS / "behavioral_by_frame.csv", index=False)
+    print(claims[["claim", "status", "detail"]].to_string(index=False))
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="mirage", description=__doc__)
     sub = p.add_subparsers(dest="stage", required=True)
@@ -630,6 +826,19 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser(
         "warn", help="embeddings, Gaussian distance, error-detection AUROC"
     ).set_defaults(fn=stage_warn)
+    sub.add_parser(
+        "prepare-fresh", help="G8/G7: the fresh IMDb sample and every review's film"
+    ).set_defaults(fn=stage_prepare_fresh)
+    s = sub.add_parser("extract-features", help="F2: our DistilBERT's own features")
+    s.add_argument("--datasets", nargs="+", default=["sst2_train", "imdb"])
+    s.add_argument("--overwrite", action="store_true")
+    s.set_defaults(fn=stage_extract_features)
+    sub.add_parser(
+        "own-distance", help="F2: distance in each classifier's own features (Lee et al.)"
+    ).set_defaults(fn=stage_own_distance)
+    s = sub.add_parser("replicate", help="G8: fresh data, pre-registered claims, frames table")
+    s.add_argument("--skip-predict", action="store_true", help="score what's there only")
+    s.set_defaults(fn=stage_replicate)
     sub.add_parser("figures", help="render every figure from the result CSVs").set_defaults(
         fn=stage_figures
     )

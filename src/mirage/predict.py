@@ -22,7 +22,10 @@ EVAL_SETS = (
     "imdb",
     "imdb_edges",  # same item_ids as imdb: first + last sentence of each review (D31)
 )
-LONG_TEXT_SETS = frozenset({"imdb"})
+# Side sets outside EVAL_SETS: name_probe (D45), and for the confirmatory check (G8, D53) the
+# fresh IMDb sample and the second behavioral suite. Each has its own stage.
+SIDE_SETS = ("name_probe", "imdb_fresh", "imdb_fresh_edges", "behavioral_v2")
+LONG_TEXT_SETS = frozenset({"imdb", "imdb_fresh"})
 
 
 def predictions_path(model: str, variant: str, seed: int, dataset: str) -> Path:
@@ -70,6 +73,10 @@ def load_eval_set(dataset: str) -> pd.DataFrame:
         from mirage.behavioral.suite import load_suite
 
         return load_suite()
+    if dataset == "behavioral_v2":  # D53: the paraphrased second suite (replicate stage)
+        from mirage.behavioral.suite import load_suite_v2
+
+        return load_suite_v2()
     if dataset == "name_probe":  # D45: built by the name-probe stage, never part of EVAL_SETS
         from mirage.behavioral.names import PROBE_PATH_NAME
 
@@ -107,3 +114,15 @@ def load_predictions(
             f"no predictions match {model}/{variant}/seed{seed}/{dataset} in {paths.PREDICTIONS}"
         )
     return pd.concat(frames, ignore_index=True)
+
+
+def load_clusters() -> pd.Series:
+    """Cluster label per item_id for the bootstrap (G7, D52): `film:<imdb id>` for IMDb reviews
+    (from `data.build_imdb_films`). Empty if that file hasn't been built; items without a label
+    are their own cluster. Behavioral clusters come from the predictions' own `word` column."""
+    from mirage.data import FILMS_PATH
+
+    if not FILMS_PATH.exists():
+        return pd.Series(dtype=object)
+    f = pd.read_parquet(FILMS_PATH).dropna(subset=["film"])
+    return ("film:" + f["film"]).set_axis(f["item_id"])

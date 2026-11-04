@@ -2,11 +2,20 @@
 
 Seed policy (majordecisions.md D13): aggregate tables report DistilBERT as mean +/- std over its
 seeds; per-item analyses (gaps, McNemar, failures) use its median-accuracy seed. The seed is chosen
-on sst2_val; the reported in-distribution numbers come from sst2_test (D22).
+on sst2_val; the reported in-distribution numbers come from sst2_test (D22). Only *headline* seeds
+count (H8, D52): the classical seed, and DistilBERT's configured seeds, per variant; extra seeds
+exist for robustness tables only, so adding them never changes a headline number.
+
+Intervals (G7, D52): behavioral cases are resampled by their adjective and IMDb reviews by their
+film, since items in one cluster pass or fail together. `cluster_robustness` keeps the item-level
+intervals beside them. Effects also carry a `*_meaningful` flag against the smallest effect of
+interest in configs/stats.yaml (G9, D52).
 """
 
 from __future__ import annotations
 
+import contextlib
+import functools
 import itertools
 
 import numpy as np
@@ -15,10 +24,18 @@ from scipy.stats import norm
 
 from mirage import paths
 from mirage.behavioral.suite import case_failures, dir_cases
+from mirage.config import load_config
 from mirage.metrics import summarize
-from mirage.models.base import ABLATION_VARIANTS, external_models
-from mirage.predict import load_predictions
-from mirage.stats import gap_closed_ci, holm, mcnemar_test, paired_diff_ci, rate_ci
+from mirage.models.base import ABLATION_VARIANTS, CLASSICAL_MODELS, external_models
+from mirage.predict import load_clusters, load_predictions
+from mirage.stats import (
+    diff_independent_ci,
+    gap_closed_ci,
+    holm,
+    mcnemar_test,
+    paired_diff_ci,
+    rate_ci,
+)
 
 REFERENCE = "distilbert"
 INDIST = "sst2_test"  # reported in-distribution test set; sst2_val is for choices only
@@ -39,9 +56,33 @@ def holm_family(*model_cols: pd.Series, variant: pd.Series | None = None) -> np.
     return out
 
 
-def median_seed(preds: pd.DataFrame, model: str = REFERENCE) -> int:
-    """Seed whose sst2_val accuracy is the median across seeds (lower-middle for even counts)."""
-    val = preds[(preds["model"] == model) & (preds["dataset"] == "sst2_val")]
+@functools.lru_cache(maxsize=1)
+def _headline_seeds() -> tuple[int, frozenset]:
+    """(classical seed, DistilBERT headline seeds) from the configs (H8, D52)."""
+    return load_config("classical")["seed"], frozenset(load_config("distilbert")["seeds"])
+
+
+def headline_pool(preds: pd.DataFrame) -> pd.DataFrame:
+    """Drop rows from non-headline seeds (H8, D52): a classical model keeps its configured seed,
+    DistilBERT its configured `seeds` (robustness seeds never count), per model and variant.
+    Filtering applies only where a headline seed is present, so single-seed data passes as is."""
+    cls_seed, ref_seeds = _headline_seeds()
+    headline = pd.Series(True, index=preds.index)
+    cls = preds["model"].isin(CLASSICAL_MODELS)
+    headline[cls] = preds.loc[cls, "seed"] == cls_seed
+    ref = preds["model"] == REFERENCE
+    headline[ref] = preds.loc[ref, "seed"].isin(ref_seeds)
+    has_headline = headline.groupby([preds["model"], preds["variant"]]).transform("any")
+    return preds[headline | ~has_headline]
+
+
+def median_seed(preds: pd.DataFrame, model: str = REFERENCE, variant: str = "base") -> int:
+    """Headline seed whose sst2_val accuracy is the median across seeds (lower-middle for even
+    counts), for one model and variant."""
+    preds = headline_pool(preds)
+    val = preds[
+        (preds["model"] == model) & (preds["variant"] == variant) & (preds["dataset"] == "sst2_val")
+    ]
     if val.empty:
         raise ValueError(
             "median_seed needs sst2_val predictions: pass all predictions, then filter by dataset"
@@ -51,14 +92,78 @@ def median_seed(preds: pd.DataFrame, model: str = REFERENCE) -> int:
 
 
 def canonical(preds: pd.DataFrame) -> pd.DataFrame:
-    """Keep one seed per model: DistilBERT's median seed, the only seed for everything else."""
-    if (preds["model"] == REFERENCE).any():
-        keep = (preds["model"] != REFERENCE) | (preds["seed"] == median_seed(preds))
+    """Keep one seed per model and variant: DistilBERT's median headline seed, the headline seed
+    for everything else (H8, D52)."""
+    preds = headline_pool(preds)
+    ref = preds["model"] == REFERENCE
+    if ref.any():
+        keep = ~ref
+        for v in preds.loc[ref, "variant"].unique():
+            keep |= ref & (preds["variant"] == v) & (preds["seed"] == median_seed(preds, variant=v))
         preds = preds[keep]
     return preds
 
 
+# ---------------------------------------------------------------- G7: clusters
+CLUSTERED = True  # switched off only to compute the item-level intervals (cluster_robustness)
+
+
+@contextlib.contextmanager
+def item_level_intervals():
+    """Temporarily resample single items, as before G7 (for `cluster_robustness`)."""
+    global CLUSTERED
+    old, CLUSTERED = CLUSTERED, False
+    try:
+        yield
+    finally:
+        CLUSTERED = old
+
+
+@functools.lru_cache(maxsize=1)
+def _films() -> pd.Series:
+    return load_clusters()
+
+
+def _cluster_map(preds: pd.DataFrame) -> pd.Series:
+    """id -> cluster label (G7, D52): a behavioral case -> `word:<its adjective>`, an IMDb review
+    -> `film:<its film>`. Anything else is unlisted and becomes its own cluster."""
+    parts = [_films()]
+    beh = preds[preds["dataset"] == "behavioral"]
+    if len(beh) and "word" in beh:
+        one = beh.drop_duplicates("case_id")
+        parts.append(("word:" + one["word"].astype(str)).set_axis(one["case_id"]))
+    out = pd.concat([p for p in parts if len(p)]) if any(len(p) for p in parts) else pd.Series()
+    return out[~out.index.duplicated()]
+
+
+def _clusters(ids, cmap: pd.Series) -> np.ndarray | None:
+    """Cluster labels for `ids` (None = item bootstrap): unlisted ids are their own cluster."""
+    if not CLUSTERED or cmap is None or not len(cmap):
+        return None
+    ids = pd.Index(ids)
+    lab = cmap.reindex(ids)
+    if lab.isna().all():
+        return None
+    return np.where(lab.isna(), "item:" + ids.astype(str), lab.astype(str))
+
+
+# ---------------------------------------------------------------- G9: smallest effects of interest
+@functools.lru_cache(maxsize=1)
+def min_effect() -> dict:
+    return load_config("stats")["min_effect"]
+
+
+def _flag_meaningful(out: pd.DataFrame, cols, kind: str) -> pd.DataFrame:
+    """Add `<col>_meaningful`: |effect| >= the smallest effect of interest of this kind (G9)."""
+    thr = min_effect()[kind]
+    for c in cols:
+        if c in out:
+            out[f"{c}_meaningful"] = out[c].abs() >= thr
+    return out
+
+
 def main_table(preds: pd.DataFrame, datasets=SETS) -> pd.DataFrame:
+    preds = headline_pool(preds)
     rows = []
     for (m, v, s, d), g in preds[preds["dataset"].isin(datasets)].groupby(
         ["model", "variant", "seed", "dataset"]
@@ -100,11 +205,13 @@ def _error_flags(preds: pd.DataFrame) -> dict[str, pd.Series]:
 def error_table(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
     """H1: error rate per test type with CI, and relative to the model's SST-2 test error."""
     rows = []
-    for (m, v), g in canonical(preds).groupby(["model", "variant"]):
+    preds = canonical(preds)
+    cmap = _cluster_map(preds)
+    for (m, v), g in preds.groupby(["model", "variant"]):
         flags = _error_flags(g)
         base_err = flags[INDIST].mean() if INDIST in flags else np.nan
         for test, f in flags.items():
-            ci = rate_ci(f.to_numpy(), **ci_kw)
+            ci = rate_ci(f.to_numpy(), clusters=_clusters(f.index, cmap), **ci_kw)
             rows.append(
                 {
                     "model": m,
@@ -135,6 +242,7 @@ def negation_gap(
     the unigram columns never change the base / negmark ones.
     """
     preds = canonical(preds)
+    cmap = _cluster_map(preds)
     flags = {(m, v): _error_flags(g) for (m, v), g in preds.groupby(["model", "variant"])}
     ref = flags.get((REFERENCE, "base"))
     if ref is None:
@@ -157,7 +265,8 @@ def negation_gap(
                 join="inner",
             )
             row = {"model": m, "test": test, "n": len(aligned)}
-            gap = paired_diff_ci(aligned["base"], aligned["ref"], **ci_kw)
+            cl = _clusters(aligned.index, cmap)
+            gap = paired_diff_ci(aligned["base"], aligned["ref"], clusters=cl, **ci_kw)
             row |= {
                 "gap_base": gap["estimate"],
                 "gap_base_lo": gap["ci_low"],
@@ -165,8 +274,10 @@ def negation_gap(
                 "gap_base_p": gap["p_value"],
             }
             if "negmark" in aligned and aligned["negmark"].notna().all():
-                g1 = paired_diff_ci(aligned["negmark"], aligned["ref"], **ci_kw)
-                closed = gap_closed_ci(aligned["base"], aligned["negmark"], aligned["ref"], **ci_kw)
+                g1 = paired_diff_ci(aligned["negmark"], aligned["ref"], clusters=cl, **ci_kw)
+                closed = gap_closed_ci(
+                    aligned["base"], aligned["negmark"], aligned["ref"], clusters=cl, **ci_kw
+                )
                 row |= {
                     "gap_negmark": g1["estimate"],
                     "gap_negmark_lo": g1["ci_low"],
@@ -180,7 +291,7 @@ def negation_gap(
             uni = flags.get((m, "unigram"), {}).get(test)
             if uni is not None:
                 row |= _ladder(
-                    uni, f[test], flags.get((m, "negmark"), {}).get(test), ref[test], ci_kw
+                    uni, f[test], flags.get((m, "negmark"), {}).get(test), ref[test], ci_kw, cmap
                 )
             rows.append(row)
     out = pd.DataFrame(rows)
@@ -196,10 +307,13 @@ def negation_gap(
     ):
         if col in out:
             out[col.replace("_p", "_p_holm")] = holm(out[col])
-    return out
+    out = _flag_meaningful(out, ["gap_base", "gap_negmark", "gap_unigram"], "error")
+    return _flag_meaningful(out, ["gap_closed", "pairs_closed", "ladder_closed"], "gap_closed")
 
 
-def _ladder(uni: pd.Series, base: pd.Series, negmark, ref: pd.Series, ci_kw: dict) -> dict:
+def _ladder(
+    uni: pd.Series, base: pd.Series, negmark, ref: pd.Series, ci_kw: dict, cmap=None
+) -> dict:
     """The single-word rung of the H2/H3 ladder (D42), each comparison on its own aligned items."""
 
     def ci(prefix: str, res: dict) -> dict:
@@ -210,13 +324,18 @@ def _ladder(uni: pd.Series, base: pd.Series, negmark, ref: pd.Series, ci_kw: dic
             f"{prefix}_p": res["p_value"],
         }
 
+    def cl(df):
+        return {"clusters": _clusters(df.index, cmap)}
+
     a = pd.concat({"uni": uni, "ref": ref}, axis=1, join="inner")
-    out = {"n_unigram": len(a)} | ci("gap_unigram", paired_diff_ci(a["uni"], a["ref"], **ci_kw))
+    out = {"n_unigram": len(a)} | ci(
+        "gap_unigram", paired_diff_ci(a["uni"], a["ref"], **cl(a), **ci_kw)
+    )
     b = pd.concat({"uni": uni, "base": base, "ref": ref}, axis=1, join="inner")
-    out |= ci("pairs_closed", gap_closed_ci(b["uni"], b["base"], b["ref"], **ci_kw))
+    out |= ci("pairs_closed", gap_closed_ci(b["uni"], b["base"], b["ref"], **cl(b), **ci_kw))
     if negmark is not None:
         c = pd.concat({"uni": uni, "neg": negmark, "ref": ref}, axis=1, join="inner")
-        out |= ci("ladder_closed", gap_closed_ci(c["uni"], c["neg"], c["ref"], **ci_kw))
+        out |= ci("ladder_closed", gap_closed_ci(c["uni"], c["neg"], c["ref"], **cl(c), **ci_kw))
     return out
 
 
@@ -233,6 +352,7 @@ def negmark_effect(
     DIR cases are compared on pairs that are applicable under both variants.
     """
     preds = canonical(preds)
+    cmap = _cluster_map(preds)
     rows = []
     for (m, variant), g in preds.groupby(["model", "variant"]):
         # marking variants only: the single-word ablation is in negation_gap's ladder (D42)
@@ -247,7 +367,9 @@ def negmark_effect(
             if test not in fb or test not in fn:
                 continue
             both = pd.concat({"base": fb[test], "negmark": fn[test]}, axis=1, join="inner")
-            d = paired_diff_ci(both["base"], both["negmark"], **ci_kw)
+            d = paired_diff_ci(
+                both["base"], both["negmark"], clusters=_clusters(both.index, cmap), **ci_kw
+            )
             rows.append(
                 {
                     "model": m,
@@ -266,6 +388,7 @@ def negmark_effect(
     if len(out):
         out["p_holm"] = holm(out["p_value"])
         out["significant"] = out["p_holm"] < 0.05
+        out = _flag_meaningful(out, ["reduction"], "error")
     return out
 
 
@@ -288,8 +411,10 @@ def length_table(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
         length=pd.cut(imdb["n_words"], LENGTH_BINS, labels=LENGTH_LABELS, right=True)
     )
     rows = []
+    cmap = _cluster_map(imdb)
     for (m, v, b), g in imdb.groupby(["model", "variant", "length"], observed=True):
-        ci = rate_ci((~g["correct"].astype(bool)).to_numpy(), **ci_kw)
+        clusters = _clusters(g["item_id"], cmap)
+        ci = rate_ci((~g["correct"].astype(bool)).to_numpy(), clusters=clusters, **ci_kw)
         rows.append(
             {
                 "model": m,
@@ -314,15 +439,31 @@ def shift_decomposition(preds: pd.DataFrame) -> pd.DataFrame:
     Holm-adjusted within each part across models and variants.
     """
     rows = []
-    for (m, v), g in canonical(preds).groupby(["model", "variant"]):
+    preds = canonical(preds)
+    cmap = _cluster_map(preds)
+    for (m, v), g in preds.groupby(["model", "variant"]):
         f = _error_flags(g)
         if not {"imdb", "imdb_edges", INDIST} <= set(f):
             continue
         both = pd.concat({"full": f["imdb"], "edges": f["imdb_edges"]}, axis=1, join="inner")
-        lf = paired_diff_ci(both["full"], both["edges"])
+        lf = paired_diff_ci(both["full"], both["edges"], clusters=_clusters(both.index, cmap))
         e, t = f["imdb_edges"].astype(float), f[INDIST].astype(float)
         diff = e.mean() - t.mean()
-        se = np.sqrt(e.var(ddof=1) / len(e) + t.var(ddof=1) / len(t))
+        film = _clusters(e.index, cmap)
+        if film is None:  # item level: the normal approximation used before G7
+            se = np.sqrt(e.var(ddof=1) / len(e) + t.var(ddof=1) / len(t))
+            content = {
+                "content_lo": diff - 1.96 * se,
+                "content_hi": diff + 1.96 * se,
+                "content_p": float(2 * norm.sf(abs(diff) / se)) if se > 0 else 1.0,
+            }
+        else:  # G7: edges resampled by film, SST-2 sentences singly
+            d = diff_independent_ci(e.to_numpy(), t.to_numpy(), clusters_a=film)
+            content = {
+                "content_lo": d["ci_low"],
+                "content_hi": d["ci_high"],
+                "content_p": d["p_value"],
+            }
         rows.append(
             {
                 "model": m,
@@ -335,9 +476,7 @@ def shift_decomposition(preds: pd.DataFrame) -> pd.DataFrame:
                 "length_format_hi": lf["ci_high"],
                 "length_format_p": lf["p_value"],
                 "content": diff,
-                "content_lo": diff - 1.96 * se,
-                "content_hi": diff + 1.96 * se,
-                "content_p": float(2 * norm.sf(abs(diff) / se)) if se > 0 else 1.0,
+                **content,
             }
         )
     out = pd.DataFrame(rows)
@@ -346,7 +485,7 @@ def shift_decomposition(preds: pd.DataFrame) -> pd.DataFrame:
     for part in ("length_format", "content"):
         if len(out):
             out[f"{part}_p_holm"] = out.groupby("family")[f"{part}_p"].transform(lambda p: holm(p))
-    return out
+    return _flag_meaningful(out, ["length_format", "content"], "error")
 
 
 def mcnemar_table(preds: pd.DataFrame, datasets=SETS) -> pd.DataFrame:
@@ -399,6 +538,7 @@ def negation_control(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
         b = _behavioral(g)
         if b.empty:
             continue
+        cmap = _cluster_map(b)
         simple = b[(b["test_type"] == "simple") & (b["label"] == 1)]
         always_right = simple.groupby("word")["correct"].all()
         known = set(always_right[always_right].index)
@@ -407,7 +547,8 @@ def negation_control(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
         row = {"model": m, "variant": v, "n_words_known": len(known), "n_words": len(always_right)}
         for name, f in (("all", failed), ("known_words", failed[neg["word"].isin(known)])):
             if len(f):
-                ci = rate_ci(f.to_numpy(), **ci_kw)
+                clusters = _clusters(neg.loc[f.index, "case_id"], cmap)
+                ci = rate_ci(f.to_numpy(), clusters=clusters, **ci_kw)
                 row |= {
                     f"neg_error_{name}": ci["estimate"],
                     f"neg_error_{name}_lo": ci["ci_low"],
@@ -428,6 +569,7 @@ def negation_direction(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
     """
     rows = []
     for (m, v), g in canonical(preds).groupby(["model", "variant"]):
+        cmap = _cluster_map(_behavioral(g))
         dc = dir_cases(_behavioral(g))
         for tt, d in dc.groupby("test_type"):
             row = {
@@ -444,7 +586,8 @@ def negation_direction(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
                 ("no_move", d["no_move"]),
             ):
                 if len(f):
-                    ci = rate_ci(f.to_numpy().astype(bool), **ci_kw)
+                    clusters = _clusters(d.loc[f.index, "case_id"], cmap)
+                    ci = rate_ci(f.to_numpy().astype(bool), clusters=clusters, **ci_kw)
                     row |= {
                         name: ci["estimate"],
                         f"{name}_lo": ci["ci_low"],
@@ -465,12 +608,18 @@ def name_effect(preds: pd.DataFrame, tests=("name_shortcut", "name_swap"), **ci_
     rows = []
     for (m, v), g in canonical(preds).groupby(["model", "variant"]):
         b = _behavioral(g)
+        cmap = _cluster_map(b)
         for tt in tests:
             d = b[b["test_type"] == tt]
             if d.empty:
                 continue
             w = d.pivot_table(index="case_id", columns="role", values=["p_pos", "pred"])
-            shift = paired_diff_ci(w["p_pos"]["original"], w["p_pos"]["perturbed"], **ci_kw)
+            shift = paired_diff_ci(
+                w["p_pos"]["original"],
+                w["p_pos"]["perturbed"],
+                clusters=_clusters(w.index, cmap),
+                **ci_kw,
+            )
             rows.append(
                 {
                     "model": m,
@@ -490,6 +639,7 @@ def name_effect(preds: pd.DataFrame, tests=("name_shortcut", "name_swap"), **ci_
         out["shift_p_holm"] = out.groupby(["test", "family"])["shift_p"].transform(
             lambda p: holm(p)
         )
+        out = _flag_meaningful(out, ["shift"], "probability")
     return out
 
 
@@ -503,6 +653,7 @@ def typo_direction(preds: pd.DataFrame, tests=("typo", "typo_noun"), **ci_kw) ->
     rows = []
     for (m, v), g in canonical(preds).groupby(["model", "variant"]):
         b = _behavioral(g)
+        cmap = _cluster_map(b)
         for tt in tests:
             d = b[b["test_type"] == tt]
             if d.empty:
@@ -512,7 +663,12 @@ def typo_direction(preds: pd.DataFrame, tests=("typo", "typo_noun"), **ci_kw) ->
                 x = w[w["label"]["original"] == lab]
                 if x.empty:
                     continue
-                s = paired_diff_ci(x["p_pos"]["perturbed"], x["p_pos"]["original"], **ci_kw)
+                s = paired_diff_ci(
+                    x["p_pos"]["perturbed"],
+                    x["p_pos"]["original"],
+                    clusters=_clusters(x.index, cmap),
+                    **ci_kw,
+                )
                 rows.append(
                     {
                         "model": m,
@@ -528,7 +684,7 @@ def typo_direction(preds: pd.DataFrame, tests=("typo", "typo_noun"), **ci_kw) ->
                         "shift_hi": s["ci_high"],
                     }
                 )
-    return pd.DataFrame(rows)
+    return _flag_meaningful(pd.DataFrame(rows), ["shift"], "probability")
 
 
 # D40: the four core shortcut tests behind the robustness score, equally weighted. typo_noun is a
@@ -681,12 +837,20 @@ def seed_robustness(preds: pd.DataFrame, **ci_kw) -> pd.DataFrame:
     seed is on the same side of 0.05. For ranks, same_sign means the rank is identical on every
     seed. median_seed marks the seed the reported tables use.
     """
+    # every DistilBERT seed of the base variant, robustness seeds included (D4 in shortfallfix.md);
+    # the classical models keep their headline seed
+    cls_seed, _ = _headline_seeds()
+    preds = preds[~(preds["model"].isin(CLASSICAL_MODELS) & (preds["seed"] != cls_seed))]
+    preds = preds[(preds["model"] != REFERENCE) | (preds["variant"] == "base")]
     seeds = sorted(preds.loc[preds["model"] == REFERENCE, "seed"].unique())
     if len(seeds) < 2:
         return pd.DataFrame()
     per_seed = []
     for s in seeds:
         one = preds[(preds["model"] != REFERENCE) | (preds["seed"] == s)]
+        if s not in _headline_seeds()[1]:  # a robustness seed: relabel so canonical keeps it
+            stand_in = min(_headline_seeds()[1])
+            one = one.assign(seed=one["seed"].where(one["model"] != REFERENCE, stand_in))
         per_seed.append(_seed_rows(one, **ci_kw).assign(seed=f"seed{s}"))
     long = pd.concat(per_seed, ignore_index=True)
     keys = ["analysis", "model", "variant", "test", "quantity"]
@@ -782,10 +946,10 @@ def h1_test(preds: pd.DataFrame, tests=H1_TESTS, **ci_kw) -> pd.DataFrame:
     """H1 (D47): is each model's error on negation and typo tests higher than on SST-2 test
     sentences *without* negation (a disjoint comparison set)? Independent two-group bootstrap;
     Holm across every (model, test) row, ours and external models apart (D39)."""
-    from mirage.stats import diff_independent_ci
-
     rows = []
-    for (m, v), g in canonical(preds).groupby(["model", "variant"]):
+    preds = canonical(preds)
+    cmap = _cluster_map(preds)
+    for (m, v), g in preds.groupby(["model", "variant"]):
         if v != "base":
             continue
         f = _error_flags(g)
@@ -795,7 +959,9 @@ def h1_test(preds: pd.DataFrame, tests=H1_TESTS, **ci_kw) -> pd.DataFrame:
         for t in tests:
             if t not in f:
                 continue
-            d = diff_independent_ci(f[t].to_numpy(), plain.to_numpy(), **ci_kw)
+            d = diff_independent_ci(
+                f[t].to_numpy(), plain.to_numpy(), clusters_a=_clusters(f[t].index, cmap), **ci_kw
+            )
             rows.append(
                 {
                     "model": m,
@@ -817,17 +983,101 @@ def h1_test(preds: pd.DataFrame, tests=H1_TESTS, **ci_kw) -> pd.DataFrame:
         out["family"] = holm_family(out["model"])
         out["diff_p_holm"] = out.groupby("family")["diff_p"].transform(lambda p: holm(p))
         out["clearly_higher"] = (out["diff"] > 0) & (out["diff_p_holm"] < 0.05)
+        out = _flag_meaningful(out, ["diff"], "error")
+        out["clearly_higher_meaningful"] = out["clearly_higher"] & out["diff_meaningful"]
     return out
 
 
-def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
-    preds = load_predictions()
-    kw = {"n_resamples": ci_resamples}
-    tables = {
-        "main_table": main_table(preds),
+CLUSTER_TABLES = (
+    "early_warning",
+    "errors_by_type",
+    "negation_control",
+    "negation_direction",
+    "negmark_effect",
+    "imdb_by_length",
+    "shift_decomposition",
+    "name_effect",
+    "typo_direction",
+    "h1_test",
+    "negation_gap",
+)
+
+
+def _interval_cols(df: pd.DataFrame) -> list[tuple[str, str, str, str]]:
+    """(estimate, low, high, holm p or "") column groups of one table."""
+    out = []
+    for lo in [c for c in df.columns if c.endswith("_lo") or c == "ci_low"]:
+        if lo == "ci_low":
+            est = next((c for c in ("error", "auroc", "estimate") if c in df), None)
+            hi = "ci_high"
+        else:
+            est, hi = lo.removesuffix("_lo"), lo.removesuffix("_lo") + "_hi"
+            if est == "diff" and "diff_vs_conf" in df:  # early_warning names it diff_vs_conf
+                est = "diff_vs_conf"
+        if est is None or est not in df or hi not in df:
+            continue
+        p = next(
+            (
+                c
+                for c in (
+                    f"{est}_p_holm",
+                    "p_holm" if est == "reduction" else "",
+                    "diff_p_holm" if est.startswith("diff") else "",
+                )
+                if c and c in df
+            ),
+            "",
+        )
+        out.append((est, lo, hi, p))
+    return out
+
+
+def cluster_robustness(clustered: dict, item: dict) -> pd.DataFrame:
+    """G7 (D52): every interval under the cluster bootstrap (as reported) next to the item
+    bootstrap (as before), the width ratio, and whether significance after Holm changes."""
+    rows = []
+    for name in CLUSTER_TABLES:
+        c, i = clustered.get(name), item.get(name)
+        if c is None or i is None or c.empty:
+            continue
+        keys = [
+            k
+            for k in c.columns
+            if k in i and k != "family" and not pd.api.types.is_numeric_dtype(c[k])
+        ]
+        if not keys or i.empty:
+            continue
+        merged = c.merge(i, on=keys, suffixes=("", "__item"))
+        for est, lo, hi, p in _interval_cols(c):
+            for _, r in merged.iterrows():
+                if pd.isna(r[lo]) or pd.isna(r[f"{lo}__item"]):
+                    continue
+                w_item = r[f"{hi}__item"] - r[f"{lo}__item"]
+                row = {
+                    "table": name,
+                    "key": " | ".join(str(r[k]) for k in keys),
+                    "quantity": est,
+                    "estimate": r[est],
+                    "ci_low_item": r[f"{lo}__item"],
+                    "ci_high_item": r[f"{hi}__item"],
+                    "ci_low_cluster": r[lo],
+                    "ci_high_cluster": r[hi],
+                    "width_ratio": (r[hi] - r[lo]) / w_item if w_item > 0 else np.nan,
+                }
+                if p:
+                    row |= {
+                        "p_holm_item": r[f"{p}__item"],
+                        "p_holm_cluster": r[p],
+                        "significance_changed": bool((r[f"{p}__item"] < 0.05) != (r[p] < 0.05)),
+                    }
+                rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def _cluster_sensitive(preds: pd.DataFrame, kw: dict) -> dict[str, pd.DataFrame]:
+    """The tables whose intervals depend on clustering (G7)."""
+    out = {
         "errors_by_type": error_table(preds, **kw),
-        "mcnemar": mcnemar_table(preds),
-        "word_errors": word_errors(preds),
         "negation_control": negation_control(preds, **kw),
         "negation_direction": negation_direction(preds, **kw),
         "negmark_effect": negmark_effect(preds, **kw),
@@ -837,6 +1087,24 @@ def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
         "typo_direction": typo_direction(preds, **kw),
         "h1_test": h1_test(preds, **kw),
     }
+    if (preds["model"] == REFERENCE).any():
+        out["negation_gap"] = negation_gap(preds, **kw)
+    return out
+
+
+def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
+    preds = load_predictions()
+    kw = {"n_resamples": ci_resamples}
+    clustered = _cluster_sensitive(preds, kw)
+    with item_level_intervals():
+        item = _cluster_sensitive(preds, kw)
+    tables = {
+        "main_table": main_table(preds),
+        "mcnemar": mcnemar_table(preds),
+        "word_errors": word_errors(preds),
+        **{k: v for k, v in clustered.items() if k != "negation_gap"},
+        "cluster_robustness": cluster_robustness(clustered, item),
+    }
     effects = name_probe_effects(preds)
     if len(effects):  # D45: only once the name-probe stage has run
         tables["name_probe_by_name"] = effects
@@ -844,7 +1112,7 @@ def run(ci_resamples: int = 1000) -> dict[str, pd.DataFrame]:
     tables["mirage_gap"] = mirage_gap(preds)
     tables["mirage_gap_sensitivity"] = mirage_gap_sensitivity(tables["mirage_gap"])
     if (preds["model"] == REFERENCE).any():
-        tables["negation_gap"] = negation_gap(preds, **kw)
+        tables["negation_gap"] = clustered["negation_gap"]
         tables["seed_robustness"] = seed_robustness(preds, **kw)
     for name, df in tables.items():
         df.to_csv(paths.RESULTS / f"{name}.csv", index=False)

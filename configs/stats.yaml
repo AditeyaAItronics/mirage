@@ -1,0 +1,11 @@
+# Statistics settings shared by the analyses (D52).
+# G9: the smallest effect that matters, per kind of measure. A significant effect below these is
+# flagged as not meaningful (`*_meaningful` columns). Chosen after the first results (G8), so the
+# report says so.
+min_effect:
+  error: 0.02          # 2 points of error rate (gaps, H1 differences, negation-marking effects)
+  probability: 0.02    # mean shift in P(positive) (name and typo tests)
+  auroc: 0.02          # early warning: difference from confidence
+  gap_closed: 0.10     # share of a negation gap closed (H3)
+# G7: bootstrap behavioral cases by adjective and IMDb reviews by film (always on for reported
+# tables; results/cluster_robustness.csv keeps the item-level intervals beside them).

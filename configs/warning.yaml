@@ -9,3 +9,5 @@ bootstrap_resamples: 1000
 distance: gaussian      # gaussian | class_gaussian | knn_cosine
 unit: sentence_max      # review | sentence_mean | sentence_max
 knn_k: 10
+# F2 (D53): classical models' own features are their TF-IDF reduced to this many SVD components
+own_feature_dims: 300
