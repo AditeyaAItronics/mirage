@@ -1,10 +1,14 @@
-# Hypothesis answers: H1–H6 in full
+# Hypothesis answers: the Mirage Gap and H1–H6 in full
 
 Everything the project found about each hypothesis in the proposal ([proposal.md](proposal.md)):
 the exact claim, how it was tested, every relevant number with its confidence interval, the
 verdict, *why* the result came out that way, the caveats, and the robustness checks. It is
 meant as a source to pick from for the report, not as report text: it is deliberately longer
 than any report section will be.
+
+It opens with **the Mirage Gap**, the project's headline result and the focus of the
+presentation: accuracy against a robustness score, which pulls H1–H3 and the name test into one
+comparison. H1–H6 follow in the proposal's order.
 
 The findings that go beyond the hypotheses are in [interestingfindings.md](interestingfindings.md);
 each hypothesis below links to the ones that explain or extend it.
@@ -40,12 +44,144 @@ each hypothesis below links to the ones that explain or extend it.
 
 | | Hypothesis (short) | Verdict | Key number |
 |---|---|---|---|
+| **Mirage Gap** | Accuracy hides how models behave (D40; not a proposal hypothesis, the headline) | **Supported** (replicated) | Every model behaves worse than it looks (gap 0.04–0.28); LR and MNB: same accuracy (83.5% vs 83.4%), robustness 0.743 vs 0.554 |
 | **H1** | Every model, DistilBERT included, errs more on negation and typos | **Partly supported** | Typos: clearly higher for 6 of 8 models (DistilBERT +32 points). Negation: higher for the bag-of-words models, not for the transformers |
 | **H2** | DistilBERT handles negation much better than single-word bag-of-words models | **Supported**, with a replication caveat | 14–35 points better on real negated sentences, 9–100 on templates, all Holm p < 0.001. On new frames DistilBERT fails "would *never* call it great", and the tree's gap vanishes |
 | **H3** | Word pairs + negation marking close part, not all, of the gap | **Supported for LR**; on templates for every model | LR, real sentences: 40% [21, 58] closed. Templates: 25–98% |
 | **H4** | Embedding distance adds information beyond confidence | **Rejected** (replicated) | Distance AUROC 0.49–0.53 vs confidence 0.55–0.86; combining adds nothing (one tiny exception). In DistilBERT's *own* features distance reaches 0.82, but still adds nothing to confidence |
 | **H5** | Classical models share their shortcut words | **Supported for LR, RF, MNB**; not GNB or DT | Reliability-corrected agreement 0.88–0.92 |
 | **H6** | Gaussian NB is worse than Multinomial NB | **Supported** | Accuracy 59.1% vs 83.4%; F1 0.589 vs 0.833; McNemar p ≈ 10⁻⁵⁶ |
+
+---
+
+## The Mirage Gap — the headline result
+
+> **The question:** does a model's leaderboard accuracy tell you how well it behaves? The project's
+> title claim is that it doesn't: accuracy is a *mirage* that hides shortcut learning. The Mirage
+> Gap puts a number on that claim. It is not one of the proposal's six hypotheses; it pulls
+> H1–H3 and the name test into one comparison (D40).
+
+### What the two numbers mean
+- **Accuracy ("how a model looks")** is the share of the 1,820 SST-2 test sentences classified
+  correctly. They are ordinary sentences, like the training data, so a model can score well by
+  spotting familiar words without reading the sentence.
+- **Robustness ("how a model behaves")** is the mean of four shortcut checks. Each check is the
+  share of its cases the model gets **fully** right:
+
+| check | cases | a case counts as passed when… |
+|---|---|---|
+| negation | directional template pairs ("The film was good." / "The film was not good.") | both sentences are right, so the answer flips |
+| real negation | the 519 real SST-2 sentences with a negation | the sentence is right |
+| typos | typo pairs ("brilliant" / "brililant") | both the clean and the misspelled sentence are right |
+| names | name-shortcut pairs ("Another Kidman comedy…" / "Another Seagal comedy…") | both name versions are right |
+
+- **Mirage Gap = accuracy − robustness**: how much better a model looks on a leaderboard than it
+  behaves when you change only what should (negation) or shouldn't (a typo, a name) change the
+  answer.
+- **Why "both sentences right":** a first version counted a pair as passed when the answer didn't
+  change. Then the weakest models looked most robust: a model that can't read the sentiment word
+  never changes its answer, so it never "fails" (the decision tree scored 79% robustness against
+  65% accuracy). Requiring both sentences to be right means robustness can't exceed competence
+  (D40).
+
+### Results
+
+**Table MG. Accuracy vs robustness, base variants, sorted by Mirage Gap**
+(`results/mirage_gap.csv`, `figures/mirage_gap.png`; DistilBERT at its median seed).
+
+| model | accuracy | negation | real negation | typos | names | robustness | **Mirage Gap** |
+|---|---|---|---|---|---|---|---|
+| Multinomial NB | 0.834 | 0.354 | 0.761 | 0.486 | 0.614 | 0.554 | **0.280** |
+| Gaussian NB | 0.591 | 0.038 | 0.522 | 0.502 | 0.516 | 0.395 | 0.196 |
+| Decision tree | 0.653 | 0.374 | 0.607 | 0.452 | 0.624 | 0.514 | 0.139 |
+| Logistic regression | 0.835 | 0.700 | 0.773 | 0.508 | 0.992 | 0.743 | 0.091 |
+| Random forest | 0.754 | 0.694 | 0.726 | 0.520 | 0.834 | 0.694 | 0.060 |
+| HF DistilBERT | 0.923 | 1.000 | 0.892 | 0.610 | 1.000 | 0.876 | 0.047 |
+| DistilBERT (ours) | 0.922 | 1.000 | 0.900 | 0.606 | 1.000 | 0.876 | 0.046 |
+| RoBERTa-large | 0.946† | 1.000 | 0.931† | 0.708 | 0.984 | 0.906 | 0.040 |
+
+† possibly contaminated: RoBERTa-large (SiEBERT) was very likely trained on SST-2 and IMDb (C12).
+Its template checks are clean, because those sentences are ours.
+
+**The gap along the H2/H3 ladder** (same file, other variants; Mirage Gap per variant):
+
+| model | single words | + word pairs (base) | + negation marking |
+|---|---|---|---|
+| Logistic regression | 0.119 | 0.091 | **0.040** |
+| Random forest | 0.047 | 0.060 | **0.018** |
+| Decision tree | 0.162 | 0.139 | 0.112 |
+| Multinomial NB | 0.296 | 0.280 | 0.202 |
+| Gaussian NB | 0.195 | 0.196 | 0.142 |
+
+### Verdict: accuracy hides how models fail
+1. **Every model behaves worse than it looks.** All eight sit below the "robustness = accuracy"
+   line; the gap ranges from 0.04 to 0.28.
+2. **Equal accuracy, very different behaviour: the "leaderboard twins".** Logistic regression and
+   Multinomial NB are indistinguishable on the leaderboard (83.5% vs 83.4%), but Multinomial NB's
+   robustness is **19 points lower** (0.554 vs 0.743) and its gap three times larger (0.280 vs
+   0.091). The difference comes from two checks: names (61% vs 99%: NB flips its verdict when only
+   an actor's name changes) and negation (35% vs 70%). A leaderboard would call them equal.
+3. **Accuracy does not even rank the gaps.** Higher accuracy usually goes with a smaller gap, but
+   the largest gap belongs to one of the most accurate classical models (Multinomial NB), not to
+   the least accurate (Gaussian NB, 0.196).
+4. **The transformers have the smallest gaps (0.04–0.05), but not zero.** They pass every negation
+   template pair and every name pair; what's left is typos, where every model is weakest (0.45 to
+   0.71). Our DistilBERT passes only 61% of typo pairs, because it reads a misspelled sentiment
+   word as "negative" (interestingfindings §2).
+5. **Fixing a shortcut closes the gap.** Negation marking shrinks the gap for all five classical
+   models (LR 0.091 → 0.040, RF 0.060 → 0.018, MNB 0.280 → 0.202). Word pairs alone help less
+   consistently: they narrow the gap for LR, MNB and the tree, but not for the random forest
+   (0.047 with single words, 0.060 with pairs). This matches H3: marking is what fixes template
+   negation.
+
+### Why
+A bag-of-words model gets most ordinary sentences right from its sentiment words alone, so its
+accuracy is high. The shortcut checks are built so that the sentiment words alone give the wrong
+answer: "not good" still contains "good", a typo deletes the sentiment word from the vocabulary,
+and an actor's name carries a training reputation (Seagal's films are mostly reviewed negatively
+in SST-2, which is why it was chosen for the test). How badly a model does depends on how its family uses single words: Naive Bayes uses
+every skewed word at full strength (names, negation), logistic regression shrinks rare ones (names
+pass), and the transformers read context but have a default for words they can't read (typos).
+
+### Caveats
+- **The gap is a summary, not a probability.** Accuracy and robustness are measured on different
+  sentences, so 0.28 doesn't mean "28% of sentences are wrong for the wrong reason". Compare gaps
+  between models; don't read one gap on its own.
+- **The score is a design choice** (G6): four checks, equal weights, "both right". The model
+  **order** barely depends on it: leaving out each check in turn keeps the order identical in 14
+  of 16 cases, and the other two swap one pair of neighbours (Spearman 0.976 and 0.900) with the
+  same top and bottom model (`results/mirage_gap_sensitivity.csv`).
+- **It was defined after the first results** (D40), so it is exploratory. The twins result was
+  then pre-registered and replicated on fresh data (below).
+- **The two axes share some sentences** (G10): 339 of the 519 real negated sentences are SST-2 test
+  sentences. It is one check of four, and the order survives leaving that check out.
+- **No confidence interval is reported for the score itself;** its components each have one
+  (H1, H2 and `errors_by_type.csv`, cluster intervals, D52). The twins' 19-point difference is
+  much larger than those intervals, and it replicated.
+- **Template checks depend on the sentence frame** (interestingfindings §15): on the second suite,
+  both DistilBERTs fail "I would never call the movie great", so their perfect negation score is a
+  property of the original frames, not a guarantee.
+- RoBERTa-large's accuracy may be inflated (†), which would make its true gap smaller still.
+
+### Robustness checks
+- **Every DistilBERT seed:** robustness 0.876 / 0.876 / 0.880 and gap 0.046 / 0.044 / 0.043 on
+  seeds 13 / 42 / 87; its rank never changes (`seed_robustness.csv`, D44).
+- **Leave one check out:** see the caveat above (G6).
+
+### Replication on fresh data (D53): replicated
+**Claim 10** (Multinomial NB passes at least 10 points fewer negation, typo and name pairs than
+logistic regression) was tested on the second suite, with new sentence frames and a new draw: LR
+**0.597** vs MNB **0.456**, a 14-point difference. On sentences neither model's analysis had
+seen, the twins are still far apart on behaviour.
+
+**Connected findings:** [§1 leaderboard twins](interestingfindings.md#1-leaderboard-twins-the-same-accuracy-very-different-behaviour),
+[§2 the typo default](interestingfindings.md#2-distilberts-default-an-unreadable-sentiment-word-means-negative),
+[§5 names](interestingfindings.md#5-naive-bayes-judges-a-film-by-who-made-it),
+[§15 sentence frames](interestingfindings.md#15-the-sentence-frame-matters-as-much-as-the-model).
+
+*Sources:* `results/mirage_gap.csv`, `results/mirage_gap_sensitivity.csv`,
+`results/seed_robustness.csv`, `results/replication.csv`, `figures/mirage_gap.png`,
+`figures/mirage_gap_slide.png`, `figures/shortcut_fingerprint.png`; D40, D44, D53.
 
 ---
 

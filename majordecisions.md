@@ -1792,3 +1792,19 @@ test, and the doc numbers (each checked against `results/*.csv`).
 **Rejected:** re-scoring claim 3 with a changed rule, or dropping frame B3 (either would undo the
 pre-registration); running our DistilBERT on Kaggle (its model files aren't on GitHub, and the CPU
 run was feasible).
+
+## D54 — The Mirage Gap answered as the headline, in hypothesisanswers.md (documentation)
+
+**Decision:** the author will make the Mirage Gap the focus of the presentation, so
+hypothesisanswers.md now opens with a full section for it, in the same form as H1–H6: what the
+two numbers mean, Table MG, the gap along the H2/H3 ladder, the verdict, why, caveats, robustness
+checks and the replication (claim 10: LR 0.597 vs MNB 0.456 on the second suite). The summary table
+gains a "Mirage Gap" row. interestingfindings §1 keeps the table and the twins and links to it.
+
+**Checked while writing:** D40 reported the ladder for LR only. Across the five classical models,
+negation marking narrows the gap for all of them, but word pairs alone don't for the random forest
+(single words 0.047, base 0.060); the section says so rather than claiming a uniform ladder.
+
+**Not added:** a confidence interval for the robustness score itself (it averages four checks on
+different items). Its components have cluster intervals; the twins' 19-point difference is far
+larger than them and replicated. Stated as a caveat.

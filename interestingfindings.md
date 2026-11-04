@@ -52,7 +52,10 @@ replicated**; the numbers are in `results/replication.csv` and the claims in
 (83.5% vs 83.4% accuracy), but Multinomial NB's **robustness score** is 19 points lower (0.554 vs
 0.743). The robustness score (D40) is the mean, over four checks, of the share of cases a model
 gets *fully* right: negation template pairs, real negated sentences, typo pairs and name-swap
-pairs. The gap between accuracy and robustness is the **Mirage Gap**.
+pairs. The gap between accuracy and robustness is the **Mirage Gap**. Its full answer (definition,
+verdict, caveats, robustness checks and replication) is the first section of
+[hypothesisanswers.md](hypothesisanswers.md#the-mirage-gap--the-headline-result); this section
+keeps the table and the twins.
 
 **Table 1. Accuracy vs behaviour (base variants), sorted by Mirage Gap.**
 
