@@ -2,17 +2,17 @@
 
 The skeleton of the final report: its sections, what goes in each, and the source of every
 number. The proposal promises a **6–8 page report answering the four research questions with
-tables, charts and 8–10 explained failure examples** ([proposal.md](proposal.md)).
+tables, charts and 8–10 explained failure examples** ([proposal.md](../../proposal.md)).
 
 Where everything else lives:
 - **The steps to write it, yours and Claude's, in order:** [whatyouneedtodo.md](whatyouneedtodo.md),
   "The report".
-- **The results, with every number and CI:** [hypothesisanswers.md](hypothesisanswers.md) (H1–H6,
-  including the proposed verdict for each) and [interestingfindings.md](interestingfindings.md)
+- **The results, with every number and CI:** [hypothesisanswers.md](../results/hypothesisanswers.md) (H1–H6,
+  including the proposed verdict for each) and [interestingfindings.md](../results/interestingfindings.md)
   (13 findings beyond the hypotheses). This file only points at them, so the numbers are kept in
   one place.
-- **Why each analysis was done the way it was:** [majordecisions.md](majordecisions.md) (the
-  D-numbers below). **Limitations:** [shortfalls.md](shortfalls.md).
+- **Why each analysis was done the way it was:** [majordecisions.md](../design/majordecisions.md) (the
+  D-numbers below). **Limitations:** [shortfalls.md](../limitations/shortfalls.md).
 
 ---
 
@@ -24,9 +24,9 @@ Page budgets are a suggestion for a 6–8 page main text; how much goes in is yo
 *Mirage: Exposing the Illusion of Accuracy. Shortcut learning in classical, Gaussian and
 transformer sentiment classifiers.*
 Four sentences of context and method, then the headline results: the Mirage Gap
-([findings §1](interestingfindings.md#1-leaderboard-twins-the-same-accuracy-very-different-behaviour)),
-the H1–H6 verdicts in one line each ([summary](hypothesisanswers.md#summary)), and "scale shrinks
-shortcuts but doesn't remove them" ([findings §4](interestingfindings.md#4-does-scale-cure-shortcuts-it-shrinks-them)).
+([findings §1](../results/interestingfindings.md#1-leaderboard-twins-the-same-accuracy-very-different-behaviour)),
+the H1–H6 verdicts in one line each ([summary](../results/hypothesisanswers.md#summary)), and "scale shrinks
+shortcuts but doesn't remove them" ([findings §4](../results/interestingfindings.md#4-does-scale-cure-shortcuts-it-shrinks-them)).
 
 ### 1. Introduction (½ page)
 - The problem: high accuracy can hide shortcut learning. Three motivating failures ("not good",
@@ -58,7 +58,7 @@ the proposal's reference list.
   comparisons, Holm within each family, minimum effects that matter, and McNemar. Sources: D12,
   D28, D47, D52.
 - **Replication:** 17 claims written down before scoring fresh data (10,000 new IMDb reviews, a
-  second template suite with new frames). Source: D53, `docs/confirmatory_claims.md`.
+  second template suite with new frames). Source: D53, `docs/replication/confirmatory_claims.md`.
 - **Early warning:** MiniLM embeddings, Gaussian distance, scoring each review by its most unusual
   sentence, and length as a baseline; distance in each classifier's own features as a check
   (F2). Sources: D25, D30, D53.
@@ -69,19 +69,19 @@ the proposal's reference list.
 ### 5. Results, one subsection per hypothesis (3 pages)
 Each subsection follows the same pattern: the claim, the test, the number with its CI, and one
 sentence on what it means. Everything needed is in the linked section of
-[hypothesisanswers.md](hypothesisanswers.md).
+[hypothesisanswers.md](../results/hypothesisanswers.md).
 
 | § | Hypothesis | Answered in | Main figure / table | Source |
 |---|---|---|---|---|
-| 5.1 | **H1** hidden failures | [H1](hypothesisanswers.md#h1--hidden-failures-on-negation-and-typos) | Table H1; heatmap `error_heatmap_base.png` | `h1_test.csv`, D47 |
-| 5.2 | **H2** negation gap | [H2](hypothesisanswers.md#h2--distilbert-handles-negation-much-better) | the ladder figure `negation_gap_sst2_neg.png` | `negation_gap.csv`, D42; claim 3 did not replicate (D53) |
-| 5.3 | **H3** pairs + marking close part of it | [H3](hypothesisanswers.md#h3--word-pairs-and-negation-marking-close-part-of-the-gap) | same figure + Table H3a | `negation_gap.csv`, D38, D42 |
-| 5.4 | **H4** distance vs confidence | [H4](hypothesisanswers.md#h4--does-embedding-distance-predict-errors-beyond-confidence) | Table H4; `error_vs_score_distilbert.png` | `early_warning.csv`, D30 |
-| 5.5 | **H5** shared shortcut words | [H5](hypothesisanswers.md#h5--do-the-classical-models-share-their-shortcut-words) | `h5_word_effect_agreement.png` | `occlusion_agreement.csv`, D43 |
-| 5.6 | **H6** Gaussian vs Multinomial NB | [H6](hypothesisanswers.md#h6--gaussian-nb-vs-multinomial-nb) | Table H6 | `main_table.csv`, `mcnemar.csv` |
+| 5.1 | **H1** hidden failures | [H1](../results/hypothesisanswers.md#h1--hidden-failures-on-negation-and-typos) | Table H1; heatmap `error_heatmap_base.png` | `h1_test.csv`, D47 |
+| 5.2 | **H2** negation gap | [H2](../results/hypothesisanswers.md#h2--distilbert-handles-negation-much-better) | the ladder figure `negation_gap_sst2_neg.png` | `negation_gap.csv`, D42; claim 3 did not replicate (D53) |
+| 5.3 | **H3** pairs + marking close part of it | [H3](../results/hypothesisanswers.md#h3--word-pairs-and-negation-marking-close-part-of-the-gap) | same figure + Table H3a | `negation_gap.csv`, D38, D42 |
+| 5.4 | **H4** distance vs confidence | [H4](../results/hypothesisanswers.md#h4--does-embedding-distance-predict-errors-beyond-confidence) | Table H4; `error_vs_score_distilbert.png` | `early_warning.csv`, D30 |
+| 5.5 | **H5** shared shortcut words | [H5](../results/hypothesisanswers.md#h5--do-the-classical-models-share-their-shortcut-words) | `h5_word_effect_agreement.png` | `occlusion_agreement.csv`, D43 |
+| 5.6 | **H6** Gaussian vs Multinomial NB | [H6](../results/hypothesisanswers.md#h6--gaussian-nb-vs-multinomial-nb) | Table H6 | `main_table.csv`, `mcnemar.csv` |
 
 ### 6. Beyond the hypotheses (1 page)
-Pick from the 13 findings in [interestingfindings.md](interestingfindings.md); its overview table
+Pick from the 13 findings in [interestingfindings.md](../results/interestingfindings.md); its overview table
 says which hypothesis each one explains and whether it was planned or exploratory. Suggested core:
 - §1 the leaderboard twins and the Mirage Gap, with `shortcut_fingerprint.png` (D40);
 - §2–§4 the typo default, its replication, and scale (D37, D46);
@@ -106,7 +106,7 @@ appendix.
 - **What the shortcuts have in common** (findings §14): they come from the training data.
 
 ### 8. Limitations (½ page)
-From [shortfalls.md](shortfalls.md), stated plainly; each accepted limitation (D55) has a ready
+From [shortfalls.md](../limitations/shortfalls.md), stated plainly; each accepted limitation (D55) has a ready
 "In the report" sentence there:
 - RoBERTa-large's possible contamination (C12; findings §12).
 - English movie reviews only (A3).

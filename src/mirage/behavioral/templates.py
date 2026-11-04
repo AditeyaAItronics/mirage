@@ -47,7 +47,7 @@ NAME_SHORTCUT_TEMPLATES = [
 NAME_TEMPLATES = ["{name} {verb} the {noun}.", "{name} said the {noun} was {adj}."]
 
 # D10 (D53): frame set B, the paraphrased frames of the second suite (approved by the author in
-# docs/confirmatory_claims.md). Same slots and word lists; only the wording changes. "Sadly," is a
+# docs/replication/confirmatory_claims.md). Same slots and word lists; only the wording changes. "Sadly," is a
 # deliberate check of whether a frame's own tone helps a model.
 FRAMES_B = {
     "simple": [

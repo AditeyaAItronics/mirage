@@ -42,7 +42,7 @@ D31, D46); shortfalls.md now marks them ✅.
 
 ## Ground rules for every fix
 
-These come from [CLAUDE.md](CLAUDE.md) and apply to all items below.
+These come from [CLAUDE.md](../../CLAUDE.md) and apply to all items below.
 - **Predictions are the contract.** New models, seeds or eval sets write prediction files through
   `predict.write_predictions`; analyses read only those files.
 - **Additions never change earlier statistics.** New models, variants, seeds and predictors get
@@ -324,7 +324,7 @@ measure, direction and pass rule; a table says which replicated, on a fresh beha
 fresh IMDb sample; the findings files report it.
 
 **Design.**
-1. **Pre-register** `docs/confirmatory_claims.md` (D6): about 15 claims, for example:
+1. **Pre-register** `docs/replication/confirmatory_claims.md` (D6): about 15 claims, for example:
    - H1: every transformer's typo error is ≥ 10 points above its plain-sentence error;
    - H2: every single-word classical model's directional-negation error is ≥ 10 points above
      DistilBERT's;

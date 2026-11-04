@@ -6,8 +6,8 @@ and the reason.
 
 > **Numbers here are a dated record.** Each entry gives the results as they stood when the
 > decision was made; later entries sometimes update them (e.g. when models were added). For the
-> **current** results, use [hypothesisanswers.md](hypothesisanswers.md) and
-> [interestingfindings.md](interestingfindings.md), which are checked against `results/*.csv`.
+> **current** results, use [hypothesisanswers.md](../results/hypothesisanswers.md) and
+> [interestingfindings.md](../results/interestingfindings.md), which are checked against `results/*.csv`.
 
 ---
 
@@ -1643,7 +1643,7 @@ of the same kind as the open 🟠 items or worse.
 C2's and G6's text was out of date and is corrected (G6: the ordering holds in 14 of 16 leave-one-out
 checks, not "all 12").
 
-**Plan:** [shortfallfix.md](shortfallfix.md) designs a fix for each of the 12 open items, in four
+**Plan:** [shortfallfix.md](../limitations/shortfallfix.md) designs a fix for each of the 12 open items, in four
 phases: protect the headline tables and the doc numbers first (H8, H7), then the cluster bootstrap
 (G7) and the other CPU fixes, then two Kaggle notebooks (training: C3, C4; inference: G8's fresh
 IMDb, F2, E1), then integration. Six decisions are left to the author, with recommendations, the
@@ -1702,7 +1702,7 @@ accuracy on the Mirage Gap chart, in the demo and in every results table.
 
 ## D53 — Pre-registered replication on fresh data, a second suite, own-feature distance (G8, D10, F2)
 
-**G8, the claims first.** `docs/confirmatory_claims.md` lists 17 claims, each with a direction and
+**G8, the claims first.** `docs/replication/confirmatory_claims.md` lists 17 claims, each with a direction and
 a pass rule (H1: 2, H2: 1, H3: 1, H4: 3, findings: 10). It was committed at fbdf48e, before any
 fresh data was scored. `replication.score_claims` scores the claims; a claim with missing data is
 "pending", never a pass.
@@ -1821,3 +1821,18 @@ table, reportplan.md's Limitations list and whatyouneedtodo.md say the same.
 advantage; C4 is covered by the three-seed check (D44: nothing changed); E1 affects illustrations
 only, since H5 uses word removal (D43); D12 and G11 are already stated in the verdicts; B10 only
 moves a bound; H7 concerns the write-up, not the analysis. No 🔴 or 🟠 item remains open.
+
+## D56 — Every doc moved under docs/, by purpose (documentation)
+
+**Decision:** apart from `README.md`, `proposal.md` and `CLAUDE.md` (which Claude Code reads only
+at the root), every markdown file now lives in a `docs/` subfolder named for its purpose:
+`docs/results/` (hypothesisanswers, interestingfindings), `docs/design/` (ARCHITECTURE,
+majordecisions, codeexplanations), `docs/limitations/` (shortfalls, shortfallfix),
+`docs/report/` (reportplan, whatyouneedtodo), `docs/replication/` (confirmatory_claims) and
+`docs/archive/` (unchanged). `app/PRESENTING.md` stays with the app it describes.
+
+**How:** `git mv` (history kept), then every relative link was recomputed from its old target
+(91 links checked, all resolve, anchors included). CLAUDE.md lists the folders once and names docs
+by file name elsewhere; code comments still cite docs by file name (e.g. "majordecisions.md D7"),
+which stays unambiguous.
+

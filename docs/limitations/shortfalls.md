@@ -557,7 +557,7 @@ review URLs. Report both CIs and flag any verdict that changes (shortfallfix.md)
 **Effort:** medium.
 
 ### G8. ✅ RESOLVED (D53): many analyses were designed after seeing results, with no confirmatory check
-**Done:** 17 claims committed before scoring (`docs/confirmatory_claims.md`, commit fbdf48e), tested on
+**Done:** 17 claims committed before scoring (`docs/replication/confirmatory_claims.md`, commit fbdf48e), tested on
 10,000 fresh IMDb reviews and the second suite: 16 replicated, claim 3 (H2) did not
 (`results/replication.csv`).
 **What:** the H1 test (D47), the robustness score (D40), the typo control (D37), the name probe

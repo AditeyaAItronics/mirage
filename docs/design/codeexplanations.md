@@ -22,20 +22,21 @@ never writes results.
 
 | File | What it is |
 |---|---|
-| `README.md` | Setup and the commands to reproduce everything. |
-| `ARCHITECTURE.md` | The design: layers, interfaces, which code answers which research question. |
-| `majordecisions.md` | Log of every major decision (D1–D41): what was decided, why, and what was rejected. |
-| `shortfalls.md` | Known limitations, with severity, fixes and a "Resolved" list. |
-| `whatyouneedtodo.md` | Every step for you, in order: what's left now, the report's walkthrough (yours and Claude's steps), optional extras, and a record of what's done. |
-| `reportplan.md` | The final report's skeleton: each section, what goes in it, and where its numbers come from (links into the two results files). |
-| `hypothesisanswers.md` | H1–H6 answered in full: the claim, how it was tested, every number with its CI, the verdict, why, caveats and robustness checks. Source material for the report. |
-| `interestingfindings.md` | 13 findings beyond the hypotheses, each tied to the hypothesis it explains or extends, marked planned or exploratory. Source material for the report. |
+| `README.md` | Setup, the short results summary and the commands to reproduce everything. |
 | `proposal.md` | The project proposal: research questions, hypotheses H1–H6, datasets, models and evaluation plan. Its facts were corrected to match the code (Nov 2026); the hypotheses are as originally written. |
-| `shortfallfix.md` | The design plan for fixing every open 🔴 / 🟠 shortfall: order, decisions for you, and per item the code, outputs, tests and effort. |
+| `CLAUDE.md` | Rules for Claude Code when working in this repo (it must stay at the root for Claude Code to read it). |
+| `docs/results/hypothesisanswers.md` | The Mirage Gap and H1–H6 answered in full: the claim, how it was tested, every number with its CI, the verdict, why, caveats, robustness checks and replication. Source material for the report. |
+| `docs/results/interestingfindings.md` | 16 findings beyond the hypotheses, each tied to the hypothesis it explains or extends, marked planned or exploratory. Source material for the report. |
+| `docs/design/ARCHITECTURE.md` | The design: layers, interfaces, which code answers which research question. |
+| `docs/design/majordecisions.md` | Log of every major decision (D1–D56): what was decided, why, and what was rejected. |
+| `docs/design/codeexplanations.md` | This file. |
+| `docs/limitations/shortfalls.md` | Known limitations, with severity, what each means for the results, the sentence to use in the report, and a "Resolved" list. |
+| `docs/limitations/shortfallfix.md` | The design plan for the 🔴 / 🟠 shortfalls, with a status table: what was built, and what was accepted as a limitation (D55). |
+| `docs/report/reportplan.md` | The final report's skeleton: each section, what goes in it, and where its numbers come from (links into the two results files). |
+| `docs/report/whatyouneedtodo.md` | Every step for you, in order: what's left now, the report's walkthrough (yours and Claude's steps), optional extras, and a record of what's done. |
+| `docs/replication/confirmatory_claims.md` | The 17 claims pre-registered before the fresh data was scored, and their outcome (D53). |
 | `docs/archive/` | Finished plans, kept as a record: `MIRAGE_IMPLEMENTATION_PLAN.md` (the original week-by-week build plan) and `newadditionsdesign.md` (the design for the external models, the Mirage Gap and the demo, D39–D41). Superseded by the decision log where they differ. |
-| `CLAUDE.md` | Rules for Claude Code when working in this repo. |
 | `requirements-lock.txt` | Exact library versions of the environment that produced the final results (D46). |
-| `codeexplanations.md` | This file. |
 | `pyproject.toml` | Package definition. Core dependencies (pandas, scikit-learn…); `[dl]` adds the deep-learning stack (torch, transformers, captum, sentence-transformers); `[demo]` adds Streamlit for the live demo; `[dev]` adds pytest and ruff. Also holds the pytest and ruff settings. |
 | `.streamlit/config.toml` | The demo's look: light theme (projector-friendly), no usage statistics. |
 | `.claude/launch.json` | Lets Claude Code start the demo in its browser pane. |
@@ -78,7 +79,7 @@ never writes results.
 | `stats.py` | Uncertainty. Bootstrap confidence intervals and p-values, paired differences, differences between two independent groups (`diff_independent_ci`, D47), the "gap closed" ratio, paired AUROC difference, Holm correction, McNemar's test. Every bootstrap takes `clusters` and then resamples whole clusters (`_cluster_groups`, `_draw`, D52). |
 | `evaluate.py` | Builds every results table from the prediction files: main table, errors by test type, negation gap to DistilBERT along the ladder single words → + word pairs → + negation marking (D42), negation-marking effect, negation control, directional negation, IMDb error by length, length-vs-content split, name effect, typo direction, McNemar, per-word errors, and the Mirage Gap (`mirage_gap`: accuracy vs a robustness score built from pair accuracy on four shortcut tests, plus its leave-one-out sensitivity check; `fingerprint_table` adds calibration and early warning, D40). External models and the single-word ablation get their own Holm families (`holm_family`), so they don't change earlier p-values. Headline seeds are explicit (`headline_pool`: classical seed 42, DistilBERT's configured seeds; `median_seed` per variant, D52). Every interval on a template or IMDb test is a cluster interval (adjective / film); `item_level_intervals()` recomputes the old ones and `cluster_robustness` compares the two. `_flag_meaningful` adds the `*_meaningful` columns from `stats.yaml` (G9). Also `h1_test`, the formal H1 test: each negation and typo test against the SST-2 test sentences without negation, with a CI and Holm-corrected p (D47). Also `name_probe_effects` / `name_probe` (does a model's reaction to a name track its training reputation, with the effect size, D45), and `seed_robustness`: every result that uses DistilBERT's median seed, rerun on each of its three seeds, with flags for any change of direction or significance (D44). Writes everything to `results/*.csv`. |
 | `plots.py` | Every figure (PNG + PDF): error heatmap, negation-gap bars, error vs score, error by review length, reliability diagram, explanation-overlap heatmap, the small decision tree, word-attribution strips, the Mirage Gap scatter and the shortcut-fingerprint small multiples (each also as a 16:9 `_slide` version). Uses a fixed, colour-blind-checked palette with eight model slots. `ACCURACY_CAVEAT` / `ACCURACY_NOTE` mark RoBERTa-large's possibly contaminated accuracy with a † (C12, D52). |
-| `replication.py` | The pre-registered replication (D53). `fresh_view` renames the fresh sets to their originals (`imdb_fresh` → `imdb`, `behavioral_v2` → `behavioral`) so the same table code scores them; `score_claims` tests the 17 claims of `docs/confirmatory_claims.md` (replicated / not replicated / pending); `by_frame` gives failure rates per sentence frame with a chi-square test across frames. |
+| `replication.py` | The pre-registered replication (D53). `fresh_view` renames the fresh sets to their originals (`imdb_fresh` → `imdb`, `behavioral_v2` → `behavioral`) so the same table code scores them; `score_claims` tests the 17 claims of `docs/replication/confirmatory_claims.md` (replicated / not replicated / pending); `by_frame` gives failure rates per sentence frame with a chi-square test across frames. |
 | `demo.py` | The logic behind the live demo (D41): loads the models (DistilBERT at its median seed), scores a sentence, word importance by leaving each word out (the shared `explain.occlusion` function), which words a classical model never saw, the low-confidence and unusual-input flags, and the curated examples with a check that each still behaves as documented. |
 
 ### `behavioral/`: the hand-built test sentences (CheckList-style)

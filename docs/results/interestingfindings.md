@@ -8,7 +8,7 @@ The hypotheses themselves are answered in [hypothesisanswers.md](hypothesisanswe
 
 **How to read it.**
 - Every number comes from a file in `results/`, named under "Sources"; "DNN" is the entry in
-  [majordecisions.md](majordecisions.md) that explains the analysis. Brackets are 95% bootstrap
+  [majordecisions.md](../design/majordecisions.md) that explains the analysis. Brackets are 95% bootstrap
   confidence intervals.
 - **Status** says whether the analysis was planned before any results were seen, or designed
   after the first results ("exploratory"). Exploratory findings are real measurements, but they
@@ -41,7 +41,7 @@ The hypotheses themselves are answered in [hypothesisanswers.md](hypothesisanswe
 data (10,000 new IMDb reviews and a second template suite with new sentence frames): §1 (claim
 10), §2 (5, 6), §3 (7), §4 (8), §5 (9), §8 (14, 15), §11 (17) and §12 (16). **All ten
 replicated**; the numbers are in `results/replication.csv` and the claims in
-[docs/confirmatory_claims.md](docs/confirmatory_claims.md). The one claim that failed is about H2
+[docs/replication/confirmatory_claims.md](../replication/confirmatory_claims.md). The one claim that failed is about H2
 (§15 explains it).
 
 ---

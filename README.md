@@ -12,9 +12,9 @@ demo shows the shortcuts sentence by sentence.
 ## Results
 
 **The results in full, with every number and confidence interval, are in two files:**
-- [hypothesisanswers.md](hypothesisanswers.md): H1–H6, each with its test, tables, verdict, reasons
+- [hypothesisanswers.md](docs/results/hypothesisanswers.md): H1–H6, each with its test, tables, verdict, reasons
   and caveats;
-- [interestingfindings.md](interestingfindings.md): 15 further findings, each tied to the
+- [interestingfindings.md](docs/results/interestingfindings.md): 15 further findings, each tied to the
   hypothesis it explains or extends.
 
 This section is the short version. Base variants; DistilBERT is the mean of 3 seeds; all
@@ -51,7 +51,7 @@ shrinks shortcuts but doesn't remove them; Naive Bayes judges films by who made 
 23 never-tested names). No conclusion depends on DistilBERT's seed (D44).
 
 **Replication (D53).** 17 claims were written down in advance
-([docs/confirmatory_claims.md](docs/confirmatory_claims.md)) and re-tested on 10,000 IMDb reviews
+([docs/replication/confirmatory_claims.md](docs/replication/confirmatory_claims.md)) and re-tested on 10,000 IMDb reviews
 never used before and on a second template suite with new sentence frames: **16 replicated**.
 The one that didn't (H2, claim 3) failed because DistilBERT can't read one new negation frame,
 not because the classical models improved. Confidence intervals resample whole clusters
@@ -117,9 +117,9 @@ Each stage can also run on its own: `python -m mirage --help`.
 ## Layout
 
 See [proposal.md](proposal.md) for the research questions and hypotheses,
-[hypothesisanswers.md](hypothesisanswers.md) and [interestingfindings.md](interestingfindings.md)
+[hypothesisanswers.md](docs/results/hypothesisanswers.md) and [interestingfindings.md](docs/results/interestingfindings.md)
 for the results in full,
-[ARCHITECTURE.md](ARCHITECTURE.md) for the design and [majordecisions.md](majordecisions.md)
+[ARCHITECTURE.md](docs/design/ARCHITECTURE.md) for the design and [majordecisions.md](docs/design/majordecisions.md)
 for why each choice was made.
 
 | Folder | Contents |
@@ -130,8 +130,12 @@ for why each choice was made.
 | `figures/` | report figures (PNG + PDF) |
 | `notebooks/` | Kaggle notebooks: DistilBERT fine-tuning, the external models' predictions, and the external models on the fresh IMDb sample (`kaggle_fresh.ipynb`, D53) |
 | `app/` | the live demo (Streamlit), its curated examples and presenter guide |
-| `docs/` | `confirmatory_claims.md`: the 17 claims pre-registered before the fresh data was scored (D53) |
+| `docs/results/` | the results in full: `hypothesisanswers.md` (the Mirage Gap, H1–H6) and `interestingfindings.md` |
+| `docs/design/` | `ARCHITECTURE.md`, `majordecisions.md` (every decision and why), `codeexplanations.md` (file tour) |
+| `docs/limitations/` | `shortfalls.md` (known limitations) and `shortfallfix.md` (the fix plan and its status) |
+| `docs/report/` | `reportplan.md` (the report's skeleton) and `whatyouneedtodo.md` (your steps) |
+| `docs/replication/` | `confirmatory_claims.md`: the 17 claims pre-registered before the fresh data was scored (D53) |
 | `docs/archive/` | finished plans kept as a record (the original build plan, the presentation-additions design) |
 | `tests/` | `python -m pytest` (154 tests, about 2–3 min, no GPU needed) |
 
-For a file-by-file tour of the code, see [codeexplanations.md](codeexplanations.md).
+For a file-by-file tour of the code, see [codeexplanations.md](docs/design/codeexplanations.md).

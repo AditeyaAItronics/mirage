@@ -1,4 +1,4 @@
-"""G8 (D53): score the pre-registered claims (docs/confirmatory_claims.md) on untouched data.
+"""G8 (D53): score the pre-registered claims (docs/replication/confirmatory_claims.md) on untouched data.
 
 The fresh data are the second behavioral suite (`behavioral_v2`, frame set B, D10) and a second
 IMDb sample (`imdb_fresh`, `imdb_fresh_edges`). They are renamed to the dataset names the original

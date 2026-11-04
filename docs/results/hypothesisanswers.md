@@ -1,6 +1,6 @@
 # Hypothesis answers: the Mirage Gap and H1–H6 in full
 
-Everything the project found about each hypothesis in the proposal ([proposal.md](proposal.md)):
+Everything the project found about each hypothesis in the proposal ([proposal.md](../../proposal.md)):
 the exact claim, how it was tested, every relevant number with its confidence interval, the
 verdict, *why* the result came out that way, the caveats, and the robustness checks. It is
 meant as a source to pick from for the report, not as report text: it is deliberately longer
@@ -15,7 +15,7 @@ each hypothesis below links to the ones that explain or extend it.
 
 **How to read the numbers.**
 - Every number comes from a file in `results/`, named under "Sources". "DNN" refers to the entry
-  in [majordecisions.md](majordecisions.md) that explains the analysis.
+  in [majordecisions.md](../design/majordecisions.md) that explains the analysis.
 - Brackets are 95% bootstrap confidence intervals (1,000 resamples). Since D52 (G7) they
   resample **clusters**, not single items: template cases that share their sentiment adjective are
   drawn together, and so are IMDb reviews of the same film. SST-2 sentences are their own clusters.
@@ -24,7 +24,7 @@ each hypothesis below links to the ones that explain or extend it.
 - "Meaningful" (D52, G9) means the interval also clears a pre-set minimum effect
   (`configs/stats.yaml`: 2 points of error or probability, 0.02 AUROC, 10% of a gap closed).
 - **Replication (D53, G8):** 17 of these claims were written down before fresh data was scored
-  ([docs/confirmatory_claims.md](docs/confirmatory_claims.md)) and re-tested on 10,000 IMDb
+  ([docs/replication/confirmatory_claims.md](../replication/confirmatory_claims.md)) and re-tested on 10,000 IMDb
   reviews never used before and on a second template suite with new sentence frames (frame set B).
   16 replicated, 1 did not (H2, see below). Each hypothesis's section ends with its replication.
 - "Holm p" is the p-value after Holm's correction within one family of tests (D28). Our models,

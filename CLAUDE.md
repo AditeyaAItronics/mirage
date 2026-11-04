@@ -1,8 +1,17 @@
 # Mirage — notes for Claude Code
 
 Research codebase: shortcut learning in sentiment classifiers (SST-2 → IMDb).
-Read `ARCHITECTURE.md` for the design, `majordecisions.md` for why, and `hypothesisanswers.md` /
-`interestingfindings.md` for the current results. The original build plans are in `docs/archive/`.
+Every doc except `README.md`, `proposal.md` and this file lives under `docs/` (D56):
+- `docs/design/`: `ARCHITECTURE.md` (the design), `majordecisions.md` (why), `codeexplanations.md`
+  (file tour);
+- `docs/results/`: `hypothesisanswers.md` and `interestingfindings.md` (the current results);
+- `docs/limitations/`: `shortfalls.md` and `shortfallfix.md`;
+- `docs/report/`: `reportplan.md` and `whatyouneedtodo.md`;
+- `docs/replication/`: `confirmatory_claims.md`;
+- `docs/archive/`: the original build plans.
+
+Below, docs are named by file name only; the folders are the ones above. New docs go in the
+matching folder.
 
 ## Hard rules
 - **Predictions are the contract.** Every model writes `results/predictions/{model}__{variant}__seed{seed}__{dataset}.parquet`
@@ -29,7 +38,7 @@ Read `ARCHITECTURE.md` for the design, `majordecisions.md` for why, and `hypothe
 - **Headline seeds are explicit** (`evaluate.headline_pool`, D52): classical seed 42, DistilBERT's
   configured seeds. Extra seeds go into robustness tables only. Call `median_seed` / `canonical`
   on predictions that still include `sst2_val`, then filter by dataset.
-- **The 17 pre-registered claims are fixed** (`docs/confirmatory_claims.md`, D53): never change a
+- **The 17 pre-registered claims are fixed** (`docs/replication/confirmatory_claims.md`, D53): never change a
   claim or its pass rule after seeing fresh data; report a failure as not replicated.
 - **Don't edit `src/` while a stage is running:** lazy imports can mix old and new modules mid-run.
 - **Held-out is split by sentence** (`data.heldout_mask`): never replace it with a random row split. SST-2 rows are sub-phrases, so a random split leaks (D21).

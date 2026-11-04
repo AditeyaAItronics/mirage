@@ -6,7 +6,7 @@
 > behavioral cases resampled by adjective, IMDb reviews by film.
 
 **Approved:** 4 Nov 2026, all 17 claims as written, and frame set B including the "Sadly," frame.
-**Commit:** the first commit of this file (`git log --follow docs/confirmatory_claims.md`).
+**Commit:** the first commit of this file (`git log --follow docs/replication/confirmatory_claims.md`).
 
 ## The fresh data
 - **`behavioral_v2`:** a new behavioral suite, drawn with seed 2026 from the same word lists and

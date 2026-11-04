@@ -5,11 +5,11 @@ can do** (decisions, academic judgment, accounts) or **something you can do fast
 The code, the experiments and the analysis are finished (see "Done" at the end).
 
 Where to find things:
-- **Results:** [hypothesisanswers.md](hypothesisanswers.md) (H1–H6 in full) and
-  [interestingfindings.md](interestingfindings.md) (15 further findings).
+- **Results:** [hypothesisanswers.md](../results/hypothesisanswers.md) (H1–H6 in full) and
+  [interestingfindings.md](../results/interestingfindings.md) (15 further findings).
 - **The report's skeleton and sources:** [reportplan.md](reportplan.md).
-- **Why each choice was made:** [majordecisions.md](majordecisions.md); **limitations:**
-  [shortfalls.md](shortfalls.md).
+- **Why each choice was made:** [majordecisions.md](../design/majordecisions.md); **limitations:**
+  [shortfalls.md](../limitations/shortfalls.md).
 
 ---
 
@@ -38,18 +38,18 @@ one sentence: *"the share of shortcut tests a model gets fully right"* (D40).
 16 of the 17 pre-registered claims replicated on fresh data (D53). Claim 3 (H2) did not: on the
 new sentence frames, DistilBERT reads "I would never call the movie great" as positive 96% of the
 time, so the decision tree and random forest are no longer 10 points behind it. Read
-[hypothesisanswers.md, H2](hypothesisanswers.md#h2--distilbert-handles-negation-much-better) and
-[interestingfindings.md §15](interestingfindings.md#15-the-sentence-frame-matters-as-much-as-the-model).
+[hypothesisanswers.md, H2](../results/hypothesisanswers.md#h2--distilbert-handles-negation-much-better) and
+[interestingfindings.md §15](../results/interestingfindings.md#15-the-sentence-frame-matters-as-much-as-the-model).
 **Your call:** how much of this goes in the report. It must at least appear as "not replicated" in
 H2's verdict, because the claim was pre-registered; it can't be re-scored or dropped.
 
 The other shortfall fixes you approved are done: cluster intervals (G7), headline seeds (H8),
 minimum effects (G9), the RoBERTa † mark (C12), the second suite (D10), the replication (G8) and
 the own-feature distance (F2). The rest (B10, C3, C4, D12, E1, G11, H7) are accepted as
-limitations (D55); each has its "In the report" sentence in [shortfalls.md](shortfalls.md).
+limitations (D55); each has its "In the report" sentence in [shortfalls.md](../limitations/shortfalls.md).
 
 ### 3b. Read the two results files (1 h)
-[hypothesisanswers.md](hypothesisanswers.md) and [interestingfindings.md](interestingfindings.md)
+[hypothesisanswers.md](../results/hypothesisanswers.md) and [interestingfindings.md](../results/interestingfindings.md)
 are deliberately longer than the report. Mark what you want in the report and how much; anything
 unclear or that you'd word differently, tell Claude.
 
@@ -62,7 +62,7 @@ What happens, in order. "You" steps need your judgment; Claude does the rest whe
 | Step | Who | What | Time |
 |---|---|---|---|
 | 4 | **You** | **Tell Claude the format rules:** page limit, required template (Word / LaTeX / course template), citation style, required sections (e.g. ethics statement, contribution statement), due date, and whether appendices count toward the limit. | 5 min |
-| 5 | **You** | **Approve the hypothesis verdicts.** Each hypothesis's "Verdict" section in [hypothesisanswers.md](hypothesisanswers.md) is the proposed wording (summary table at the top). How strongly to word each verdict is your academic call. | 15 min |
+| 5 | **You** | **Approve the hypothesis verdicts.** Each hypothesis's "Verdict" section in [hypothesisanswers.md](../results/hypothesisanswers.md) is the proposed wording (summary table at the top). How strongly to word each verdict is your academic call. | 15 min |
 | 6 | **You** | **Decide what goes in the main text and what in an appendix:** which of the 13 findings, and the extras (the external models D46, the Mirage Gap D40, the name probe D45, the live demo D41). [reportplan.md](reportplan.md) §6 has a suggestion. | 10 min |
 | 7 | Claude | Shortlist about 20 failure-example candidates in `report/failure_candidates.md`. For each: the sentence, what each model said, and which shortcut it shows. Sources include `results/explain/ig_failures.csv`, `top_features.csv`, `tree_depth4.txt` and the behavioral predictions. | — |
 | 8 | **You** | **Pick 8–10 of them** and approve (or rewrite) the one-line explanation of each. Choosing the examples that tell the story, and explaining the shortcut in plain words, is the core of the report; you'll be asked about them. | 30 min |
@@ -110,13 +110,13 @@ Kept as a record; nothing to do here unless you re-run something.
 | Kaggle account with phone verification | Needed for GPU and internet in notebooks. |
 | DistilBERT trained on Kaggle (3 seeds) | D34, D35. Notebook: `notebooks/kaggle_distilbert.ipynb`. |
 | Data download and classical training | `prepare`, `train-classical --variants base negmark negmark_w3 unigram` and `all` have run (D26). Sizes: train 63,971 / held-out 3,378 / val 872 / test 1,820 / negation 519 / IMDb 10,000. |
-| Proposal's facts corrected | The repo copy is [proposal.md](proposal.md); H2/H3's "single-word features" are tested exactly as worded (D42). |
+| Proposal's facts corrected | The repo copy is [proposal.md](../../proposal.md); H2/H3's "single-word features" are tested exactly as worded (D42). |
 | Random forest | Trained fine (about 4 min per fit); its files are large (822 MB per variant). |
 | Behavioral word lists reviewed | "messy" → "sloppy", everything else kept (D33). |
 | Sanity checks of the numbers | Checked by Claude (D35). |
 | External models run on Kaggle | D46. Notebook: `notebooks/kaggle_external.ipynb`. |
 | Shortfall decisions | All six recommendations taken; F2 + G8 built with H8, G7, G9, C12, D10 (D52, D53). |
-| 17 confirmatory claims approved | Before any fresh data was scored (`docs/confirmatory_claims.md`, commit fbdf48e). |
+| 17 confirmatory claims approved | Before any fresh data was scored (`docs/replication/confirmatory_claims.md`, commit fbdf48e). |
 | External models on the fresh IMDb sample | D53. Notebook: `notebooks/kaggle_fresh.ipynb`; its zip unzipped into the repo. |
 
 ### If you ever re-run a Kaggle notebook
