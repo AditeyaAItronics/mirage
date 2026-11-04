@@ -1,8 +1,8 @@
 # Mirage — notes for Claude Code
 
 Research codebase: shortcut learning in sentiment classifiers (SST-2 → IMDb).
-Read `ARCHITECTURE.md` for the design, `majordecisions.md` for why, and
-`MIRAGE_IMPLEMENTATION_PLAN.md` for the week-by-week build order.
+Read `ARCHITECTURE.md` for the design, `majordecisions.md` for why, and `hypothesisanswers.md` /
+`interestingfindings.md` for the current results. The original build plans are in `docs/archive/`.
 
 ## Hard rules
 - **Predictions are the contract.** Every model writes `results/predictions/{model}__{variant}__seed{seed}__{dataset}.parquet`
@@ -38,11 +38,14 @@ Read `ARCHITECTURE.md` for the design, `majordecisions.md` for why, and
 ## Keep the docs current as you build and fix
 Update every relevant markdown file **as part of the same change**, not at the end:
 - `majordecisions.md`: every decision taken (what, why, what was rejected, the numbers), as it is made.
-- `README.md`: new or changed results, figures and commands.
+- `hypothesisanswers.md` / `interestingfindings.md`: **the one home for current results.** New or
+  changed numbers go here, checked against `results/*.csv`; other files link here instead of
+  copying numbers.
+- `README.md`: the short results summary (update it when a headline number or verdict changes),
+  figures and commands.
 - `ARCHITECTURE.md`: new stages, modules, interfaces, layering or data-flow changes.
 - `shortfalls.md`: new limitations found; move fixed ones to Resolved.
-- `newadditionsdesign.md`: what has been done, what hasn't, and any fixes or changes to the design.
-- `codeexplanations.md`: new or changed files (and the test count); `whatyouneedtodo.md`: steps for the user.
+- `codeexplanations.md`: new or changed files (and the test count); `whatyouneedtodo.md`: every step for the user, including the report's; `reportplan.md`: the report's skeleton and sources.
 - `CLAUDE.md`: new hard rules.
 
 ## Review once per request

@@ -2,7 +2,9 @@
 
 How the code is organised, how data moves through it, and the choices that keep it fast,
 reproducible and cheap to run on a laptop plus a free T4 GPU. The *why* behind each choice is in
-[majordecisions.md](majordecisions.md) (referenced as D1–D41 below).
+[majordecisions.md](majordecisions.md) (the D-numbers below). For what each individual file and
+test does, see [codeexplanations.md](codeexplanations.md); this file stays at the level of stages,
+layers and interfaces.
 
 ---
 
@@ -21,15 +23,17 @@ reproducible and cheap to run on a laptop plus a free T4 GPU. The *why* behind e
  │  build-suite ─► results/behavioral_suite.csv                                 │                   │
  │                    │                                                         │                   │
  │                    └────────────────────► predict ◄──────────────────────────┘                   │
+ │  name-probe (D45: its own eval set, outside EVAL_SETS) ──► predictions + name_probe*.csv          │
  │                                              │                                                   │
  │                         results/predictions/{model}__{variant}__seed{s}__{dataset}.parquet       │
  │                         (external models: {name}__base__seed0__{dataset}.parquet)                │
  │                                  ▲  THE CONTRACT (D7) — everything below reads only this  ▲      │
  │              ┌───────────────────┼─────────────────────┬─────────────────────┐                   │
- │          evaluate             explain                 warn                figures                │
+ │          evaluate          explain / occlusion         warn                figures                │
  │  main_table / errors_by_type   top_features         early_warning.csv      figures/*.png|pdf     │
  │  negation_gap / mcnemar        ig_failures          (+ artifacts/emb cache)                      │
- │                                deletion / overlap                                                │
+ │  h1_test / mirage_gap          deletion / overlap                                                │
+ │  seed_robustness               occlusion_* (H5, cache in artifacts/occlusion)                    │
  └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -54,8 +58,9 @@ src/mirage/
   models/   base.py classical.py distilbert.py external.py
                                       ← model layer: one Classifier interface
   predict.py                          ← the contract: write/validate/load prediction files
-  behavioral/ wordlists templates suite
-                                      ← test-suite generator + MFT/INV scoring
+  behavioral/ wordlists templates suite names
+                                      ← test-suite generator + MFT/INV scoring; names = the name
+                                        test's pairs and the name probe (D45)
   metrics.py stats.py evaluate.py     ← analysis layer: point metrics → uncertainty → tables
   explain/  linear trees ig deletion overlap occlusion
   warning/  embed gaussian knn distance error_detection
@@ -179,16 +184,18 @@ laptop struggles, train it on its own with `--models rf` and limit the grid to `
 
 ## 7. Testing strategy
 
-| Level | What | Where |
-|---|---|---|
-| Ladder (D42) | the single-word variant has no word pairs; ladder values on hand-made errors; adding it leaves existing columns identical; the ablation Holm family | `tests/test_ladder.py` |
-| Unit | normalization, negation scope, vectorizer vocabulary (the `n't` trap), ECE, bootstrap, McNemar vs statsmodels, Mahalanobis vs scipy, overlap measures, deletion check | `tests/test_*.py` |
-| Contract | every way a predictions file can be malformed is rejected | `tests/test_contract.py` |
-| Generator | suite counts, determinism, INV pairing, typo changes exactly one word | `tests/test_behavioral.py` |
-| External models | label mapping in both orders, rejection of 3-class / unnamed labels, the CLI stage, all with a tiny local random BERT (no download) | `tests/test_external.py` |
-| Score | robustness on hand-made numbers, pair accuracy, leave-one-out sensitivity, figures render | `tests/test_mirage_gap.py` |
-| Demo | word importance, flags, vocabulary check; every curated example's expected behaviour on the real models; the app runs headless (`AppTest`) | `tests/test_demo.py` |
-| End to end | all CPU stages via the real CLI in an isolated root | `tests/test_pipeline_e2e.py` |
+Tests are layered the same way as the code; the full list, file by file, is in
+[codeexplanations.md](codeexplanations.md) (section `tests/`).
+
+| Level | What it guards |
+|---|---|
+| Unit | normalization and negation scope, vectorizer vocabulary (the `n't` trap), metrics and statistics against reference implementations, word removal, explanation and warning maths |
+| Contract | every way a predictions file can be malformed is rejected |
+| Generator | suite counts, determinism, pairing, the typo, direction and name rules |
+| Analysis | each table on hand-made numbers: the H1 test, the H2/H3 ladder, the robustness score, H5 agreement, the name probe, seed robustness; adding models or variants leaves existing columns identical |
+| External models | label mapping, the CLI stage, all with a tiny local random BERT (no download) |
+| Demo | its logic with stand-in models; with the real models, every curated example's expected behaviour and a headless run of the app |
+| End to end | all CPU stages via the real CLI in an isolated root |
 
 Fine-tuning, IG and embeddings are smoke-tested manually (see majordecisions.md) rather than in
 pytest. The real-model demo tests skip themselves on a fresh clone without trained models.

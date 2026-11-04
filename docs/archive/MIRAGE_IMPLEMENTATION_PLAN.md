@@ -1,5 +1,9 @@
 # Mirage — Implementation Plan
 
+> **Archived (Nov 2026): this plan is finished and kept as a record.** Where it differs from the
+> code, the code and [majordecisions.md](../../majordecisions.md) are right. Current results:
+> [hypothesisanswers.md](../../hypothesisanswers.md) and [interestingfindings.md](../../interestingfindings.md).
+
 Coding plan for *Mirage: Exposing the Illusion of Accuracy* (4 weeks, solo, free GPU only).
 It turns the proposal into a repo layout, module contracts, a day-by-day build order, tests, and a
 map of which Claude Code features to use at each step.

@@ -25,14 +25,13 @@ never writes results.
 | `README.md` | Setup and the commands to reproduce everything. |
 | `ARCHITECTURE.md` | The design: layers, interfaces, which code answers which research question. |
 | `majordecisions.md` | Log of every major decision (D1–D41): what was decided, why, and what was rejected. |
-| `newadditionsdesign.md` | The design for the three presentation additions: external models (D39), the Mirage Gap (D40) and the live demo (D41). |
 | `shortfalls.md` | Known limitations, with severity, fixes and a "Resolved" list. |
-| `whatyouneedtodo.md` | The steps only you can do (Kaggle, reviews, proposal fixes). |
-| `reportplan.md` | How the final report gets written: the step-by-step walkthrough (yours and Claude's), the section skeleton with the source of every number, and the hypothesis verdicts to approve. |
+| `whatyouneedtodo.md` | Every step for you, in order: what's left now, the report's walkthrough (yours and Claude's steps), optional extras, and a record of what's done. |
+| `reportplan.md` | The final report's skeleton: each section, what goes in it, and where its numbers come from (links into the two results files). |
 | `hypothesisanswers.md` | H1–H6 answered in full: the claim, how it was tested, every number with its CI, the verdict, why, caveats and robustness checks. Source material for the report. |
 | `interestingfindings.md` | 13 findings beyond the hypotheses, each tied to the hypothesis it explains or extends, marked planned or exploratory. Source material for the report. |
 | `proposal.md` | The project proposal: research questions, hypotheses H1–H6, datasets, models and evaluation plan. Its facts were corrected to match the code (Nov 2026); the hypotheses are as originally written. |
-| `MIRAGE_IMPLEMENTATION_PLAN.md` | The original week-by-week build plan. Some details are now superseded by the decision log. |
+| `docs/archive/` | Finished plans, kept as a record: `MIRAGE_IMPLEMENTATION_PLAN.md` (the original week-by-week build plan) and `newadditionsdesign.md` (the design for the external models, the Mirage Gap and the demo, D39–D41). Superseded by the decision log where they differ. |
 | `CLAUDE.md` | Rules for Claude Code when working in this repo. |
 | `requirements-lock.txt` | Exact library versions of the environment that produced the final results (D46). |
 | `codeexplanations.md` | This file. |

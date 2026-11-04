@@ -1,4 +1,4 @@
-# Ready-made sentiment models, evaluated without training (newadditionsdesign.md #4, D39).
+# Ready-made sentiment models, evaluated without training (docs/archive/newadditionsdesign.md #4, D39).
 # Seed is 0 for every external model: there is no training run to seed.
 models:
   roberta_large:

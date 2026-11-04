@@ -1,5 +1,9 @@
 # New additions: design document
 
+> **Archived (Nov 2026): this plan is finished and kept as a record.** Where it differs from the
+> code, the code and [majordecisions.md](../../majordecisions.md) are right. Current results:
+> [hypothesisanswers.md](../../hypothesisanswers.md) and [interestingfindings.md](../../interestingfindings.md).
+
 Three presentation additions, in build order:
 
 1. **#4: external models.** "Does scale cure shortcuts?"

@@ -4,6 +4,11 @@ A running log of the major coding decisions taken while building the Mirage code
 Newest decisions are appended at the bottom. Each entry says what was decided, the alternatives,
 and the reason.
 
+> **Numbers here are a dated record.** Each entry gives the results as they stood when the
+> decision was made; later entries sometimes update them (e.g. when models were added). For the
+> **current** results, use [hypothesisanswers.md](hypothesisanswers.md) and
+> [interestingfindings.md](interestingfindings.md), which are checked against `results/*.csv`.
+
 ---
 
 ## D1 — `src/` layout with a pip-installable package
@@ -1578,3 +1583,36 @@ says 59-95%. A change that rounds to zero is shown as "+0%", not "-0%".
 full-test lines disappear. A model missing from the results shows "—". The helper is named
 `shortcut_failures`, not `test_failures`, so pytest doesn't collect it from the test module's
 imports. A test checks that every column the demo reads is one `evaluate` writes. No bugs found.
+
+## D50 — One home for results, archived plans, one to-do list (documentation)
+
+**Problem:** the same results were copied into five files (README, this log, reportplan's verdicts,
+and the two results files), and they had started to drift: the README said 285 seed checks where
+the current table has 291, and "the ranking holds in all 12 leave-one-out checks" stopped being
+true when the external models were added (now one check swaps two neighbours). Two finished build
+plans were still presented as current, and the report's steps were split between
+`whatyouneedtodo.md` and `reportplan.md`.
+
+**Decision:**
+- **`hypothesisanswers.md` and `interestingfindings.md` are the one home for current results**,
+  checked against `results/*.csv`. The README keeps a short summary (one table, one verdict line
+  per hypothesis) and links to them; `reportplan.md` links to them instead of restating verdicts.
+  This log's numbers are a dated record of each decision (a note at the top says so).
+- **Finished plans archived:** `MIRAGE_IMPLEMENTATION_PLAN.md` and `newadditionsdesign.md` moved
+  to `docs/archive/`, each with a note that the code and this log win where they differ. CLAUDE.md
+  no longer points at the implementation plan, and its docs rule names the results files instead
+  of the design document.
+- **One to-do list:** every user step, including the report walkthrough (format rules, verdicts,
+  main text vs appendix, failure examples, review, personal parts, submit) and Claude's steps
+  between them, is in `whatyouneedtodo.md`; finished steps are condensed into a "Done" table,
+  keeping the Kaggle re-run tips. `reportplan.md` is the skeleton and sources only.
+- **ARCHITECTURE.md** stays at the level of stages, layers and interfaces: its diagram now shows
+  the `name-probe` and `occlusion` stages and the newer tables, and its testing section summarises
+  the levels and links to `codeexplanations.md` for the file-by-file list.
+
+**Rejected:** merging ARCHITECTURE.md and codeexplanations.md (different readers: the design vs a
+file tour), and deleting the old plans (they record what was planned against what was built).
+
+**Check:** every relative markdown link in the repo resolves; the README's summary table was
+re-read from `results/main_table.csv` and `results/mirage_gap.csv`.
+
