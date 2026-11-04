@@ -1808,3 +1808,16 @@ negation marking narrows the gap for all of them, but word pairs alone don't for
 **Not added:** a confidence interval for the robustness score itself (it averages four checks on
 different items). Its components have cluster intervals; the twins' 19-point difference is far
 larger than them and replicated. Stated as a caveat.
+
+## D55 — The remaining open shortfalls accepted as limitations (documentation)
+
+**Decision:** the author will not build the rest of shortfallfix.md. B10 (edges labels), C3
+(untuned DistilBERT), C4 (few seeds), D12 (frame dependence), E1 (IG baseline), G11 (claim 3) and
+H7 (hand-checked doc numbers) are reworded in shortfalls.md as accepted limitations (🟢): what
+each means for the results, the sentence to use in the report, and future work. The plan's status
+table, reportplan.md's Limitations list and whatyouneedtodo.md say the same.
+
+**Why it is safe:** none of them can change a verdict. C3 can only understate DistilBERT's
+advantage; C4 is covered by the three-seed check (D44: nothing changed); E1 affects illustrations
+only, since H5 uses word removal (D43); D12 and G11 are already stated in the verdicts; B10 only
+moves a bound; H7 concerns the write-up, not the analysis. No 🔴 or 🟠 item remains open.

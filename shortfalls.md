@@ -5,7 +5,8 @@ Each item has four parts: **what** the limitation is, **why it matters** for the
 
 - 🔴 can change a headline conclusion or undermine its validity. Fix it, or state it clearly in the report.
 - 🟠 weakens a result. Worth fixing if there is time.
-- 🟢 a scope limit. Mention it in the report's Limitations section.
+- 🟢 a scope limit, or an accepted limitation (D55). Mention it in the report's Limitations
+  section; accepted ones carry an "In the report" sentence.
 
 When one gets fixed, move it to the **Resolved** section at the bottom and add an entry to `majordecisions.md`.
 
@@ -110,14 +111,16 @@ if DistilBERT's 512-token limit allows.
 `negmark_effect`, `negation_gap` and the heatmap. For the classical models it gives the same
 conclusions. Re-check the DistilBERT gap on it when it arrives.
 
-### B10. 🟠 NEW: `imdb_edges` inherits whole-review labels
+### B10. 🟢 LIMITATION (accepted, D55): `imdb_edges` inherits whole-review labels
 **What:** a review's first and last sentences don't always state its verdict ("Caught this 1969
-film on cable TCM one night. Long live musicals." is labelled positive).
-**Why it matters:** label noise raises the edges error. So the "content" part of the IMDb drop
-(D31) is an upper bound, and the "length/format" part understates how much full text helps.
-**Possible fix:** hand-label about 200 edges excerpts as positive, negative or unclear, measure the
-noise rate, and re-estimate on the clear ones. A sentence-level sentiment check is another option.
-**Effort:** small to medium (about 1 hour of labelling).
+film on cable TCM one night. Long live musicals." is labelled positive), but they keep the whole
+review's label.
+**What it means for the results:** some of the edges error is label noise, so the "content" part
+of the IMDb drop (D31) is an upper bound and the "length/format" part a lower bound. The direction
+of both parts is not affected.
+**In the report:** "The excerpt set keeps each review's label, so part of its error is label
+noise; the content share of the IMDb drop is therefore an upper bound."
+**Future work:** hand-label a sample of excerpts to measure the noise rate.
 
 ---
 
@@ -174,20 +177,24 @@ pairs* and marking close the gap (H3), but every classical model already used wo
 **Fix:** a `unigram` variant completes the ladder single words → + pairs → + marking. Result:
 pairs and marking together close 40% of LR's real-sentence gap (CI 21–58%).
 
-### C3. 🟠 DistilBERT hyperparameters are not tuned
-**What:** fixed lr 2e-5, 3 epochs and batch size 32, while the classical models get a grid search.
-**Why it matters:** this asymmetry slightly favours the classical models. That's conservative for our claims,
-but worth stating.
-**Possible fix:** a small grid (lr in {2e-5, 3e-5, 5e-5}, epochs in {2, 3, 4}) on one seed, on the GCP or
-Kaggle GPU.
-**Effort:** medium (GPU time).
+### C3. 🟢 LIMITATION (accepted, D55): DistilBERT's hyperparameters are not tuned
+**What:** DistilBERT uses fixed settings (learning rate 2e-5, 3 epochs, batch size 32), while the
+classical models get a grid search.
+**What it means for the results:** the comparison slightly favours the classical models, so the
+transformer advantages we report (H2, the Mirage Gap) are, if anything, conservative.
+**In the report:** "DistilBERT was fine-tuned with standard settings and not tuned; the classical
+models were tuned. This can only understate DistilBERT's advantage."
+**Future work:** a small learning-rate and epoch grid.
 
-### C4. 🟠 Few seeds
-**What:** DistilBERT has 3 seeds. Classical models have one, although RF depends on its seed.
-**Why it matters:** the seed-to-seed spread can't be estimated well from 3 runs, and the RF results could
-change with a different seed.
-**Possible fix:** 5 seeds for DistilBERT. For RF, run 3 seeds and report the spread.
-**Effort:** small (compute only).
+### C4. 🟢 LIMITATION (accepted, D55): few seeds
+**What:** DistilBERT has 3 seeds; each classical model has one, although the random forest depends
+on its seed.
+**What it means for the results:** 3 runs give only a rough idea of the seed-to-seed spread. Every
+median-seed result was rerun on all three DistilBERT seeds and none changed (D44), and the
+Mirage Gap moves by at most 0.003 between them.
+**In the report:** "DistilBERT was trained with three seeds and the classical models with one;
+no DistilBERT conclusion changed across its seeds."
+**Future work:** more seeds, including for the random forest.
 
 ### C5. 🟢 The classical feature set is basic
 **What:** TF-IDF on unigrams and bigrams only. No trigrams, character n-grams or word embeddings.
@@ -348,34 +355,31 @@ phrases lean negative" rather than "bad names".
 
 ---
 
-### D12. 🟠 NEW (D53): template results depend strongly on the sentence frame
-**What:** the per-frame split shows failure rates moving by up to 100 points between frames of the same
-test (LR, directional negation: 0% for "I don't think the movie was excellent", 100% for "The movie
-didn't feel great"). Both DistilBERTs fail one new frame almost always ("I would never call the movie
-great": 96% and 99%) while getting every other new frame right.
-**Why it matters:** a template test's failure rate is an average over 3–4 frames, so its size depends on
-which frames were written. Verdicts that hold on both suites are robust; exact template numbers are not.
-**Possible fix:** report template effects per frame or pooled over both suites; add more frames per test
-(e.g. 10) so no single frame dominates; test *never* in more constructions to see how general the
-DistilBERT blind spot is.
-**Effort:** small (pooling) to medium (more frames, a new suite run).
+### D12. 🟢 LIMITATION (accepted, D55): template results depend on the sentence frame
+**What:** failure rates move by up to 100 points between frames of the same test (LR, directional
+negation: 0% for "I don't think the movie was excellent", 100% for "The movie didn't feel
+great"). Both DistilBERTs fail one new frame almost always ("I would never call the movie great":
+96% and 99%) while getting every other new frame right.
+**What it means for the results:** a template test's failure rate is an average over 3–4 frames,
+so its exact size depends on which frames were written. The verdicts that hold on both suites are
+robust; exact template numbers are not.
+**In the report:** "Template failure rates depend on the sentence frames; we report the
+conclusions that held on two independently worded suites, and the per-frame rates are in the
+appendix."
+**Future work:** more frames per test, and *never* in more constructions.
 
 ## E. Explanations
 
-### E1. 🟠 Integrated Gradients depends on its baseline and covers a small sample
-**What:**
-- IG measures each word's contribution *relative to a baseline input*. We use all `[PAD]` tokens, and a
-  different baseline, such as `[MASK]` or a blurred embedding, would give different attributions.
-- It runs on at most 100 examples (`--max-ig 100`) with 50 steps.
-
-**Why it matters:** the word overlap between models (Jaccard and RBO) and the "which words does DistilBERT use"
-claims rest on one baseline choice and a small sample.
-**Possible fix:**
-- Run a `[MASK]` baseline too and report the overlap between the two.
-- Check IG's convergence delta and raise `n_steps` if it's large.
-- Raise `--max-ig` when running on a GPU.
-
-**Effort:** small (on a GPU).
+### E1. 🟢 LIMITATION (accepted, D55): Integrated Gradients uses one baseline and a small sample
+**What:** IG measures each word's contribution relative to a baseline input; we use all `[PAD]`
+tokens, and another baseline (such as `[MASK]`) could give different attributions. It runs on at
+most 100 examples with 50 steps.
+**What it means for the results:** the IG word attributions are illustrations. H5's main measure
+doesn't use IG: it uses one leave-one-word-out rule for every model (D43), so no verdict rests on
+IG.
+**In the report:** "Integrated Gradients is used for illustration only, with a single [PAD]
+baseline on up to 100 examples; the cross-model comparison (H5) uses word removal instead."
+**Future work:** a second baseline and more examples.
 
 ### E2. ✅ RESOLVED for H5 (D43); 🟢 remains for the per-model explanations: we compare explanations that mean different things
 **What:** LR weights and tree importances are *global* (about the whole model), while IG is *local* (about
@@ -581,14 +585,15 @@ large enough to matter, not only on p-values.
 use both in the verdict wording. The thresholds are chosen after the results, so say so (G8).
 **Effort:** small.
 
-### G11. 🟠 NEW (D53): one pre-registered claim failed on new sentence frames
-**What:** claim 3 (every single-word classical model ≥ 10 points worse than DistilBERT on directional
-negation) failed on the second suite: the decision tree's gap is +0.4 points, the random forest's lower
-bound +4.5. Our DistilBERT fails "I would never call the movie great" in 96% of cases (D12).
-**Why it matters:** H2's "much better at negation" is true for the negations SST-2 shows most, not for
-every construction. The report must say so; the pre-registered result can't be re-scored.
-**Fix:** none for the claim. State it in H2's verdict (done in hypothesisanswers.md).
-**Effort:** none (wording).
+### G11. 🟢 LIMITATION (accepted, D55): one pre-registered claim failed on new sentence frames
+**What:** claim 3 (every single-word classical model ≥ 10 points worse than DistilBERT on
+directional negation) failed on the second suite: the decision tree's gap is +0.4 points and the
+random forest's lower bound +4.5. Our DistilBERT fails "I would never call the movie great" in 96%
+of cases (D12).
+**What it means for the results:** H2's "much better at negation" holds for the negations SST-2
+shows most, not for every construction. The pre-registered result stands as not replicated.
+**In the report:** "16 of 17 pre-registered claims replicated. The one that failed shows that
+DistilBERT's negation advantage does not extend to every construction."
 
 ### G10. 🟢 NEW: the Mirage Gap's two axes share sentences
 **What:** "looks" is SST-2 test accuracy (1,820 sentences); one of the four "behaves" checks is the
@@ -634,16 +639,14 @@ tools normally keep the zip's timestamps. One that doesn't would only cause a sl
 wrong results.
 **Effort:** none.
 
-### H7. 🟠 NEW: numbers in the docs are copied by hand
-**What:** the results in README, hypothesisanswers.md and interestingfindings.md are typed from
-the CSVs. They have already drifted twice (285 vs 291 seed checks; a sensitivity claim that stopped
-being true when models were added, D50).
-**Why it matters:** the report will be written from these files. A stale number in the report is
-the error an examiner is most likely to catch.
-**Possible fix:** a claims registry: each quoted number listed once with the CSV cell it comes
-from, checked by a test, so `pytest` fails when a result changes and a doc isn't updated
-(shortfallfix.md). The report's number check (whatyouneedtodo step 10) reuses it.
-**Effort:** small to medium.
+### H7. 🟢 LIMITATION (accepted, D55): numbers in the docs are checked by hand
+**What:** the results in README, hypothesisanswers.md and interestingfindings.md are typed from the
+CSVs and checked against them by hand, not by an automated test. They drifted twice before being
+caught (D50).
+**What it means for the results:** none for the analysis, which reads only the CSVs; the risk is a
+stale number in the write-up.
+**In the report:** nothing to state. Before submitting, check the report's numbers against
+`results/*.csv` (whatyouneedtodo.md, final checks).
 
 ### H8. ✅ RESOLVED (D52): adding seeds or variants would silently change the headline tables
 **Done:** `evaluate.headline_pool` keeps classical seed 42 and DistilBERT's configured seeds;
@@ -664,14 +667,9 @@ only, and add a test that adding a seed or variant leaves `main_table` unchanged
 
 ## Suggested order
 
-The design of every fix is in [shortfallfix.md](shortfallfix.md); its status table says what
-is done. Done (D52, D53): H8, G7, G9, C12, D10, G8, F2. Still open, in a sensible order:
-- **H7** (a test that the docs' numbers match the CSVs): protects the report; CPU only.
-- **G11** (wording only) and **D12** (pool the two suites, or more frames per test).
-- **B10** (hand-label 200 IMDb excerpts: your time).
-- **C3, C4, E1** (tuned DistilBERT, more seeds, IG baselines): Kaggle GPU runs.
-
-No 🔴 item is open. Everything 🟢 gets one sentence in the report's Limitations section.
+No 🔴 or 🟠 item is open. The fixes the author chose were built (D52, D53); the rest (B10, C3, C4,
+D12, E1, G11, H7) are accepted as limitations (D55), each with the sentence to use in the report.
+Everything 🟢 gets one sentence in the report's Limitations section.
 
 ## Resolved
 

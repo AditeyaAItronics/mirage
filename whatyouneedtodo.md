@@ -45,8 +45,8 @@ H2's verdict, because the claim was pre-registered; it can't be re-scored or dro
 
 The other shortfall fixes you approved are done: cluster intervals (G7), headline seeds (H8),
 minimum effects (G9), the RoBERTa † mark (C12), the second suite (D10), the replication (G8) and
-the own-feature distance (F2). Still open if you want them: H7 (a check that doc numbers match the
-CSVs), C3/C4 (tuned DistilBERT, more seeds), E1, B10 and the new D12 (more frames per test).
+the own-feature distance (F2). The rest (B10, C3, C4, D12, E1, G11, H7) are accepted as
+limitations (D55); each has its "In the report" sentence in [shortfalls.md](shortfalls.md).
 
 ### 3b. Read the two results files (1 h)
 [hypothesisanswers.md](hypothesisanswers.md) and [interestingfindings.md](interestingfindings.md)
@@ -95,7 +95,6 @@ report; ask Claude to build it on its own branch.
 ### Things Claude can do for you (just ask)
 - Fix anything that breaks. Paste the error, or let Claude run the stage.
 - Run `/code-review` on recent changes.
-- Address the remaining 🟠 shortfalls (B10, C3, C4, D12, E1, H7 in [shortfalls.md](shortfalls.md)).
 - Turn the CSVs into the report's tables, and the final report into a .docx or PDF.
 - Put the demo online (Hugging Face Spaces, D48) if you want a public link.
 

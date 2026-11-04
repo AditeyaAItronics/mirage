@@ -19,12 +19,14 @@ kept as written.
 | **D10** frame set B | ✅ done | D53, `behavioral_by_frame.csv` | Claude drafted the frames, the author approved them |
 | **G8** replication | ✅ done: 16 of 17 replicated | D53, `results/replication.csv` | One Kaggle notebook (`kaggle_fresh.ipynb`) for the external models only; our DistilBERT ran on the CPU (its model files aren't on GitHub), median seed only |
 | **F2** own-feature distance | ✅ done | D53, `results/early_warning_own.csv` | DistilBERT's features were extracted on the CPU, not in a Kaggle notebook |
-| **H7** claims registry | open | — | not built yet |
-| **C3**, **C4**, **E1** | open | — | the training notebook (`kaggle_fixes_train`) and IG were not built |
-| **B10** edges labels | open | — | needs the author's hand-labelling |
+| **H7** claims registry | accepted as a limitation (D55) | shortfalls.md | not built; numbers are checked by hand before submitting |
+| **C3**, **C4**, **E1** | accepted as limitations (D55) | shortfalls.md | the training notebook (`kaggle_fixes_train`) and the IG rerun were not built |
+| **B10** edges labels | accepted as a limitation (D55) | shortfalls.md | no hand-labelling |
 
 New items found while building: **D12** (template results depend on the frame) and **G11**
-(claim 3 failed), both in shortfalls.md.
+(claim 3 failed), both accepted as limitations in shortfalls.md. **Nothing in this plan is left to
+build**: every item is either done or an accepted limitation with the sentence to use in the
+report.
 
 **Scope: 12 open items.**
 - 🔴 **G7** confidence intervals ignore clustering (new).

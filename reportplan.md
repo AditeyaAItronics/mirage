@@ -106,13 +106,16 @@ appendix.
 - **What the shortcuts have in common** (findings §14): they come from the training data.
 
 ### 8. Limitations (½ page)
-From [shortfalls.md](shortfalls.md), stated plainly:
+From [shortfalls.md](shortfalls.md), stated plainly; each accepted limitation (D55) has a ready
+"In the report" sentence there:
 - RoBERTa-large's possible contamination (C12; findings §12).
 - English movie reviews only (A3).
 - Template tests are hand-written (D1, mitigated).
 - Removing single words misses interactions (E4).
-- IMDb excerpt labels are noisy (B10).
-- DistilBERT isn't tuned and has 3 seeds (C3, C4).
+- IMDb excerpt labels are noisy, so the content share of the IMDb drop is an upper bound (B10).
+- DistilBERT isn't tuned and has 3 seeds (C3, C4); this can only understate its advantage, and no
+  conclusion changed across seeds.
+- Integrated Gradients is illustration only, with one baseline (E1); H5 uses word removal.
 - Gaussian NB's comparison includes its SVD compression (C6).
 - Sarcasm is out of scope (D4).
 - Template effects depend on the sentence frame (D12); one pre-registered claim failed on new
