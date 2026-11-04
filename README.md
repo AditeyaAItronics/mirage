@@ -14,7 +14,7 @@ demo shows the shortcuts sentence by sentence.
 **The results in full, with every number and confidence interval, are in two files:**
 - [hypothesisanswers.md](hypothesisanswers.md): H1–H6, each with its test, tables, verdict, reasons
   and caveats;
-- [interestingfindings.md](interestingfindings.md): 13 further findings, each tied to the
+- [interestingfindings.md](interestingfindings.md): 15 further findings, each tied to the
   hypothesis it explains or extends.
 
 This section is the short version. Base variants; DistilBERT is the mean of 3 seeds; all
@@ -38,9 +38,9 @@ a model gets fully right; it uses DistilBERT's median seed.
 | | Hypothesis | Verdict |
 |---|---|---|
 | H1 | Every model, DistilBERT included, errs more on negation and typos | **Partly supported:** typos yes (DistilBERT +32 points); negation only for the bag-of-words models |
-| H2 | DistilBERT handles negation much better than single-word models | **Supported:** 14–35 points better on real negated sentences |
+| H2 | DistilBERT handles negation much better than single-word models | **Supported:** 14–35 points better on real negated sentences; but it fails "I would *never* call the movie great" (96%), so the pre-registered claim didn't replicate on new frames |
 | H3 | Word pairs + negation marking close part, not all, of the gap | **Supported for logistic regression:** 40% [21, 58] on real sentences; 25–98% on templates for every model |
-| H4 | Embedding distance adds information beyond confidence | **Rejected:** distance AUROC ≈ 0.5, confidence 0.55–0.86 |
+| H4 | Embedding distance adds information beyond confidence | **Rejected** (replicated): distance AUROC ≈ 0.5, confidence 0.55–0.86; even in DistilBERT's own features (0.82) it adds nothing |
 | H5 | Classical models share their shortcut words | **Supported for LR, random forest, Multinomial NB** (0.88–0.92, reliability-corrected) |
 | H6 | Gaussian NB is worse than Multinomial NB | **Supported:** 59.1% vs 83.4% accuracy |
 
@@ -49,6 +49,14 @@ accuracy but very different behaviour; DistilBERT treats an unreadable sentiment
 "negative" ("brilliant" 0.999 → "brililant" 0.010), and Hugging Face's DistilBERT does too; scale
 shrinks shortcuts but doesn't remove them; Naive Bayes judges films by who made them (ρ = 0.91 on
 23 never-tested names). No conclusion depends on DistilBERT's seed (D44).
+
+**Replication (D53).** 17 claims were written down in advance
+([docs/confirmatory_claims.md](docs/confirmatory_claims.md)) and re-tested on 10,000 IMDb reviews
+never used before and on a second template suite with new sentence frames: **16 replicated**.
+The one that didn't (H2, claim 3) failed because DistilBERT can't read one new negation frame,
+not because the classical models improved. Confidence intervals resample whole clusters
+(template cases sharing an adjective, IMDb reviews of the same film; D52), which widened some of
+them and changed no verdict.
 
 ### The Mirage Gap (D40)
 
@@ -95,6 +103,13 @@ python -m mirage train-classical --variants base negmark negmark_w3 unigram  # 5
 # External models (optional, D39): run notebooks/kaggle_external.ipynb on Kaggle,
 # then unzip external_outputs.zip into the repo root (predictions only)
 python -m mirage all                                      # suite -> predict -> evaluate -> explain -> occlusion -> warn -> figures
+# Replication (D53): fresh IMDb sample + second suite, then score the 17 pre-registered claims
+python -m mirage prepare-fresh                            # 10,000 new IMDb reviews (+ their edges)
+# External models on the fresh reviews: run notebooks/kaggle_fresh.ipynb on Kaggle (T4 GPU),
+# then unzip fresh_outputs.zip into the repo root
+python -m mirage replicate                                # predicts what's missing, writes results/replication.csv
+python -m mirage extract-features                         # F2: DistilBERT's own features (slow on CPU)
+python -m mirage own-distance                             # F2: results/early_warning_own.csv
 ```
 
 Each stage can also run on its own: `python -m mirage --help`.

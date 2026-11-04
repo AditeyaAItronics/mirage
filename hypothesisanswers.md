@@ -12,7 +12,17 @@ each hypothesis below links to the ones that explain or extend it.
 **How to read the numbers.**
 - Every number comes from a file in `results/`, named under "Sources". "DNN" refers to the entry
   in [majordecisions.md](majordecisions.md) that explains the analysis.
-- Brackets are 95% bootstrap confidence intervals over items (1,000 resamples).
+- Brackets are 95% bootstrap confidence intervals (1,000 resamples). Since D52 (G7) they
+  resample **clusters**, not single items: template cases that share their sentiment adjective are
+  drawn together, and so are IMDb reviews of the same film. SST-2 sentences are their own clusters.
+  This only widened intervals (median 1.0–1.5×); no estimate and no H1–H6 verdict changed
+  (`results/cluster_robustness.csv` lists both versions).
+- "Meaningful" (D52, G9) means the interval also clears a pre-set minimum effect
+  (`configs/stats.yaml`: 2 points of error or probability, 0.02 AUROC, 10% of a gap closed).
+- **Replication (D53, G8):** 17 of these claims were written down before fresh data was scored
+  ([docs/confirmatory_claims.md](docs/confirmatory_claims.md)) and re-tested on 10,000 IMDb
+  reviews never used before and on a second template suite with new sentence frames (frame set B).
+  16 replicated, 1 did not (H2, see below). Each hypothesis's section ends with its replication.
 - "Holm p" is the p-value after Holm's correction within one family of tests (D28). Our models,
   the two external models (D39) and the single-word ablation (D42) are separate families, so
   adding models never changed an earlier result.
@@ -31,9 +41,9 @@ each hypothesis below links to the ones that explain or extend it.
 | | Hypothesis (short) | Verdict | Key number |
 |---|---|---|---|
 | **H1** | Every model, DistilBERT included, errs more on negation and typos | **Partly supported** | Typos: clearly higher for 6 of 8 models (DistilBERT +32 points). Negation: higher for the bag-of-words models, not for the transformers |
-| **H2** | DistilBERT handles negation much better than single-word bag-of-words models | **Supported** | 14–35 points better on real negated sentences, 23–100 on templates, all Holm p < 0.001 |
+| **H2** | DistilBERT handles negation much better than single-word bag-of-words models | **Supported**, with a replication caveat | 14–35 points better on real negated sentences, 9–100 on templates, all Holm p < 0.001. On new frames DistilBERT fails "would *never* call it great", and the tree's gap vanishes |
 | **H3** | Word pairs + negation marking close part, not all, of the gap | **Supported for LR**; on templates for every model | LR, real sentences: 40% [21, 58] closed. Templates: 25–98% |
-| **H4** | Embedding distance adds information beyond confidence | **Rejected** | Distance AUROC 0.49–0.53 vs confidence 0.55–0.86; combining adds nothing (one tiny exception) |
+| **H4** | Embedding distance adds information beyond confidence | **Rejected** (replicated) | Distance AUROC 0.49–0.53 vs confidence 0.55–0.86; combining adds nothing (one tiny exception). In DistilBERT's *own* features distance reaches 0.82, but still adds nothing to confidence |
 | **H5** | Classical models share their shortcut words | **Supported for LR, RF, MNB**; not GNB or DT | Reliability-corrected agreement 0.88–0.92 |
 | **H6** | Gaussian NB is worse than Multinomial NB | **Supported** | Accuracy 59.1% vs 83.4%; F1 0.589 vs 0.833; McNemar p ≈ 10⁻⁵⁶ |
 
@@ -63,14 +73,19 @@ each hypothesis below links to the ones that explain or extend it.
 
 | model | error on comparison set | real negation | negation templates | directional negation | typos |
 |---|---|---|---|---|---|
-| Logistic regression | 15.5% | **+7.3** [3.5, 11.5] ✔ | **+11.7** ✔ | **+12.2** ✔ | **+29.9** [25.0, 34.3] ✔ |
+| Logistic regression | 15.5% | **+7.3** [3.5, 11.5] ✔ | **+11.7** ✔ | **+12.2** ✔ | **+29.9** [25.3, 34.7] ✔ |
 | Multinomial NB | 15.5% | **+8.4** [4.5, 12.7] ✔ | **+33.7** ✔ | **+41.8** ✔ | **+23.1** ✔ |
 | Gaussian NB | 39.2% | **+8.6** [3.3, 13.7] ✔ | **+54.2** ✔ | **+56.6** ✔ | −25.4 |
 | Random forest | 23.8% | +3.6 [−0.5, 7.7] | −3.2 | +1.0 | **+12.8** ✔ |
 | Decision tree | 33.8% | +5.5 (Holm p 0.11) | −25.8 | −13.3 | −10.8 |
-| DistilBERT (ours) | 7.4% | +2.6 [−0.4, 5.4] | −7.4 (0 errors) | −7.4 (0 errors) | **+32.0** [27.6, 36.6] ✔ |
+| DistilBERT (ours) | 7.4% | +2.6 [−0.4, 5.4] | −7.4 (0 errors) | −7.4 (0 errors) | **+32.0** [20.1, 42.4] ✔ |
 | HF DistilBERT (external) | 7.3% | **+3.5** [0.5, 6.5] ✔ (Holm p 0.044) | −7.3 (0 errors) | −7.3 (0 errors) | **+31.7** ✔ |
-| RoBERTa-large (external) | 5.3% | +1.6 [−1.0, 4.1] | −5.3 (0 errors) | −5.3 (0 errors) | **+23.9** [19.7, 28.3] ✔ |
+| RoBERTa-large (external) | 5.3% | +1.6 [−1.0, 4.1] | −5.3 (0 errors) | −5.3 (0 errors) | **+23.9** [15.9, 32.6] ✔ |
+
+The typo intervals widened most under clustering (DistilBERT's from ±4.5 to about ±11 points):
+DistilBERT's typo errors concentrate on some adjectives more than others, so the 500 typo pairs
+behave like fewer independent pieces of evidence. Every ✔ survives. The decision tree's −10.8
+is no longer significant (Holm p 0.09), which doesn't change its reading.
 
 ### Verdict: partly supported
 - **The typo half holds, including for DistilBERT.** Every model that actually reads sentiment
@@ -103,12 +118,18 @@ each hypothesis below links to the ones that explain or extend it.
   directly a real-world typo rate.
 - H1 was formally tested late in the project (D47), after the other results were known. The test
   and comparison set follow the proposal's wording exactly, but the analysis code was written
-  after the data was seen.
+  after the data was seen. The replication below answers this: its claims were fixed first.
 
 ### Robustness checks
 - **Every DistilBERT seed:** the conclusions hold on seeds 13, 42 and 87 (D44, `seed_robustness.csv`).
 - **Test-only negation:** restricting the real negation set to the 339 test sentences (never used
   to pick DistilBERT's seed) gives the same signs (D31).
+
+### Replication on fresh data (D53): both claims replicated
+- **Claim 1** (transformers' typo error ≥ 10 points above plain): on the second suite, DistilBERT
+  +33.8 (lower bound +22.7), HF DistilBERT +34.7 (+24.4), RoBERTa-large +27.1 (+18.2).
+- **Claim 2** (LR and MNB fail more directional-negation pairs than plain sentences): LR +36.7
+  (lower bound +28.7), MNB +43.0 (+31.6), larger than on the original suite.
 
 **Connected findings:** [§2 the typo default](interestingfindings.md#2-distilberts-default-an-unreadable-sentiment-word-means-negative),
 [§3 its replication](interestingfindings.md#3-the-shortcut-replicates-in-an-independently-trained-model),
@@ -142,7 +163,7 @@ All Holm p < 0.001.**
 
 | model (single words) | real negated sentences (519) | test sentences only (339) | negation template | directional template |
 |---|---|---|---|---|
-| Logistic regression | **+16.4** [12.3, 20.6] | +15.9 | +32.0 [27.8, 36.4] | +30.9 |
+| Logistic regression | **+16.4** [12.3, 20.6] | +15.9 | +32.0 [26.5, 36.9] | +30.9 |
 | Multinomial NB | **+14.1** [10.2, 18.3] | +12.4 | +64.2 | +66.0 |
 | Random forest | **+17.9** [13.7, 22.0] | +20.6 | +25.6 | +26.8 |
 | Decision tree | **+24.3** [19.8, 28.9] | +25.4 | +8.8 | +23.3 |
@@ -170,6 +191,38 @@ which cannot even weigh individual words well (H6), fails nearly every case.
   median seed; the test-only column (339 sentences) avoids this and gives the same result (D31).
 - RoBERTa-large confirms the pattern at a larger scale (0 template errors, 6.9% real-sentence
   errors), but it is not part of the H2 test.
+
+### Replication on fresh data (D53): not replicated, and why
+**Claim 3** said every single-word classical model is at least 10 points worse than DistilBERT on
+the directional negation template (lower bound ≥ 0.10, all five). On the second suite (new
+sentence frames, frame set B) it held for three of five models:
+
+| model (single words) | original suite | second suite |
+|---|---|---|
+| Gaussian NB | +99.6 | +77.5 (lower bound +74.4) ✔ |
+| Multinomial NB | +66.0 | +61.7 (+53.0) ✔ |
+| Logistic regression | +30.9 | +26.1 (+19.5) ✔ |
+| Random forest | +26.8 | +14.3 (**+4.5**) ✘ |
+| Decision tree | +23.3 | **+0.4** (+0.0) ✘ |
+
+**Why it failed:** the classical models did not get better. DistilBERT got worse. The new frame
+B3 ("I would call the movie great." → "I would **never** call the movie great.") negates with
+*never*, and our DistilBERT reads the negated sentence as positive in **96%** of the cases
+[90, 100] (`behavioral_by_frame.csv`); HF DistilBERT fails 99%. Ours makes no errors in the
+other three frames (B0–B2). RoBERTa-large fails only 7% [0, 17] of the B3 cases, so the
+sentence is readable: the gap is in the two DistilBERTs. The decision tree's gap collapses for a second reason:
+the directional test only scores a pair when the affirmative sentence is right, and the tree
+gets "I would call the movie great" wrong (p = 0.26), so only 8 of its B3 pairs count. Its
+failure rate falls from 20% to 3% because the hard cases are filtered out.
+
+**What it means for H2.** "DistilBERT handles negation much better" holds for *not*-negation
+and on real sentences; it does not hold for every negation construction. Our DistilBERT reads
+every other new negation right ("I did not find the movie good", "The movie wasn't great",
+"I can't say the movie was good": 0 errors), but not "I would never call the movie great". Both
+DistilBERTs were fine-tuned on SST-2, which suggests that construction is rare there; one frame
+is not enough to say whether *never* in general is the problem. The claim is reported as not replicated, as
+pre-registered; the original-suite numbers above stand, but the report should say H2 is
+supported *for the negation the training data shows most*.
 
 **Connected findings:** [§4 scale](interestingfindings.md#4-does-scale-cure-shortcuts-it-shrinks-them),
 [§6 negation marking](interestingfindings.md#6-why-negation-marking-works-on-templates-but-not-on-real-sentences).
@@ -203,11 +256,11 @@ A **feature ladder** for each classical model, all measured against DistilBERT o
 
 | model | real negated sentences (519) | test sentences only (339) | negation template | directional template |
 |---|---|---|---|---|
-| **Logistic regression** | **40%** [21, 58], p < 0.001 | 43% [18, 65], p 0.004 | **98%** [95, 99] | **97%** [94, 99] |
-| Multinomial NB | 18% [−12, 42], p 0.98 | 2% [−47, 35] | 77% [72, 81] | 71% [65, 76] |
-| Random forest | 1% [−21, 19], p 1.0 | 11% [−11, 31] | 57% [48, 66] | 51% [40, 62] |
-| Decision tree | −27% [−54, −6], p 0.12 | −37% | 77% [64, 89] | 77% [65, 88] |
-| Gaussian NB | 18% [5, 30], p 0.04 | 9% [−10, 25] | 25% [20, 30] | 32% [27, 36] |
+| **Logistic regression** | **40%** [21, 58], p < 0.001 | 43% [18, 65], p 0.004 | **98%** [94, 100] | **97%** [94, 99] |
+| Multinomial NB | 18% [−12, 42], p 0.98 | 2% [−47, 35] | 77% [67, 86] | 71% [59, 81] |
+| Random forest | 1% [−21, 19], p 1.0 | 11% [−11, 31] | 57% [39, 70] | 51% [23, 65] |
+| Decision tree | −27% [−54, −6], p 0.12 | −37% | 77% [58, 87] | 77% [54, 89] |
+| Gaussian NB | 18% [5, 30], p 0.04 | 9% [−10, 25] | 25% [17, 33] | 32% [25, 37] |
 
 **Table H3b. LR's ladder, real negated sentences: gap to DistilBERT in points.**
 
@@ -246,6 +299,14 @@ features, so the many new marked features rarely get used.
 - The scope rule is a choice. A second rule (`negmark_w3`: at most 3 words, skipping fixed phrases
   like "not only") gives the same conclusion: big template gains, small real-sentence gains (D31).
 
+### Replication on fresh data (D53): replicated
+**Claim 4** (word pairs + marking close more than half of LR's directional-negation gap): on the
+second suite the ladder closes **141%** of the gap (lower bound 128%). Over 100% means LR with
+pairs and marking makes *fewer* directional-negation errors than DistilBERT there. It is the same
+"never call it great" frame as in H2: DistilBERT fails it, while negation marking turns
+"never call" and "great" into negated features. The claim's threshold is met with room to spare,
+but on the second suite the number says as much about DistilBERT's blind spot as about H3.
+
 **Connected findings:** [§6 negation marking](interestingfindings.md#6-why-negation-marking-works-on-templates-but-not-on-real-sentences),
 [§13 marking makes the tree unstable](interestingfindings.md#13-negation-marking-makes-the-decision-tree-unstable-on-names).
 
@@ -280,12 +341,12 @@ IMDb from SST-2 test sentences with AUROC 0.926.**
 
 | model | IMDb errors | distance | low confidence | combined | combined − confidence |
 |---|---|---|---|---|---|
-| DistilBERT (ours) | 1,004 | 0.530 [0.513, 0.548] | **0.836** [0.823, 0.847] | 0.835 | −0.001 |
+| DistilBERT (ours) | 1,004 | 0.530 [0.512, 0.550] | **0.836** [0.822, 0.850] | 0.835 | −0.001 |
 | HF DistilBERT | 1,073 | 0.525 | **0.845** | 0.844 | −0.000 (n.s.) |
-| RoBERTa-large | 444 | 0.507 | **0.857** [0.838, 0.875] | 0.857 | −0.000 (n.s.) |
+| RoBERTa-large† | 444 | 0.507 | **0.857** [0.836, 0.877] | 0.857 | −0.000 (n.s.) |
 | Logistic regression | 2,046 | 0.518 | **0.751** | 0.752 | +0.001 (n.s.) |
 | Random forest | 2,969 | 0.521 | **0.702** | 0.703 | +0.001 (n.s.) |
-| Multinomial NB | 2,399 | 0.530 | **0.688** | 0.700 | **+0.012** [0.006, 0.018], Holm p 0.005 |
+| Multinomial NB | 2,399 | 0.530 | **0.688** | 0.700 | **+0.012** [0.006, 0.018], Holm p 0.003 |
 | Decision tree | 3,877 | 0.512 | **0.562** | 0.559 | −0.003 (n.s.) |
 | Gaussian NB | 4,542 | 0.493 | **0.547** | 0.549 | +0.001 (n.s.) |
 
@@ -308,13 +369,51 @@ unlike SST-2's short phrases. So it says "this is IMDb" for almost every review 
 which reviews are hard. A model's errors most likely come from the content (mixed sentiment,
 sarcasm, a twist at the end), which its own confidence partly reflects and an external embedding
 doesn't see. The embedding model (MiniLM) is also a different model from the classifier, so its
-idea of "unusual" need not match the classifier's (F2).
+idea of "unusual" need not match the classifier's: the F2 test below measures it in the
+classifier's own features.
 
 ### Caveats
 - One embedding model and one distance were used; the distance method was chosen on SST-2-vs-IMDb
   separation, not on error detection (D25), which is the fair way round.
 - The test is on whole-review shift (SST-2 → IMDb). Distance may still help for errors on inputs
   far outside any training domain.
+
+### Distance in the classifier's own features (F2, D53)
+The test above measures "unusual" with an outside embedding (MiniLM). Lee et al. measure it in
+the classifier's *own* features instead. `own-distance` does that: a class-conditional
+Mahalanobis distance, fitted on SST-2 training, in DistilBERT's [CLS] features (after its
+pre-classifier layer) and, for each classical model, in its own TF-IDF features reduced to 300
+dimensions (`results/early_warning_own.csv`, the main 10,000 IMDb reviews).
+
+| model | own-feature distance | low confidence | combined − confidence |
+|---|---|---|---|
+| DistilBERT (ours) | **0.822** [0.809, 0.837] | 0.836 | +0.000 (Holm p 1.0) |
+| Logistic regression | 0.466 | 0.751 | −0.000 |
+| Random forest | 0.498 | 0.702 | +0.002 (not meaningful) |
+| Multinomial NB | 0.533 | 0.688 | **+0.034** [0.026, 0.041], meaningful |
+| Gaussian NB | 0.465 | 0.547 | +0.019 (below the 0.02 minimum) |
+| Decision tree | 0.486 | 0.562 | −0.006 |
+
+- **For DistilBERT the distance becomes informative**: 0.82, against 0.53 with MiniLM. In its own
+  features, the reviews it gets wrong really are unusual. But they are the same reviews its
+  confidence already flags, so combining the two adds exactly nothing. This is the stronger form
+  of the H4 rejection: even a distance that does detect errors carries no information beyond
+  confidence.
+- **For the bag-of-words models it stays at chance** (0.47–0.53): TF-IDF features don't say
+  which reviews are hard.
+- **Multinomial NB is the exception again**, now larger (+3.4 points, above the 0.02 minimum).
+  The cause is the one given above: its confidence is saturated near 0 and 1 (D26), so many
+  reviews tie on confidence, and almost any second signal breaks ties. It is a weakness of MNB's
+  confidence, not a strength of distance.
+
+### Replication on fresh data (D53): all three claims replicated
+On 10,000 fresh IMDb reviews, with every model including the Kaggle-run external ones:
+- **Claim 11** (distance AUROC ≤ 0.56, every model): 0.50–0.53.
+- **Claim 12** (confidence beats distance by ≥ 0.10, lower bound, for the transformers, LR, RF,
+  MNB): +0.17 to +0.35, every lower bound ≥ +0.15.
+- **Claim 13** (combining adds < 0.02 AUROC, every model): −0.006 to +0.006. MNB's gain from
+  the main sample (+0.012) halves to +0.006 (not significant), which supports reading it as
+  noise around zero.
 
 **Connected findings:** [§7 unusual is not wrong](interestingfindings.md#7-being-unusual-is-not-the-same-as-being-wrong),
 [§11 calibration](interestingfindings.md#11-confidence-is-honest-for-some-models-and-not-others).

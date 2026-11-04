@@ -34,6 +34,15 @@ The hypotheses themselves are answered in [hypothesisanswers.md](hypothesisanswe
 | 12 | RoBERTa-large is *better* on IMDb than on SST-2: a contamination warning | H1, H4 (caveat) | exploratory |
 | 13 | Negation marking makes the decision tree unstable on names | H3 | exploratory |
 | 14 | What the findings have in common | all | — |
+| 15 | The sentence frame matters as much as the model; DistilBERT can't read "would never call it great" | H1, H2, H3 | found by the pre-registered replication (D53) |
+| 16 | Distance in DistilBERT's own features finds its errors, but only the ones confidence finds | H4 | planned (F2, D53) |
+
+**Replication (D53).** Ten pre-registered claims about these findings were re-tested on fresh
+data (10,000 new IMDb reviews and a second template suite with new sentence frames): §1 (claim
+10), §2 (5, 6), §3 (7), §4 (8), §5 (9), §8 (14, 15), §11 (17) and §12 (16). **All ten
+replicated**; the numbers are in `results/replication.csv` and the claims in
+[docs/confirmatory_claims.md](docs/confirmatory_claims.md). The one claim that failed is about H2
+(§15 explains it).
 
 ---
 
@@ -56,7 +65,11 @@ pairs. The gap between accuracy and robustness is the **Mirage Gap**.
 | Random forest | 0.754 | 0.694 | 0.726 | 0.520 | 0.834 | 0.694 | 0.060 |
 | HF DistilBERT | 0.923 | 1.000 | 0.892 | 0.610 | 1.000 | 0.876 | 0.047 |
 | DistilBERT (ours) | 0.922 | 1.000 | 0.900 | 0.606 | 1.000 | 0.876 | 0.046 |
-| RoBERTa-large | 0.946 | 1.000 | 0.931 | 0.708 | 0.984 | 0.906 | 0.040 |
+| RoBERTa-large | 0.946† | 1.000 | 0.931† | 0.708 | 0.984 | 0.906 | 0.040 |
+
+† RoBERTa-large's accuracy (and its real-negation score, also SST-2 sentences) is possibly
+contaminated: it was very likely trained on SST-2 and IMDb (§12, C12). Its template checks are
+clean.
 
 The twins differ on two checks: names (MNB 61% vs LR 99%) and negation templates (35% vs 70%).
 Every model scores lower on behaviour than on accuracy; the size of the gap is what differs.
@@ -94,7 +107,7 @@ when accuracy is identical.
 ## 2. DistilBERT's default: an unreadable sentiment word means "negative"
 
 **Finding.** One typo in a positive adjective flips DistilBERT to negative in 65% of pairs, and
-it moves confidently: P(positive) drops by 0.64 on average [0.59, 0.69]. For example, "The movie
+it moves confidently: P(positive) drops by 0.64 on average [0.53, 0.74]. For example, "The movie
 was brilliant." scores 0.999 positive, and "The movie was brililant." scores 0.010. The same kind
 of typo in a negative adjective flips only 9% of pairs. A **control test** puts the typo in the
 noun instead ("The moive was brilliant."): DistilBERT flips **0%** of those pairs.
@@ -104,9 +117,9 @@ Adjective typos: 271 positive and 229 negative sentences; noun typos: 237 and 26
 
 | model | adjective typo, positive sentence | adjective typo, negative sentence | noun typo, positive | noun typo, negative |
 |---|---|---|---|---|
-| DistilBERT (ours) | **65%, −0.64** [−0.69, −0.59] | 9%, +0.11 [0.08, 0.14] | **0%**, −0.00 | **0%**, +0.00 |
-| HF DistilBERT | **59%, −0.59** [−0.64, −0.54] | 15%, +0.15 [0.12, 0.19] | 0% | 0% |
-| RoBERTa-large | 18%, −0.18 [−0.23, −0.14] | **42%, +0.42** [0.37, 0.49] | 0% | 0% |
+| DistilBERT (ours) | **65%, −0.64** [−0.74, −0.53] | 9%, +0.11 [0.06, 0.17] | **0%**, −0.00 | **0%**, +0.00 |
+| HF DistilBERT | **59%, −0.59** [−0.69, −0.48] | 15%, +0.15 [0.11, 0.20] | 0% | 0% |
+| RoBERTa-large | 18%, −0.18 [−0.27, −0.10] | **42%, +0.42** [0.30, 0.54] | 0% | 0% |
 | Logistic regression | 42%, −0.37 | 49%, +0.36 | 2%, +0.04 | 6%, −0.07 |
 | Multinomial NB | 50%, −0.42 | 25%, +0.28 | 19%, +0.11 | 2%, −0.03 |
 | Random forest | 18%, −0.13 | 59%, +0.21 | 8%, +0.03 | 14%, −0.03 |
@@ -189,8 +202,10 @@ sentiment datasets) has the smallest Mirage Gap of all eight models (accuracy 0.
 - **Typos still break it, in the opposite direction.** It flips 42% of *negative* sentences with
   a typo, against 18% of positive ones (Table 2): its default for an unreadable sentiment word
   leans *positive*. Its typo error is still 24 points above its normal error (H1 table).
-- **Names still move it, slightly.** It flips 1.0% of name-swap pairs (mean shift +0.010
-  [0.002, 0.019], Holm p 0.02). Across all 35 film people in the name probe (§5), its reaction to
+- **Names may still move it, slightly.** It flips 1.0% of name-swap pairs (mean shift +0.010
+  [0.000, 0.029]). With item-level intervals this was significant (Holm p 0.02); with the
+  cluster intervals of D52 it is not (Holm p 0.31), so on the name-swap test alone RoBERTa's
+  name effect is not established. Across all 35 film people in the name probe (§5), its reaction to
   a name follows the name's reputation in SST-2: ρ = 0.46 [0.06, 0.79] on the 23 never-tested
   names, Holm p 0.03. But the largest effect is only ±0.03 in probability, against ±0.32 for
   Multinomial NB.
@@ -218,13 +233,13 @@ affected by that.
 
 **Finding.** In the name-swap test, changing only a film person's name ("Another Binoche comedy,
 and it was decent." → "Another Hopkins comedy, and it was decent.") flips Multinomial NB's verdict
-in **38% of pairs** (mean shift +0.37 [0.34, 0.40], 500 pairs). The other models barely react:
+in **38% of pairs** (mean shift +0.37 [0.24, 0.49], 500 pairs). The other models barely react:
 
 | model | name pairs flipped | mean shift in P(positive) [95% CI] |
 |---|---|---|
-| Multinomial NB | **37.6%** | +0.370 [0.345, 0.395] |
-| Logistic regression | 0.8% | +0.064 [0.058, 0.070] |
-| Gaussian NB | 3.8% | +0.013 (Holm p 0.12) |
+| Multinomial NB | **37.6%** | +0.370 [0.244, 0.489] |
+| Logistic regression | 0.8% | +0.064 [0.056, 0.074] |
+| Gaussian NB | 3.8% | +0.013 [0.007, 0.021] (Holm p 0.004, below the 2-point minimum) |
 | Random forest | 2.4% | +0.008 |
 | Decision tree | 1.2% | −0.001 (n.s.) |
 | RoBERTa-large | 1.0% | +0.010 |
@@ -353,14 +368,16 @@ each review's **first and last sentence** only (`imdb_edges`, 44 words on averag
 
 | model | SST-2 test | IMDb edges | IMDb full | length / format | content |
 |---|---|---|---|---|---|
-| DistilBERT (ours) | 7.8% | 20.7% | 10.0% | **−10.7** [−11.5, −9.8] | **+12.9** [11.4, 14.4] |
+| DistilBERT (ours) | 7.8% | 20.7% | 10.0% | **−10.7** [−11.5, −9.8] | **+12.9** [11.3, 14.3] |
 | HF DistilBERT | 7.7% | 20.7% | 10.7% | −10.0 | +13.0 |
-| RoBERTa-large | 5.4% | 12.9% | 4.4% | −8.4 | +7.4 |
-| Logistic regression | 16.5% | 28.1% | 20.5% | −7.7 [−8.6, −6.7] | +11.6 [9.7, 13.5] |
+| RoBERTa-large† | 5.4% | 12.9% | 4.4% | −8.4 | +7.4 |
+| Logistic regression | 16.5% | 28.1% | 20.5% | −7.7 [−8.7, −6.6] | +11.6 [9.6, 13.4] |
 | Multinomial NB | 16.6% | 29.8% | 24.0% | −5.8 | +13.1 |
 | Random forest | 24.6% | 33.4% | 29.7% | −3.7 | +8.8 |
 | Decision tree | 34.7% | 41.7% | 38.8% | −2.9 | +7.0 |
 | Gaussian NB | 40.9% | 48.1% | 45.4% | −2.6 | +7.1 |
+
+† Possibly contaminated (§12): RoBERTa-large was very likely trained on SST-2 and IMDb.
 
 **What it means.** The length part is *negative* for every model: a full review is *easier* than
 its first and last sentences, because it contains more evidence. The whole drop comes from the
@@ -445,7 +462,7 @@ different properties:
 
 | model | ECE, SST-2 test | ECE, IMDb | error-warning AUROC, IMDb |
 |---|---|---|---|
-| RoBERTa-large | 0.052 | 0.043 | 0.857 |
+| RoBERTa-large† | 0.052 | 0.043 | 0.857 |
 | DistilBERT (ours) | 0.046 | 0.051 | 0.836 |
 | Random forest | 0.068 | **0.057** | 0.702 |
 | Logistic regression | **0.016** | 0.081 | 0.751 |
@@ -523,3 +540,76 @@ Three points connect them:
 - **Accuracy hides all of it.** The leaderboard twins (§1), the larger model's remaining shortcuts
   (§4) and the contamination warning (§12) are invisible without behavioural tests, which is the
   project's central claim.
+
+---
+
+## 15. The sentence frame matters as much as the model
+
+**Finding.** The behavioural tests put the same adjectives into several sentence frames (3–4
+per test). The second suite (D10, frame set B) uses four new frames, and splitting every
+failure rate by frame (`results/behavioral_by_frame.csv`) shows how much the frame alone moves
+it. Logistic regression's directional-negation failure rate (single words + pairs):
+
+| frame | sentence pair | LR fails |
+|---|---|---|
+| A2 | I thought the movie was excellent. → I don't think the movie was excellent. | 0% |
+| A1 | This movie is good. → This movie isn't good. | 6% |
+| B2 | Overall, the movie was great. → Overall, the movie wasn't great. | 26% |
+| A0 | The movie was wonderful. → The movie was not wonderful. | 55% |
+| B3 | I would call the movie great. → I would never call the movie great. | 63% |
+| B1 | The movie felt great. → The movie didn't feel great. | **100%** |
+
+The frames differ significantly (chi-square, Holm) in 29 of the 72 model × test × suite cells
+that can be tested, mostly in the negation tests and mostly for the bag-of-words models.
+
+**DistilBERT's blind spot.** Both DistilBERTs read every frame right except one: "I would never
+call the movie great." is positive for our DistilBERT in **96%** of cases [90, 100] and for HF
+DistilBERT in 99%. RoBERTa-large fails 7% [0, 17]. Every other new negation ("I did not find
+the movie good", "The movie wasn't great", "I can't say the movie was good") gets 0 errors from
+our DistilBERT.
+
+**Why.** A bag-of-words model's verdict on a negated sentence depends on which word pairs it
+has seen in training: "isn't good" and "don't think" are common SST-2 pairs with a clear
+label; "didn't feel" is not, so LR falls back on "great". DistilBERT handles negation in
+context, but "would never call" puts the negator two words before the verb and four before the
+adjective, a construction that is probably rare in SST-2's short phrases; RoBERTa-large,
+trained on 15 datasets, has seen enough of it. We didn't test the training-data explanation
+directly.
+
+**Connection to the hypotheses.**
+- **H2:** this is why the pre-registered claim 3 failed: with DistilBERT failing B3, the decision
+  tree's and random forest's gaps fall below 10 points (details in
+  [hypothesisanswers.md, H2](hypothesisanswers.md#h2--distilbert-handles-negation-much-better)).
+- **H1, H3:** every template number is an average over a few frames, and the frames differ by up
+  to 100 points. The verdicts that held on both suites are the robust ones; the size of a
+  template effect should be read as frame-dependent.
+- It supports §4: scale helps exactly where the smaller transformers fail.
+
+**Caveat.** Frame B3 is one frame with 119 pairs; it shows a construction DistilBERT fails, not
+that *never* in general is a problem. The 28 name-swap sentences are the same in both suites
+(name-swap frames weren't paraphrased); no claim uses them.
+
+*Sources:* `results/behavioral_by_frame.csv`, `results/replication.csv`,
+`results/predictions/*__behavioral_v2.parquet`; D10, D53.
+
+---
+
+## 16. Distance in DistilBERT's own features finds its errors, but only the ones confidence finds
+
+**Finding.** Measured in DistilBERT's own [CLS] features instead of an outside embedding (F2,
+Lee et al.), the distance from SST-2 picks out DistilBERT's IMDb errors with AUROC **0.822**
+[0.809, 0.837], against 0.53 with MiniLM and 0.836 for confidence. Combined with confidence it
+adds **+0.000**. For the classical models, distance in their own TF-IDF features stays at chance
+(0.47–0.53); only Multinomial NB gains from the combination (+0.034), as in H4.
+
+**Why.** In its own features, a review DistilBERT gets wrong does look unusual, but the same
+features produce its confidence, so "unusual" and "unsure" are the same signal measured twice.
+An outside embedding sees a different kind of "unusual" (topic and style), which has nothing to
+do with the errors.
+
+**Connection to the hypotheses.** It makes the H4 rejection stronger: the result is not just
+that our distance was a bad error detector. Even a distance that detects errors well adds
+nothing beyond confidence. Details and the full table are in
+[hypothesisanswers.md, H4](hypothesisanswers.md#h4--does-embedding-distance-predict-errors-beyond-confidence).
+
+*Sources:* `results/early_warning_own.csv`; D53.

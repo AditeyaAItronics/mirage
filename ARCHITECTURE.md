@@ -14,6 +14,7 @@ layers and interfaces.
                   ┌──────────────────────────── GPU (Kaggle / Colab) ───────────────────────────┐
                   │  prepare ──► train-distilbert ──► predict --models distilbert               │
                   │  prepare ──► predict-external (ready-made HF models, no training, D39)      │
+                  │  prepare + prepare-fresh ──► predict-external on imdb_fresh* (D53)         │
                   └──────────────────────────────────────────────┬───────────────────────────────┘
                                                                  │ download zips (models + predictions)
  ┌──────────────────────────────────────── laptop CPU ───────────▼─────────────────────────────────┐
@@ -24,6 +25,9 @@ layers and interfaces.
  │                    │                                                         │                   │
  │                    └────────────────────► predict ◄──────────────────────────┘                   │
  │  name-probe (D45: its own eval set, outside EVAL_SETS) ──► predictions + name_probe*.csv          │
+ │  prepare-fresh ──► imdb_fresh, imdb_fresh_edges; replicate ──► behavioral_v2 + their            │
+ │    predictions (side sets, outside EVAL_SETS, D53) ──► replication.csv, behavioral_by_frame.csv  │
+ │  extract-features ──► artifacts/emb/distilbert_feats__* ──► own-distance ──► early_warning_own   │
  │                                              │                                                   │
  │                         results/predictions/{model}__{variant}__seed{s}__{dataset}.parquet       │
  │                         (external models: {name}__base__seed0__{dataset}.parquet)                │
@@ -136,6 +140,9 @@ Eight models, one interface: five classical, our DistilBERT, and two ready-made 
 | Name shortcut beyond the 6 test pairs (D45) | all 35 film people in the same 40 sentences (`name_probe`, a separate eval set) | stage `name-probe`, `evaluate.name_probe` | `name_probe.csv`, `name_probe_by_name.csv` |
 | Does any conclusion depend on DistilBERT's seed? (D44) | every per-item result, per seed | `evaluate.seed_robustness` | `seed_robustness.csv` |
 | Accuracy vs behaviour (D40) | sst2_test, sst2_neg, behavioral pairs | `evaluate.mirage_gap` (pair accuracy) | `mirage_gap.csv`, Mirage Gap chart, fingerprint |
+| Are the intervals too narrow? (D52, G7) | every template and IMDb test | cluster bootstrap in `stats`; clusters from `predict.load_clusters` (films) and the `word` column (adjectives) | every CI; `cluster_robustness.csv` |
+| Do the claims replicate? (D53, G8) | `imdb_fresh`, `imdb_fresh_edges`, `behavioral_v2` (side sets) | stage `replicate`: `replication.fresh_view` renames them so the same table code runs, then `score_claims`, `by_frame` | `replication.csv`, `behavioral_by_frame.csv`, `early_warning_fresh.csv` |
+| Distance in the classifier's own features (D53, F2) | sst2_train, imdb | stages `extract-features`, `own-distance` | `early_warning_own.csv` |
 
 Seed policy (D13): tables average DistilBERT over 3 seeds; per-item analyses use its median seed,
 and `evaluate.seed_robustness` reruns each of them on every seed to show no conclusion depends on it (D44).
@@ -192,7 +199,7 @@ Tests are layered the same way as the code; the full list, file by file, is in
 | Unit | normalization and negation scope, vectorizer vocabulary (the `n't` trap), metrics and statistics against reference implementations, word removal, explanation and warning maths |
 | Contract | every way a predictions file can be malformed is rejected |
 | Generator | suite counts, determinism, pairing, the typo, direction and name rules |
-| Analysis | each table on hand-made numbers: the H1 test, the H2/H3 ladder, the robustness score, H5 agreement, the name probe, seed robustness; adding models or variants leaves existing columns identical |
+| Analysis | each table on hand-made numbers: the H1 test, the H2/H3 ladder, the robustness score, H5 agreement, the name probe, seed robustness, cluster intervals, claim scoring and per-frame rates; adding models, seeds or variants leaves existing columns and headline tables identical |
 | External models | label mapping, the CLI stage, all with a tiny local random BERT (no download) |
 | Demo | its logic with stand-in models; with the real models, every curated example's expected behaviour and a headless run of the app |
 | End to end | all CPU stages via the real CLI in an isolated root |

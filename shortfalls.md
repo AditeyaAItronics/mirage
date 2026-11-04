@@ -143,7 +143,9 @@ the shortcuts but keeps some (interestingfindings.md §3, §4).
 
 **Effort:** small (wording) to medium (another model).
 
-### C12. 🟠 CONFIRMED LIKELY (D46: IMDb 0.956): RoBERTa-large's accuracy may be contaminated
+### C12. ✅ ADDRESSED (D52): RoBERTa-large's accuracy may be contaminated (CONFIRMED LIKELY, D46: IMDb 0.956)
+**Done:** every accuracy number of RoBERTa-large carries a † and a footnote (docs, Mirage Gap chart, demo).
+On fresh IMDb reviews it scores 0.959, again above its SST-2 accuracy (claim 16, D53).
 **What:** SiEBERT (`roberta_large`, D39) was fine-tuned on 15 sentiment datasets, very likely
 including SST-2 and IMDb. It may have seen our test sentences and reviews.
 **Why it matters:** its SST-2 and IMDb **accuracy** isn't a fair comparison with our models.
@@ -320,7 +322,11 @@ chosen, not tuned.
 the suite and the tables; the demo makes them visible.
 **Effort:** none (wording on the slide: "illustration").
 
-### D10. 🟠 NEW: every behavioral result rests on one set of templates and one random draw
+### D10. ✅ RESOLVED (D53): every behavioral result rests on one set of templates and one random draw
+**Done:** every case records its frame (`templates.frame_of`); a second suite with four new frames per
+test and seed 2026 (`behavioral_v2`, 6,250 rows); per-frame failure rates in
+`results/behavioral_by_frame.csv`. Frames differ significantly in 29 of 72 cells (interestingfindings §15);
+the new weakness this found is D12.
 **What:** each test uses a handful of sentence frames ("The movie was X.", "Another N comedy, and
 it was X."), written by us, filled from word lists with seed 42. The suite doesn't record which
 frame a case came from, and no second wording or second draw was ever tested.
@@ -341,6 +347,18 @@ phrases lean negative" rather than "bad names".
 **Effort:** none (wording).
 
 ---
+
+### D12. 🟠 NEW (D53): template results depend strongly on the sentence frame
+**What:** the per-frame split shows failure rates moving by up to 100 points between frames of the same
+test (LR, directional negation: 0% for "I don't think the movie was excellent", 100% for "The movie
+didn't feel great"). Both DistilBERTs fail one new frame almost always ("I would never call the movie
+great": 96% and 99%) while getting every other new frame right.
+**Why it matters:** a template test's failure rate is an average over 3–4 frames, so its size depends on
+which frames were written. Verdicts that hold on both suites are robust; exact template numbers are not.
+**Possible fix:** report template effects per frame or pooled over both suites; add more frames per test
+(e.g. 10) so no single frame dominates; test *never* in more constructions to see how general the
+DistilBERT blind spot is.
+**Effort:** small (pooling) to medium (more frames, a new suite run).
 
 ## E. Explanations
 
@@ -398,7 +416,10 @@ the length check (D30) shows most of that is length. With one random sentence pe
 **0.612**. The detector works; the shift itself is mostly length and format, not sentence content
 (see F7).
 
-### F2. 🟠 The embedding model is not the classifier
+### F2. ✅ RESOLVED (D53): The embedding model is not the classifier
+**Done:** `extract-features` + `own-distance`: distance in DistilBERT's own [CLS] features detects its
+errors (AUROC 0.822) but adds nothing to confidence; classical models' own TF-IDF distance stays at
+chance (`results/early_warning_own.csv`, hypothesisanswers H4).
 **What:** distance is measured in MiniLM's embedding space, which is the same for every classifier.
 **Why it matters:** distance can't explain why *one* model fails where another doesn't. It can only flag
 "unusual inputs".
@@ -502,7 +523,12 @@ two swap one pair of neighbours (Spearman 0.976 and 0.900) with the same top and
 (`mirage_gap_sensitivity.csv`).
 **Effort:** none (report the definition and the sensitivity check in the caption).
 
-### G7. 🔴 NEW: confidence intervals treat clustered items as independent
+### G7. ✅ RESOLVED (D52): confidence intervals treat clustered items as independent
+**Done:** every interval resamples clusters (behavioral: the adjective; IMDb: the film; all 20,000
+reviews matched, 2,796 films in the main sample). 961 intervals compared in `results/cluster_robustness.csv`: median
+width ratio 1.0–1.5×, 13 significance flags changed, no H1–H6 verdict changed; RoBERTa-large's name
+shift stopped being significant (interestingfindings §4 softened). The table below is the original
+measurement.
 **What:** every bootstrap resamples single items. But behavioral cases are built from a few
 words: each test's 250–500 cases share only 10–39 adjectives (and 6 name pairs), so cases with the
 same word fail or pass together. IMDb reviews also come several per film, and SST-2 sentences
@@ -525,7 +551,10 @@ robustness table for every behavioral result; movie-level clusters for IMDb from
 review URLs. Report both CIs and flag any verdict that changes (shortfallfix.md).
 **Effort:** medium.
 
-### G8. 🟠 NEW: many analyses were designed after seeing results, with no confirmatory check
+### G8. ✅ RESOLVED (D53): many analyses were designed after seeing results, with no confirmatory check
+**Done:** 17 claims committed before scoring (`docs/confirmatory_claims.md`, commit fbdf48e), tested on
+10,000 fresh IMDb reviews and the second suite: 16 replicated, claim 3 (H2) did not
+(`results/replication.csv`).
 **What:** the H1 test (D47), the robustness score (D40), the typo control (D37), the name probe
 (D45) and several thresholds were designed after the first results. The findings files label them
 "exploratory", but every number, exploratory or not, was computed on the same data that suggested
@@ -538,7 +567,9 @@ frames (D10) and a fresh IMDb sample from the 40,000 unused reviews. Report a "r
 replicated" column (shortfallfix.md).
 **Effort:** medium (one Kaggle run for the transformers on IMDb).
 
-### G9. 🟠 NEW: significance is reported without a minimum effect that matters
+### G9. ✅ RESOLVED (D52): significance is reported without a minimum effect that matters
+**Done:** `configs/stats.yaml` sets the minimum effects; every table has `*_meaningful` columns and H1
+has `clearly_higher_meaningful`. The thresholds were set after the results (stated in D52).
 **What:** with thousands of items, tiny effects become significant. DistilBERT's name shift is
 −0.0001 (Holm p 0.007) and the random forest's +0.008 (Holm p < 0.001); HF DistilBERT's +3.5-point
 real-negation difference counts as "clearly higher" for H1 at Holm p 0.044.
@@ -548,6 +579,15 @@ large enough to matter, not only on p-values.
 0.02 of probability, 0.02 of AUROC), add a "meaningful" column next to each significance flag, and
 use both in the verdict wording. The thresholds are chosen after the results, so say so (G8).
 **Effort:** small.
+
+### G11. 🟠 NEW (D53): one pre-registered claim failed on new sentence frames
+**What:** claim 3 (every single-word classical model ≥ 10 points worse than DistilBERT on directional
+negation) failed on the second suite: the decision tree's gap is +0.4 points, the random forest's lower
+bound +4.5. Our DistilBERT fails "I would never call the movie great" in 96% of cases (D12).
+**Why it matters:** H2's "much better at negation" is true for the negations SST-2 shows most, not for
+every construction. The report must say so; the pre-registered result can't be re-scored.
+**Fix:** none for the claim. State it in H2's verdict (done in hypothesisanswers.md).
+**Effort:** none (wording).
 
 ### G10. 🟢 NEW: the Mirage Gap's two axes share sentences
 **What:** "looks" is SST-2 test accuracy (1,820 sentences); one of the four "behaves" checks is the
@@ -604,7 +644,9 @@ from, checked by a test, so `pytest` fails when a result changes and a doc isn't
 (shortfallfix.md). The report's number check (whatyouneedtodo step 10) reuses it.
 **Effort:** small to medium.
 
-### H8. 🟠 NEW: adding seeds or variants would silently change the headline tables
+### H8. ✅ RESOLVED (D52): adding seeds or variants would silently change the headline tables
+**Done:** `evaluate.headline_pool` keeps classical seed 42 and DistilBERT's configured seeds;
+`median_seed` ranks per variant (`tests/test_headline.py`).
 **What:** `evaluate.canonical` keeps *every* seed of every model except DistilBERT, and
 `main_table` averages over seeds; `median_seed` assumes DistilBERT has one variant. Training the
 random forest on more seeds (C4) or a tuned DistilBERT (C3) would therefore change existing
@@ -627,6 +669,9 @@ In short: first the checks that protect everything else (H7, H8), then the 🔴 
 Everything 🟢 gets one sentence in the report's Limitations section.
 
 ## Resolved
+
+- **G7, H8, G9, C12 (D52):** cluster bootstrap, explicit headline seeds, minimum effects, the RoBERTa caveat mark.
+- **G8, D10, F2 (D53):** pre-registered replication (16 of 17 claims), frame set B and the per-frame table, own-feature distance.
 
 - **B1, leaky held-out split.** Fixed by a sentence-grouped split (`data.heldout_mask`). Leakage went from 89.6% to 0 of 3,378 phrases. See `majordecisions.md` D21.
 - **B2 (size), B3, B5, D2, F3: too little data, and validation reused as test.** Fixed by adding 1,820 SST-2 test sentences, pooling the negation set (519 sentences), using 10,000 IMDb reviews and a 2,000-case behavioral suite (D22).

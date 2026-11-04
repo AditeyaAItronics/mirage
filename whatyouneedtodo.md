@@ -6,7 +6,7 @@ The code, the experiments and the analysis are finished (see "Done" at the end).
 
 Where to find things:
 - **Results:** [hypothesisanswers.md](hypothesisanswers.md) (H1–H6 in full) and
-  [interestingfindings.md](interestingfindings.md) (13 further findings).
+  [interestingfindings.md](interestingfindings.md) (15 further findings).
 - **The report's skeleton and sources:** [reportplan.md](reportplan.md).
 - **Why each choice was made:** [majordecisions.md](majordecisions.md); **limitations:**
   [shortfalls.md](shortfalls.md).
@@ -34,12 +34,19 @@ expected behaviour, and `python app/make_fallbacks.py` to redraw the fallback im
 and `figures/h5_word_effect_agreement.png` (H5). Check that you can explain the robustness score in
 one sentence: *"the share of shortcut tests a model gets fully right"* (D40).
 
-### 3. Decide on the shortfall fixes (30 min)
-[shortfallfix.md](shortfallfix.md) is the plan to fix every open 🔴 / 🟠 shortfall, including a
-new 🔴 one: the behavioral confidence intervals are 3–4× too narrow (G7). Read its "Decisions for
-you" table and tell Claude your six answers (or "go with the recommendations"); Claude then builds
-Phase 1. You'll later run two Kaggle notebooks and label 200 IMDb excerpts (B10).
-**Do this before writing the report:** G7 can change the intervals the report quotes.
+### 3. Decide how to report the one claim that didn't replicate (15 min)
+16 of the 17 pre-registered claims replicated on fresh data (D53). Claim 3 (H2) did not: on the
+new sentence frames, DistilBERT reads "I would never call the movie great" as positive 96% of the
+time, so the decision tree and random forest are no longer 10 points behind it. Read
+[hypothesisanswers.md, H2](hypothesisanswers.md#h2--distilbert-handles-negation-much-better) and
+[interestingfindings.md §15](interestingfindings.md#15-the-sentence-frame-matters-as-much-as-the-model).
+**Your call:** how much of this goes in the report. It must at least appear as "not replicated" in
+H2's verdict, because the claim was pre-registered; it can't be re-scored or dropped.
+
+The other shortfall fixes you approved are done: cluster intervals (G7), headline seeds (H8),
+minimum effects (G9), the RoBERTa † mark (C12), the second suite (D10), the replication (G8) and
+the own-feature distance (F2). Still open if you want them: H7 (a check that doc numbers match the
+CSVs), C3/C4 (tuned DistilBERT, more seeds), E1, B10 and the new D12 (more frames per test).
 
 ### 3b. Read the two results files (1 h)
 [hypothesisanswers.md](hypothesisanswers.md) and [interestingfindings.md](interestingfindings.md)
@@ -88,9 +95,7 @@ report; ask Claude to build it on its own branch.
 ### Things Claude can do for you (just ask)
 - Fix anything that breaks. Paste the error, or let Claude run the stage.
 - Run `/code-review` on recent changes.
-- Add the Lee et al. class-conditional variant (already implemented:
-  `GaussianDensity(class_conditional=True)`) to the `warn` stage as a second distance.
-- Address the remaining 🟠 shortfalls (B10, C3, C4, E1, F2 in [shortfalls.md](shortfalls.md)).
+- Address the remaining 🟠 shortfalls (B10, C3, C4, D12, E1, H7 in [shortfalls.md](shortfalls.md)).
 - Turn the CSVs into the report's tables, and the final report into a .docx or PDF.
 - Put the demo online (Hugging Face Spaces, D48) if you want a public link.
 
@@ -111,6 +116,9 @@ Kept as a record; nothing to do here unless you re-run something.
 | Behavioral word lists reviewed | "messy" → "sloppy", everything else kept (D33). |
 | Sanity checks of the numbers | Checked by Claude (D35). |
 | External models run on Kaggle | D46. Notebook: `notebooks/kaggle_external.ipynb`. |
+| Shortfall decisions | All six recommendations taken; F2 + G8 built with H8, G7, G9, C12, D10 (D52, D53). |
+| 17 confirmatory claims approved | Before any fresh data was scored (`docs/confirmatory_claims.md`, commit fbdf48e). |
+| External models on the fresh IMDb sample | D53. Notebook: `notebooks/kaggle_fresh.ipynb`; its zip unzipped into the repo. |
 
 ### If you ever re-run a Kaggle notebook
 - Import it fresh (*File → Import notebook*, from the GitHub link); an older imported copy runs old

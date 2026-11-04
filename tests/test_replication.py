@@ -89,3 +89,35 @@ def test_distilbert_features_match_the_classification_head(tmp_path):
         logits = model.classifier(torch.tensor(X)).numpy()
     p = np.exp(logits) / np.exp(logits).sum(1, keepdims=True)
     np.testing.assert_allclose(p, clf.predict_proba(texts), atol=1e-5)
+
+
+def test_by_frame_picks_distilberts_median_seed_from_all_predictions():
+    """D53: by_frame once crashed because it chose the seed after dropping the sst2_val rows."""
+    from mirage.replication import by_frame
+
+    suite = build_suite_v2()
+    suite = suite[suite["test_type"] == "simple"]
+    parts = []
+    for seed, val_acc, beh_correct in ((13, 0.90, True), (42, 0.80, False), (87, 0.85, False)):
+        beh = suite.assign(
+            model="distilbert",
+            variant="base",
+            seed=seed,
+            dataset="behavioral_v2",
+            correct=beh_correct,
+        )
+        n = 100
+        val = pd.DataFrame(
+            {
+                "model": "distilbert",
+                "variant": "base",
+                "seed": seed,
+                "dataset": "sst2_val",
+                "item_id": [f"v{i}" for i in range(n)],
+                "correct": np.arange(n) < int(val_acc * n),
+            }
+        )
+        parts += [beh, val]
+    out = by_frame(pd.concat(parts, ignore_index=True), n_resamples=50)
+    assert set(out["frame_set"]) == {"B"}
+    assert (out["fail_rate"] == 1.0).all()  # seed 87 (median sst2_val accuracy) fails every case

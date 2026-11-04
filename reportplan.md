@@ -54,10 +54,14 @@ the proposal's reference list.
 ### 4. Method (1 page)
 - **Behavioral tests:** each test type with one example sentence, and how it is scored (MFT, INV,
   DIR). Sources: D24, D27, D32, D37.
-- **Statistics:** bootstrap CIs, paired vs independent comparisons, Holm within each family, and
-  McNemar. Sources: D12, D28, D47.
+- **Statistics:** bootstrap CIs that resample clusters (adjectives, films), paired vs independent
+  comparisons, Holm within each family, minimum effects that matter, and McNemar. Sources: D12,
+  D28, D47, D52.
+- **Replication:** 17 claims written down before scoring fresh data (10,000 new IMDb reviews, a
+  second template suite with new frames). Source: D53, `docs/confirmatory_claims.md`.
 - **Early warning:** MiniLM embeddings, Gaussian distance, scoring each review by its most unusual
-  sentence, and length as a baseline. Sources: D25, D30.
+  sentence, and length as a baseline; distance in each classifier's own features as a check
+  (F2). Sources: D25, D30, D53.
 - **Explanations:** model-specific explanations for illustration. For H5, one rule for every model
   (remove a word, measure the change) and reliability-corrected agreement. Sources: D16, D43.
 - **The robustness score:** defined, and stated as defined after the first results. Source: D40.
@@ -70,7 +74,7 @@ sentence on what it means. Everything needed is in the linked section of
 | § | Hypothesis | Answered in | Main figure / table | Source |
 |---|---|---|---|---|
 | 5.1 | **H1** hidden failures | [H1](hypothesisanswers.md#h1--hidden-failures-on-negation-and-typos) | Table H1; heatmap `error_heatmap_base.png` | `h1_test.csv`, D47 |
-| 5.2 | **H2** negation gap | [H2](hypothesisanswers.md#h2--distilbert-handles-negation-much-better) | the ladder figure `negation_gap_sst2_neg.png` | `negation_gap.csv`, D42 |
+| 5.2 | **H2** negation gap | [H2](hypothesisanswers.md#h2--distilbert-handles-negation-much-better) | the ladder figure `negation_gap_sst2_neg.png` | `negation_gap.csv`, D42; claim 3 did not replicate (D53) |
 | 5.3 | **H3** pairs + marking close part of it | [H3](hypothesisanswers.md#h3--word-pairs-and-negation-marking-close-part-of-the-gap) | same figure + Table H3a | `negation_gap.csv`, D38, D42 |
 | 5.4 | **H4** distance vs confidence | [H4](hypothesisanswers.md#h4--does-embedding-distance-predict-errors-beyond-confidence) | Table H4; `error_vs_score_distilbert.png` | `early_warning.csv`, D30 |
 | 5.5 | **H5** shared shortcut words | [H5](hypothesisanswers.md#h5--do-the-classical-models-share-their-shortcut-words) | `h5_word_effect_agreement.png` | `occlusion_agreement.csv`, D43 |
@@ -82,6 +86,9 @@ says which hypothesis each one explains and whether it was planned or explorator
 - §1 the leaderboard twins and the Mirage Gap, with `shortcut_fingerprint.png` (D40);
 - §2–§4 the typo default, its replication, and scale (D37, D46);
 - §5 the name shortcut on never-tested names (D45);
+- §15 the sentence frame matters, and DistilBERT's "would never call it great" blind spot, which is
+  why claim 3 failed (D53);
+- the replication table: 16 of 17 claims replicated (`results/replication.csv`);
 - **8–10 explained failure examples** (chosen by you, see whatyouneedtodo.md), as a table:
   sentence, model, prediction, the shortcut.
 
@@ -108,6 +115,9 @@ From [shortfalls.md](shortfalls.md), stated plainly:
 - DistilBERT isn't tuned and has 3 seeds (C3, C4).
 - Gaussian NB's comparison includes its SVD compression (C6).
 - Sarcasm is out of scope (D4).
+- Template effects depend on the sentence frame (D12); one pre-registered claim failed on new
+  frames (G11).
+- The minimum effects were set after the results (G9, D52).
 
 The analysis choices made after the first results are labelled **exploratory**; the Status column
 of interestingfindings.md's overview lists them.

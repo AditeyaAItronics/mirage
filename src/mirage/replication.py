@@ -397,11 +397,12 @@ def by_frame(preds: pd.DataFrame, n_resamples: int = 1000) -> pd.DataFrame:
     from mirage.stats import holm, rate_ci
 
     rows, tests = [], []
+    # pick seeds on everything: DistilBERT's median seed needs its sst2_val rows (D53)
+    preds = canonical(preds[preds["variant"] == "base"])
     for ds, frame_set in (("behavioral", "A"), ("behavioral_v2", "B")):
-        p = preds[(preds["dataset"] == ds) & (preds["variant"] == "base")]
+        p = preds[preds["dataset"] == ds]
         if p.empty:
             continue
-        p = canonical(p.assign(dataset="behavioral"))
         for m, g in p.groupby("model"):
             first = g[g["role"].isin(["single", "original"])].drop_duplicates("case_id")
             frame = first.set_index("case_id").apply(

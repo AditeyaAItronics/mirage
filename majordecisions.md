@@ -1652,3 +1652,141 @@ since the current ones are too narrow).
 
 **Not built yet:** this entry records the plan only.
 
+## D52 — Headline seeds, cluster intervals, minimum effects, the RoBERTa caveat mark (H8, G7, G9, C12)
+
+**Decisions taken** (shortfallfix.md D1–D6; the author went with every recommendation):
+D1, the cluster interval is the reported one; D2, minimum effects of 2 points of error, 0.02 of
+probability, 0.02 AUROC and 10% of a gap closed; D3/D4 (C3, C4) were not built, since the author
+chose F2 + G8 only; D5, frame set B was drafted by Claude and approved by the author (keeping
+"Sadly,"); D6, the 17 claims were approved before scoring (D53).
+
+**H8, explicit headline seeds.** `evaluate.headline_pool` keeps the classical seed 42 and
+DistilBERT's configured seeds (13, 42, 87), per model and variant. `median_seed(preds, model,
+variant)` ranks only headline seeds, and `canonical` keeps the median seed per variant. The filter
+applies only where a headline seed is present, so data with other seeds (test fixtures, the
+external models' seed 0) passes unchanged. *Why:* otherwise, adding RF seeds (C4) or a tuned
+DistilBERT (C3) would have changed headline tables silently. *Check:* `tests/test_headline.py`;
+the seed-robustness table still agrees on all 291 rows.
+
+**G7, cluster bootstrap.** `stats._cluster_groups` and `_draw` resample whole clusters;
+`bootstrap`, `rate_ci`, `paired_diff_ci`, `gap_closed_ci`, `diff_independent_ci` and
+`paired_auroc_diff` take a `clusters` argument. Behavioral clusters are the sentiment adjective
+(`word:<adj>`, from the predictions' `word` column). IMDb clusters are the film (`film:<tt id>`,
+from the archive's review URLs, saved in `artifacts/data/imdb_films.parquet`): all 20,000 reviews
+matched, with 2,796 films in the main sample. SST-2 sentences stay single items.
+`evaluate.item_level_intervals()` recomputes the old intervals, and
+`results/cluster_robustness.csv` puts both side by side (961 intervals); the warn stage writes
+`early_warning_cluster_robustness.csv`.
+*Numbers:* the median width ratio per table is 1.00–1.51× (largest: negation direction 1.51, typo
+direction 1.34). 13 significance flags changed, none of them an H1–H6 verdict. The ones worth
+knowing:
+- RoBERTa-large's name shift: Holm p 0.02 → 0.31, so interestingfindings §4 now says it is not
+  established;
+- DistilBERT's −0.0001 name shift: 0.007 → 0.064;
+- GNB's name shift: 0.12 → 0.004, but below the minimum effect;
+- the decision tree's typo difference: → 0.09;
+- three `negmark_w3` reductions and three `pairs_closed` values on templates.
+
+Every estimate is unchanged: checked column by column against HEAD, only the interval and p-value
+columns differ.
+*Rejected:* keeping item intervals as the headline (known to be too narrow); clustering SST-2 by
+film (SST-2 has no film ids).
+
+**G9, minimum effects.** The thresholds live in `configs/stats.yaml`. `evaluate._flag_meaningful`
+adds `*_meaningful` columns (the interval clears the threshold) to every table, plus
+`clearly_higher_meaningful` for H1. The thresholds were chosen after the results; this is stated
+wherever they are used.
+
+**C12.** `plots.ACCURACY_CAVEAT = {"roberta_large": "†"}` and `ACCURACY_NOTE` mark RoBERTa-large's
+accuracy on the Mirage Gap chart, in the demo and in every results table.
+
+## D53 — Pre-registered replication on fresh data, a second suite, own-feature distance (G8, D10, F2)
+
+**G8, the claims first.** `docs/confirmatory_claims.md` lists 17 claims, each with a direction and
+a pass rule (H1: 2, H2: 1, H3: 1, H4: 3, findings: 10). It was committed at fbdf48e, before any
+fresh data was scored. `replication.score_claims` scores the claims; a claim with missing data is
+"pending", never a pass.
+
+**Fresh data.**
+- `prepare-fresh` draws 10,000 IMDb reviews (`fresh_seed` 2026) from the 40,000 the main sample
+  didn't use. They are disjoint from it by review key and capped like the main sample, and their
+  first and last sentences form a second set (`imdb_fresh`, `imdb_fresh_edges`). Text fingerprint:
+  35935f818a427806.
+- The archive comes from the Hugging Face mirror `NolanChai/aclImdb_v1`, because Stanford's server
+  is blocked here; its SHA-256 matches the official archive (`configs/data.yaml`).
+- Both are side sets (`predict.SIDE_SETS`), outside `EVAL_SETS`.
+- Our models ran locally. The external models ran on Kaggle (`notebooks/kaggle_fresh.ipynb`, T4),
+  because RoBERTa-large would take hours on the CPU.
+
+**D10, frame set B.** `templates.FRAMES_B` has four new frames per test, written to differ from
+set A in structure ("I found the movie X.", "The movie felt X.", "Overall, …", "I would call the
+movie X."), drawn with seed 2026 (`build_suite_v2`: item ids `beh2-…`, 6,250 rows). `frame_of`
+recovers any case's frame, so `replication.by_frame` reports failure rates per frame, with a
+chi-square test across frames (Holm). Set A rebuilds the original suite exactly (tested). The 28
+name-swap sentences are identical in both suites because the name-swap frames weren't
+paraphrased; no claim uses them.
+
+**F2, own features.**
+- `DistilBertClassifier.features` returns the [CLS] vector after the pre-classifier layer and
+  ReLU, which is the classifier's input. A test checks that the head applied to it gives the
+  model's own probabilities.
+- `extract-features` saves these features for SST-2 train and IMDb (median seed 13).
+- `own-distance` fits a class-conditional Mahalanobis distance (Lee et al.) on SST-2 train and
+  scores IMDb errors. The classical models use their own TF-IDF features, reduced by SVD to 300
+  dimensions.
+
+**Results.**
+- **Replication: 16 of 17 claims replicated** (`results/replication.csv`).
+- **Claim 3 failed.** It said every single-word classical model is ≥ 10 points worse than
+  DistilBERT on directional negation. On the second suite, the decision tree is +0.4 points worse
+  (lower bound 0.0) and the random forest +14.3 (lower bound +4.5).
+  - The cause is DistilBERT, not the classical models. Our DistilBERT reads frame B3 ("I would
+    never call the movie great") as positive in 96% [90, 100] of cases, and HF DistilBERT in 99%;
+    RoBERTa-large fails 7%.
+  - The tree also gets the affirmative B3 sentence wrong, so only 8 of its B3 pairs are scored.
+  - It is recorded as not replicated, as pre-registered, and H2's verdict now carries the caveat
+    (hypothesisanswers.md; shortfalls G11 and D12).
+- **Frames matter:** they differ significantly in 29 of 72 testable cells, and LR's
+  directional-negation failure rate ranges from 0% to 100% by frame (interestingfindings §15).
+- **F2:** DistilBERT's own-feature distance has AUROC 0.822 for its IMDb errors (MiniLM: 0.530),
+  but adds +0.000 to confidence. The classical models' TF-IDF distance is 0.47–0.53. MNB's
+  combination gains +0.034 (meaningful), which its saturated confidence explains (D26). H4 stays
+  rejected, more strongly.
+- **Fresh early warning** (`results/early_warning_fresh.csv`): distance 0.50–0.53 and combination
+  −0.006 to +0.006, for all eight models.
+
+**Bugs found while running.**
+- `by_frame` chose DistilBERT's median seed after filtering to the behavioral rows, so
+  `median_seed` found no `sst2_val` rows and the stage crashed after writing every prediction.
+  - Fixed by choosing seeds on all predictions first, with a regression test.
+  - The first scoring ran from a scratch patch with the same logic, because `extract-features` was
+    still running and src/ must not change mid-stage. The fixed code reproduced its three CSVs
+    byte for byte.
+- The Kaggle notebook failed twice for the author:
+  - an in-kernel import right after `pip install -e` (the package isn't importable in that kernel);
+  - a broken line in the fingerprint print.
+
+  It now runs every step as a subprocess that stops with the real error, asserts the fingerprint
+  and the 4 output files, and was dry-run end to end in a fresh clone before the author ran it
+  again.
+- A feature extraction run stalled for hours while the laptop slept; it finished once the machine
+  was kept awake.
+
+**Review of all changed code (once, before committing).** Covered the `by_frame` fix and its
+test, and the doc numbers (each checked against `results/*.csv`).
+- *Fixed:* the seed-choice crash above.
+- *Checked, no change needed:* the old `p.assign(dataset="behavioral")` before `canonical` had no
+  effect on the result (nothing downstream reads `dataset`), so dropping it changes nothing; the
+  fixed code reproduced the patched run's CSVs byte for byte. Negation marking does cover *never*
+  (`configs/data.yaml`), which explains LR + marking's 0% failure on frame B3 (claim 4).
+- *Known limits, recorded rather than changed:* the chi-square test across frames is approximate
+  when a frame has few scored pairs (the decision tree has 8 in B3), so `p_frames` there is a
+  rough guide; the per-frame rates and their cluster CIs are the main output. `by_frame` uses the
+  DistilBERT seed that `canonical` picks; `replicate` predicts the second suite with that same
+  median seed, so they always match.
+- *Unchanged check:* every estimate column in the committed CSVs is identical to HEAD; only
+  intervals and p-values moved (the cluster bootstrap, D52).
+
+**Rejected:** re-scoring claim 3 with a changed rule, or dropping frame B3 (either would undo the
+pre-registration); running our DistilBERT on Kaggle (its model files aren't on GitHub, and the CPU
+run was feasible).
