@@ -1858,3 +1858,52 @@ findings' examples take its place.
 **Check:** every number was compared with `results/*.csv` (main table, h1_test, mirage_gap,
 negation_gap, early_warning, replication, behavioral_by_frame); one wording fixed (finding 15's
 0%–100% range spans the frames of both suites). All links and image paths resolve.
+
+## D58 — Data, model and training documentation, from GitHub issue #1
+
+**The issue** (opened by the author, "project review issues") asked for: every model's
+hyperparameters and the selected ones in the README; how the data was split; the cleaning rules;
+how the trained models were deployed and tested; a differential analysis of IMDb vs SST-2;
+epoch-wise performance graphs; and an understanding of every architecture, with a card per model.
+
+**Decision.** The README gets a "Data and models" section with the essentials of each point (the
+issue asked for the README), linking to new docs for the detail: `docs/data/datasets.md`,
+`docs/models/README.md` and eight model cards in `docs/models/cards/`. So that every new number is
+read from a file, not typed by hand, a new descriptive stage, `describe` (`mirage.describe`), writes
+`dataset_comparison.csv`, `dataset_distinctive_words.csv`, `distilbert_training.csv` and
+`model_summary.csv`, and three figures: `training_curves`, `tuning_curves`, `dataset_lengths`.
+The tuning log already existed (`results/tuning_classical.csv`).
+
+**Epoch-wise graphs.** Only DistilBERT trains in epochs; its held-out accuracy and loss after each
+epoch come from each run's `train_summary.json`. The classical models are fitted in one pass, so
+their equivalent is the tuning curve (held-out accuracy per setting), stated as such rather than
+invented. DistilBERT's logged *training* loss is not plotted: on two GPUs it starts at 1.33, above
+what a correctly averaged two-class loss can be, so it isn't trustworthy; the held-out loss is.
+
+**Found while building.**
+- *Bug (fixed before anything was written):* the Hugging Face Trainer re-evaluates the kept model
+  after training and logs it under the last epoch. The first version of `training_history` let that
+  overwrite the real last-epoch score: seed 87's epoch 3 showed epoch 2's 91.83% instead of its own
+  91.53%. It now keeps each epoch's first evaluation; the test reproduces the case.
+- *Two figure fixes:* the tuning panels repeated rounded tick labels (now one decimal); the length
+  histogram used density on log-width bins, which flattened IMDb (now the share of texts per bin).
+- *Spelling, not content:* SST-2 writes "can not" as two words and spells "humor", so IMDb's
+  "cannot" and "humour" top the distinctive-words list; the data doc says so.
+- *Corrected while writing the cards:* the decision tree's change between the two template suites
+  is not the largest (logistic regression's is); Multinomial NB is the worst-calibrated on IMDb only
+  among LR, RF, MNB and DistilBERT (Gaussian NB is worse).
+
+**Numbers worth having.** IMDb vs SST-2 test: median 199 vs 18 words; 19.5% of IMDb's distinct
+words were seen in training, but 91.4% of its running words were (SST-2 test: 93.4%); 87.9% of
+reviews contain a negation word (SST-2 test: 18.6%). DistilBERT's held-out accuracy stays within
+91.1–92.1% across epochs; kept epochs 3 / 3 / 2. Sizes: logistic regression 75,906 parameters,
+DistilBERT 66,955,010.
+
+**Review of the changed code** (`describe.py`, the `describe` stage, the three plots, the tests).
+- `median_seed` is called on DistilBERT's `sst2_val` predictions, as the hard rule requires.
+- Heavy imports stay inside functions (`safetensors`).
+- `ast.literal_eval` replaces an `eval` on the logged settings.
+- The stage only adds files: no committed `results/*.csv` changed, and the tests (163) pass.
+- The two problems found are the bug and the figure fixes above.
+
+**Not done:** replying on the GitHub issue (no `gh` here, and posting is the author's call).

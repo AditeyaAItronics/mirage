@@ -71,6 +71,96 @@ Other figures: `error_heatmap_base.png` (errors by model and test), `negation_ga
 (the H2/H3 ladder), `h5_word_effect_agreement.png` (H5) and `shortcut_fingerprint.png` (per-model
 detail); the Mirage Gap and fingerprint also come in 16:9 `_slide` versions.
 
+## Data and models
+
+The essentials are below. The full versions, with every rule and number, are in
+[docs/data/datasets.md](docs/data/datasets.md), [docs/models/README.md](docs/models/README.md) and
+one **model card** per model in [docs/models/cards/](docs/models/cards/).
+
+### How the data was split
+
+| set | rows | used for |
+|---|---|---|
+| SST-2 train | 63,971 | training every model |
+| SST-2 held-out | 3,378 | validation: choosing hyperparameters and DistilBERT's best epoch |
+| SST-2 validation | 872 | choosing DistilBERT's median seed |
+| SST-2 test | 1,820 | **the reported test accuracy** (public Stanford labels, `SetFit/sst2`) |
+| Real negated sentences | 519 | SST-2 validation + test sentences containing *not*, *never*, *no*, *nothing*, *n't* |
+| IMDb | 10,000 | out-of-domain test: a balanced sample of the IMDb test split, never used for training |
+
+Training and held-out are split **by sentence, not by row**: SST-2 has a row for every phrase of
+every sentence, so a random split would leak 90% of held-out phrases into training (D21). Test
+sentences that also appear in training are dropped. The test set is used only for reporting.
+
+### Data cleaning rules
+
+One function, `text.normalize`, runs inside every model, so all text looks like SST-2's: HTML line
+breaks removed, curly quotes straightened, lowercased, *n't* and other clitics split off
+("doesn't" → "does n't"), punctuation separated (except commas in numbers and abbreviation
+periods). **Not done on purpose:** no stop-word removal and no default tokenizer (both would delete
+*not* / *n't*), no stemming or spelling correction (typo robustness is being measured). IMDb reviews
+are capped to their first 220 and last 140 words so every model reads the same text.
+
+### SST-2 vs IMDb
+
+| | SST-2 train | SST-2 test | IMDb |
+|---|---|---|---|
+| words per text (median) | 7 | 18 | 199 |
+| sentences per text | 1.0 | 1.1 | 10.9 |
+| distinct words seen in SST-2 training | — | 72% | 19% |
+| running words seen in SST-2 training | — | 93% | 91% |
+| texts containing a negation | 9% | 19% | 88% |
+| positive | 56% | 50% | 50% |
+
+IMDb is long viewer reviews (words like *watched, spoilers, comment*), SST-2 short critics' phrases
+(*filmmaking, wry, meditation*). Every model loses accuracy on IMDb; splitting the drop shows that
+length *helps* and the content of the reviews is what hurts (interestingfindings.md §8).
+
+### Hyperparameters
+
+| model | searched | selected | held-out acc. |
+|---|---|---|---|
+| Logistic regression (L2, TF-IDF words + pairs) | C ∈ {0.1, 1, 10, 30, 100} | C = 10 | 84.2% |
+| Multinomial NB (word + pair counts) | alpha ∈ {0.1, 0.5, 1.0} | alpha = 1.0 | 82.0% |
+| Gaussian NB (TF-IDF → 300 SVD components) | none | — | 56.3% |
+| Decision tree (Gini, unlimited depth) | min. samples per leaf ∈ {10, 20, 50} | 20 | 65.6% |
+| Random forest (300 trees) | max depth ∈ {30, unlimited} | unlimited | 77.2% |
+| DistilBERT (`distilbert-base-uncased`) | fixed: lr 2e-5, 6% warm-up, batch 64, 3 epochs, 128 tokens | best epoch: 3 / 3 / 2 (seeds 13 / 42 / 87) | 92.1 / 92.0 / 91.8% |
+
+All classical models use the same 75,905 word and word-pair features. Every setting tried is in
+`results/tuning_classical.csv`; the two ready-made transformers were not trained by us.
+
+### Training curves
+
+DistilBERT is evaluated after every epoch (`figures/training_curves.png`): held-out accuracy stays
+within 91.1–92.1%, and the best epoch is kept. The classical models have no epochs (each is fitted in
+one pass), so their curve is the held-out accuracy for each hyperparameter setting
+(`figures/tuning_curves.png`).
+
+![DistilBERT held-out accuracy and loss per epoch](figures/training_curves.png)
+
+### How the models were trained, tested and deployed
+
+1. **Trained:** classical models on the laptop (`train-classical`); DistilBERT on Kaggle's free
+   GPUs (`notebooks/kaggle_distilbert.ipynb`), 3 seeds.
+2. **Saved:** each to its own folder in `artifacts/models/`: the whole text-to-prediction pipeline
+   (`model.joblib`) for classical models, Hugging Face weights + tokenizer for DistilBERT.
+3. **Tested:** `predict` loads every saved model through one interface and scores every evaluation
+   set, writing one validated predictions file per model and set; `evaluate` computes accuracy, F1,
+   calibration and every other metric from those files.
+4. **Deployed:** locally, in the Shortcut Explorer demo (below), which loads the saved models from
+   disk and runs any sentence through all eight.
+
+### Model cards
+
+How each model works, its settings, size, test results and the shortcuts it showed:
+[logistic regression](docs/models/cards/logreg.md) ·
+[Multinomial NB](docs/models/cards/mnb.md) · [Gaussian NB](docs/models/cards/gnb.md) ·
+[decision tree](docs/models/cards/dtree.md) · [random forest](docs/models/cards/rf.md) ·
+[DistilBERT (ours)](docs/models/cards/distilbert.md) ·
+[DistilBERT (Hugging Face)](docs/models/cards/distilbert_hf.md) ·
+[RoBERTa-large](docs/models/cards/roberta_large.md).
+
 ## Live demo: the Shortcut Explorer (D41)
 
 Type a sentence, or pick a curated pair, and see every model's verdict, which words drove it, and
@@ -113,6 +203,7 @@ python -m mirage prepare-fresh                            # 10,000 new IMDb revi
 python -m mirage replicate                                # predicts what's missing, writes results/replication.csv
 python -m mirage extract-features                         # F2: DistilBERT's own features (slow on CPU)
 python -m mirage own-distance                             # F2: results/early_warning_own.csv
+python -m mirage describe                                 # dataset comparison, training curves, model sizes (D58)
 ```
 
 Each stage can also run on its own: `python -m mirage --help`.
@@ -137,8 +228,10 @@ for why each choice was made.
 | `docs/design/` | `ARCHITECTURE.md`, `majordecisions.md` (every decision and why), `codeexplanations.md` (file tour) |
 | `docs/limitations/` | `shortfalls.md` (known limitations) and `shortfallfix.md` (the fix plan and its status) |
 | `docs/report/` | `reportplan.md` (the report's skeleton) and `whatyouneedtodo.md` (your steps) |
+| `docs/data/` | `datasets.md`: sources, splits, cleaning rules, SST-2 vs IMDb |
+| `docs/models/` | `README.md` (hyperparameters, training curves, sizes, how models are tested and deployed) and `cards/` (one model card per model) |
 | `docs/replication/` | `confirmatory_claims.md`: the 17 claims pre-registered before the fresh data was scored (D53) |
 | `docs/archive/` | finished plans kept as a record (the original build plan, the presentation-additions design) |
-| `tests/` | `python -m pytest` (154 tests, about 2–3 min, no GPU needed) |
+| `tests/` | `python -m pytest` (163 tests, about 2–3 min, no GPU needed) |
 
 For a file-by-file tour of the code, see [codeexplanations.md](docs/design/codeexplanations.md).

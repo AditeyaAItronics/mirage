@@ -1,0 +1,7 @@
+model,n_features,n_parameters,depth,leaves,n_trees,mean_depth,svd_components,selected_params,heldout_acc,layers,hidden_size,attention_heads
+logreg,75905,75906,,,,,,{'C': 10},0.8416,,,
+dtree,75905,4089,419.0,2045.0,,,,"{'max_depth': None, 'min_samples_leaf': 20}",0.656,,,
+rf,75905,10738128,,5369214.0,300.0,3900.3,,{'max_depth': None},0.7718,,,
+mnb,75905,151812,,,,,,{'alpha': 1.0},0.8203,,,
+gnb,75905,22772702,,,,,300.0,{},0.5634,,,
+distilbert,30522,66955010,,,,,,"epoch kept per seed: 13: 3, 42: 3, 87: 2",0.9195,6.0,768.0,12.0

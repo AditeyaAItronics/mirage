@@ -769,6 +769,79 @@ def stage_replicate(args) -> None:
     print(claims[["claim", "status", "detail"]].to_string(index=False))
 
 
+def stage_describe(args) -> None:
+    """D58 (GitHub issue #1): how SST-2 and IMDb differ, DistilBERT's held-out score per epoch,
+    the classical models' tuning and size. Descriptive only; no hypothesis uses these tables."""
+    from mirage import plots
+    from mirage.data import load
+    from mirage.describe import (
+        classical_structure,
+        dataset_comparison,
+        distinctive_words,
+        training_history,
+        transformer_structure,
+    )
+    from mirage.evaluate import median_seed
+    from mirage.models.base import load_classifier
+    from mirage.predict import load_predictions
+    from mirage.text import normalize
+
+    R = paths.RESULTS
+    names = [
+        "sst2_train",
+        "sst2_heldout",
+        "sst2_val",
+        "sst2_test",
+        "sst2_neg",
+        "imdb",
+        "imdb_edges",
+    ]
+    sets = {n: load(n) for n in names}
+    dataset_comparison(sets).to_csv(R / "dataset_comparison.csv", index=False)
+    distinctive_words(sets["imdb"], sets["sst2_train"], "imdb", "sst2_train").to_csv(
+        R / "dataset_distinctive_words.csv", index=False
+    )
+    plots.dataset_lengths(
+        {
+            n: np.array([len(normalize(t).split()) for t in sets[n]["text"]])
+            for n in ("sst2_train", "sst2_test", "imdb_edges", "imdb")
+        }
+    )
+
+    summaries, history = {}, None
+    for seed in load_config("distilbert")["seeds"]:
+        f = paths.model_dir("distilbert", "base", seed) / "train_summary.json"
+        if f.exists():
+            summaries[seed] = json.loads(f.read_text(encoding="utf-8"))
+    if summaries:
+        history = training_history(summaries)
+        history.to_csv(R / "distilbert_training.csv", index=False)
+        plots.training_curves(history)
+
+    tuning_path = R / "tuning_classical.csv"
+    tuning = pd.read_csv(tuning_path) if tuning_path.exists() else None
+    if tuning is not None:
+        plots.tuning_curves(tuning)
+    seed = load_config("classical")["seed"]
+    rows = []
+    for m in CLASSICAL_MODELS:
+        d = paths.model_dir(m, "base", seed)
+        if (d / "model.joblib").exists():
+            rows.append(classical_structure(m, load_classifier(d).pipeline))
+    if rows and tuning is not None:  # each classical model's selected grid setting
+        sel = tuning[(tuning["variant"] == "base") & tuning["selected"]]
+        sel = sel[["model", "params", "heldout_acc"]].rename(columns={"params": "selected_params"})
+        rows = pd.DataFrame(rows).merge(sel, on="model", how="left").to_dict("records")
+    val = load_predictions(model="distilbert", dataset="sst2_val")
+    if len(val):  # DistilBERT's size, from its median seed's saved weights
+        d = paths.model_dir("distilbert", "base", median_seed(val))
+        if (d / "model.safetensors").exists():
+            rows.append(transformer_structure(d, history))
+    if rows:
+        summary = pd.DataFrame(rows)
+        summary.to_csv(R / "model_summary.csv", index=False)
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="mirage", description=__doc__)
     sub = p.add_subparsers(dest="stage", required=True)
@@ -839,6 +912,9 @@ def build_parser() -> argparse.ArgumentParser:
     s = sub.add_parser("replicate", help="G8: fresh data, pre-registered claims, frames table")
     s.add_argument("--skip-predict", action="store_true", help="score what's there only")
     s.set_defaults(fn=stage_replicate)
+    sub.add_parser(
+        "describe", help="D58: dataset comparison, training curves, model sizes (descriptive)"
+    ).set_defaults(fn=stage_describe)
     sub.add_parser("figures", help="render every figure from the result CSVs").set_defaults(
         fn=stage_figures
     )

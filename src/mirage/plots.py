@@ -7,6 +7,7 @@ blue ramp light -> dark. Static report figures, so light mode only.
 
 from __future__ import annotations
 
+import ast
 from pathlib import Path
 
 import matplotlib
@@ -506,3 +507,106 @@ def shortcut_fingerprint(table: pd.DataFrame, slide: bool = False, out_dir=None)
         color=INK,
     )
     return _save(fig, f"shortcut_fingerprint{'_slide' if slide else ''}", out_dir)
+
+
+# ------------------------------------------------- D58: descriptive figures (GitHub issue #1)
+SEED_STYLE = {13: "-", 42: "--", 87: ":"}
+TUNING_PARAM = {"logreg": "C", "mnb": "alpha", "rf": "max_depth", "dtree": "min_samples_leaf"}
+
+
+def training_curves(history: pd.DataFrame, out_dir=None) -> Path:
+    """DistilBERT's held-out accuracy and loss after each training epoch, one line per seed;
+    the epoch the Trainer kept is ringed. Two panels, never two y-scales on one axis."""
+    fig, axes = plt.subplots(1, 2, figsize=(9, 3.6))
+    color = MODEL_COLOR.get("distilbert", INK)
+    for seed, g in history.groupby("seed"):
+        style = SEED_STYLE.get(int(seed), "-")
+        for ax, col in zip(axes, ("heldout_accuracy", "heldout_loss"), strict=True):
+            ax.plot(
+                g["epoch"],
+                g[col],
+                linestyle=style,
+                marker="o",
+                markersize=7,
+                color=color,
+                label=f"seed {int(seed)}",
+            )
+            sel = g[g["selected"]]
+            ax.scatter(
+                sel["epoch"],
+                sel[col],
+                s=160,
+                facecolors="none",
+                edgecolors=INK,
+                linewidths=1.5,
+                zorder=3,
+            )
+    axes[0].set_ylabel("held-out accuracy")
+    axes[0].yaxis.set_major_formatter(PercentFormatter(1.0, decimals=1))
+    axes[1].set_ylabel("held-out loss (cross-entropy)")
+    for ax in axes:
+        ax.set_xlabel("epoch")
+        ax.set_xticks(sorted(history["epoch"].unique()))
+    axes[0].legend(fontsize=8)
+    axes[0].set_title("DistilBERT: accuracy after each epoch", loc="left")
+    axes[1].set_title("DistilBERT: loss after each epoch", loc="left")
+    fig.text(
+        0.01, 0.01, "ringed = the epoch kept (best held-out accuracy)", fontsize=8, color=INK_2
+    )
+    return _save(fig, "training_curves", out_dir)
+
+
+def tuning_curves(tuning: pd.DataFrame, variant: str = "base", out_dir=None) -> Path:
+    """Classical models have no epochs: each is fitted once per grid setting. Held-out accuracy
+    for every setting tried; the selected one is ringed."""
+    d = tuning[tuning["variant"] == variant]
+    models = [m for m in ("logreg", "mnb", "rf", "dtree") if m in set(d["model"])]
+    fig, axes = plt.subplots(1, len(models), figsize=(3 * len(models), 3.2), squeeze=False)
+    for ax, m in zip(axes.flat, models, strict=True):
+        g = d[d["model"] == m].reset_index(drop=True)
+        p = TUNING_PARAM[m]
+        labels = [str(ast.literal_eval(s).get(p)) for s in g["params"]]
+        x = np.arange(len(g))
+        ax.plot(x, g["heldout_acc"], marker="o", markersize=7, color=_color(m))
+        sel = g[g["selected"]]
+        ax.scatter(
+            sel.index,
+            sel["heldout_acc"],
+            s=160,
+            facecolors="none",
+            edgecolors=INK,
+            linewidths=1.5,
+            zorder=3,
+        )
+        ax.set_xticks(x, labels)
+        ax.set_xlabel(p)
+        ax.set_title(SHORT_NAME.get(m, m), loc="left")
+        ax.yaxis.set_major_formatter(PercentFormatter(1.0, decimals=1))
+    axes.flat[0].set_ylabel("held-out accuracy")
+    fig.text(
+        0.01, 0.01, "ringed = setting selected; Gaussian NB has no grid", fontsize=8, color=INK_2
+    )
+    return _save(fig, "tuning_curves", out_dir)
+
+
+def dataset_lengths(lengths: dict[str, np.ndarray], out_dir=None) -> Path:
+    """Words per text in each set (log scale): SST-2's short phrases against IMDb's reviews."""
+    fig, ax = plt.subplots(figsize=(7, 3.6))
+    bins = np.logspace(0, np.log10(max(max(v) for v in lengths.values()) + 1), 40)
+    for (name, v), color in zip(lengths.items(), SERIES, strict=False):
+        ax.hist(
+            v,
+            bins=bins,
+            histtype="step",
+            linewidth=2,
+            color=color,
+            weights=np.full(len(v), 1 / len(v)),
+            label=f"{name} (median {np.median(v):.0f})",
+        )
+    ax.set_xscale("log")
+    ax.set_xlabel("words per text (log scale)")
+    ax.set_ylabel("share of texts")
+    ax.yaxis.set_major_formatter(PercentFormatter(1.0, decimals=0))
+    ax.set_title("SST-2 is short phrases; IMDb is long reviews", loc="left")
+    ax.legend(fontsize=8)
+    return _save(fig, "dataset_lengths", out_dir)

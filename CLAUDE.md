@@ -7,6 +7,9 @@ Every doc except `README.md`, `proposal.md` and this file lives under `docs/` (D
 - `docs/results/`: `hypothesisanswers.md` and `interestingfindings.md` (the current results);
 - `docs/limitations/`: `shortfalls.md` and `shortfallfix.md`;
 - `docs/report/`: `report.md` (the report draft), `reportplan.md` and `whatyouneedtodo.md`;
+- `docs/data/`: `datasets.md` (sources, splits, cleaning, SST-2 vs IMDb);
+- `docs/models/`: `README.md` (hyperparameters, training, testing, deployment) and `cards/`
+  (one model card per model);
 - `docs/replication/`: `confirmatory_claims.md`;
 - `docs/archive/`: the original build plans.
 
@@ -59,7 +62,10 @@ Update every relevant markdown file **as part of the same change**, not at the e
   changed numbers go here, checked against `results/*.csv`; other files link here instead of
   copying numbers.
 - `README.md`: the short results summary (update it when a headline number or verdict changes),
-  figures and commands.
+  the data and model essentials (splits, cleaning, hyperparameters, training/testing), figures
+  and commands.
+- `datasets.md`, `docs/models/README.md` and the model cards: data, settings, sizes and each
+  model's results; regenerate their tables with `python -m mirage describe` when models change.
 - `ARCHITECTURE.md`: new stages, modules, interfaces, layering or data-flow changes.
 - `shortfalls.md`: new limitations found; move fixed ones to Resolved.
 - `codeexplanations.md`: new or changed files (and the test count); `whatyouneedtodo.md`: every step for the user, including the report's; `reportplan.md`: the report's skeleton and sources.

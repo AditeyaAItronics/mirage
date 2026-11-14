@@ -142,6 +142,7 @@ Eight models, one interface: five classical, our DistilBERT, and two ready-made 
 | Accuracy vs behaviour (D40) | sst2_test, sst2_neg, behavioral pairs | `evaluate.mirage_gap` (pair accuracy) | `mirage_gap.csv`, Mirage Gap chart, fingerprint |
 | Are the intervals too narrow? (D52, G7) | every template and IMDb test | cluster bootstrap in `stats`; clusters from `predict.load_clusters` (films) and the `word` column (adjectives) | every CI; `cluster_robustness.csv` |
 | Do the claims replicate? (D53, G8) | `imdb_fresh`, `imdb_fresh_edges`, `behavioral_v2` (side sets) | stage `replicate`: `replication.fresh_view` renames them so the same table code runs, then `score_claims`, `by_frame` | `replication.csv`, `behavioral_by_frame.csv`, `early_warning_fresh.csv` |
+| What the data and models look like (D58, issue #1) | every SST-2 and IMDb set; the saved models | stage `describe` (`mirage.describe`) | `dataset_comparison.csv`, `dataset_distinctive_words.csv`, `distilbert_training.csv`, `model_summary.csv`; training, tuning and length figures |
 | Distance in the classifier's own features (D53, F2) | sst2_train, imdb | stages `extract-features`, `own-distance` | `early_warning_own.csv` |
 
 Seed policy (D13): tables average DistilBERT over 3 seeds; per-item analyses use its median seed,
