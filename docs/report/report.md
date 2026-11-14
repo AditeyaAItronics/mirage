@@ -74,6 +74,31 @@ DistilBERT (3 seeds), and two ready-made transformers that we didn't train.
 behaviour on our own test sentences is unaffected. *Source: `results/main_table.csv`
 (DistilBERT: mean of 3 seeds).*
 
+**Why logistic regression and Multinomial NB are far more accurate than the other classical
+models.** The answer is in how each model uses the words. A sentence's sentiment is spread over
+many words, and an SST-2 test sentence switches on only about 25 of the 75,905 word and
+word-pair features (median 25).
+- **Logistic regression and Multinomial NB (83%) let every word vote.** Logistic regression adds
+  up one learned weight per word or pair; Multinomial NB multiplies each word's probability under
+  "positive" and "negative". Either way, *every* sentiment word in the sentence counts, and
+  regularization (LR) or smoothing (NB) stops a rare word from dominating. Summing many weak,
+  independent clues is exactly what sparse text rewards.
+- **The decision tree (65%) asks one question per level.** A sentence follows a single path of
+  yes/no questions ("does it contain *bad*?"), so it is judged on the few words on that path, and
+  the rest are ignored. To separate 64,000 phrases on single words, the tree grows 419 levels deep and
+  memorizes training quirks.
+- **The random forest (75%) averages 300 such trees**, which cancels much of the single tree's
+  noise. But each split may only choose among a random 275 of the 75,905 features, and for a
+  sentence with 25 active features about 9 splits in 10 see none of its words, so a tree often has
+  to decide on a weak or irrelevant feature.
+- **Gaussian NB (59%) can't see individual words at all.** It needs a few continuous numbers, so
+  the 75,905 features are compressed into 300 SVD components (mixtures of thousands of words), and
+  it then assumes each follows a bell curve, which word data doesn't. Most word-level evidence is
+  lost in the compression (H6).
+- **DistilBERT (92%) goes further than counting:** it was pre-trained on large amounts of English
+  before seeing SST-2, and it reads each word in its context, so "not good" means something
+  different from "good".
+
 ---
 
 ## 2. The Mirage Gap: accuracy hides how models fail
@@ -159,6 +184,18 @@ The same robustness number can hide different weaknesses. Multinomial NB fails o
 negation; Gaussian NB on negation (4%) and almost everything else; logistic regression mainly on
 typos; the transformers only on typos. This is why the gap is a summary and the fingerprint is the
 diagnosis.
+
+**Why each model's gap is the size it is.** Each gap follows from how the model works (Section 1).
+
+| model | gap | why |
+|---|---|---|
+| Multinomial NB | **0.280** | Every word votes at the full strength of its training statistics. That is good for accuracy, but it also means a name with a skewed history (a director whose films were mostly panned) outvotes the real sentiment (61% of name pairs), and "not" can't outvote "good" (35% of negation pairs). Its high accuracy has the most to lose. |
+| Gaussian NB | 0.196 | It can barely read individual words (compressed to 300 components), so it fails almost every check (negation 4%). Its gap is smaller than Multinomial NB's only because its accuracy is low to begin with. |
+| Decision tree | 0.139 | It judges a sentence on the few words along one path, so a negation or a misspelled word that isn't on that path is missed or misread (negation 37%, typos 45%). |
+| Logistic regression | 0.091 | Regularization shrinks rare words such as names to small weights (99% of name pairs), and word pairs like `not good` give it partial negation (70%). But a misspelled word is simply outside its vocabulary, so typos remain its weak spot (51%). |
+| Random forest | 0.060 | Averaging 300 trees smooths out single-word quirks (names 83%, negation 69%). Its gap is small partly because its accuracy (75%) is lower, so there is less to lose. |
+| DistilBERT, both versions | 0.046–0.047 | Reading words in context fixes negation (100%) and makes names irrelevant (100%). What's left is typos (61%): a misspelled sentiment word is split into unfamiliar word pieces, and its learned default for those is "negative" (finding 2). |
+| RoBERTa-large | 0.040 | The same mechanism with 5× the size and 15 training datasets: typos are its only weakness and a smaller one (71%). |
 
 ### 2.5 Seeing it live: the Shortcut Explorer
 
