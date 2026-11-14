@@ -1836,3 +1836,25 @@ majordecisions, codeexplanations), `docs/limitations/` (shortfalls, shortfallfix
 by file name elsewhere; code comments still cite docs by file name (e.g. "majordecisions.md D7"),
 which stays unambiguous.
 
+## D57 — The report: built around the Mirage Gap, for the presentation (documentation)
+
+**The author's choices (step 4–6 of whatyouneedtodo.md):**
+- **No format rules.** The report is the author's preparation for a class presentation in front of
+  the class and professor, showing what to present and the main findings that fit the proposal.
+- **Verdicts approved** as worded in hypothesisanswers.md for H1, H2, H4 and H5. **H3 and H6 are
+  left out** as side findings that don't add substance to the project's theme.
+- **Findings included:** 2, 5, 8, 9, 10 and 15; finding 1 is the Mirage Gap itself.
+- **Depth:** the Mirage Gap in detail with graphs and the local demo app; the others brief but
+  solid, with the reasoning and evidence behind each. Figures for the others are decided later.
+
+**Built:** `docs/report/report.md`. Sections: summary; the project in one page (with the accuracy
+table); the Mirage Gap (idea, Figure 1, Table 1, five points, the fingerprint figure, three demo
+screenshots with how to run the app, replication and caveats); H1, H2, H4, H5, each with its
+verdict, evidence, why, and how it explains the gap; findings 2, 5, 8, 9, 10, 15 (what / why /
+significance); how the work was tested fairly; limitations; answers to the four research
+questions. The failure-example shortlist (old step 7) is not built: the demo examples and the
+findings' examples take its place.
+
+**Check:** every number was compared with `results/*.csv` (main table, h1_test, mirage_gap,
+negation_gap, early_warning, replication, behavioral_by_frame); one wording fixed (finding 15's
+0%–100% range spans the frames of both suites). All links and image paths resolve.

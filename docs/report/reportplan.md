@@ -4,12 +4,22 @@ The skeleton of the final report: its sections, what goes in each, and the sourc
 number. The proposal promises a **6–8 page report answering the four research questions with
 tables, charts and 8–10 explained failure examples** ([proposal.md](../../proposal.md)).
 
+> **The author's choices (D57), which override the skeleton below where they differ.** There are
+> no format rules: the report prepares the class presentation. **The draft is
+> [report.md](report.md).**
+> - **Main result, in detail:** the Mirage Gap, with its figures and the live demo.
+> - **Hypotheses:** H1, H2, H4 and H5, verdicts approved as worded in hypothesisanswers.md. H3 and
+>   H6 are side results and are left out.
+> - **Supporting findings, brief but with evidence:** 2, 5, 8, 9, 10 and 15 (finding 1 is the
+>   Mirage Gap itself).
+> - Whether the supporting findings need figures is decided later.
+
 Where everything else lives:
 - **The steps to write it, yours and Claude's, in order:** [whatyouneedtodo.md](whatyouneedtodo.md),
   "The report".
 - **The results, with every number and CI:** [hypothesisanswers.md](../results/hypothesisanswers.md) (H1–H6,
   including the proposed verdict for each) and [interestingfindings.md](../results/interestingfindings.md)
-  (13 findings beyond the hypotheses). This file only points at them, so the numbers are kept in
+  (16 findings beyond the hypotheses). This file only points at them, so the numbers are kept in
   one place.
 - **Why each analysis was done the way it was:** [majordecisions.md](../design/majordecisions.md) (the
   D-numbers below). **Limitations:** [shortfalls.md](../limitations/shortfalls.md).

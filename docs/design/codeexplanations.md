@@ -32,6 +32,7 @@ never writes results.
 | `docs/design/codeexplanations.md` | This file. |
 | `docs/limitations/shortfalls.md` | Known limitations, with severity, what each means for the results, the sentence to use in the report, and a "Resolved" list. |
 | `docs/limitations/shortfallfix.md` | The design plan for the 🔴 / 🟠 shortfalls, with a status table: what was built, and what was accepted as a limitation (D55). |
+| `docs/report/report.md` | The report draft (D57): the Mirage Gap in detail with figures and demo screenshots, H1, H2, H4, H5, and findings 2, 5, 8, 9, 10, 15; written to prepare the presentation. |
 | `docs/report/reportplan.md` | The final report's skeleton: each section, what goes in it, and where its numbers come from (links into the two results files). |
 | `docs/report/whatyouneedtodo.md` | Every step for you, in order: what's left now, the report's walkthrough (yours and Claude's steps), optional extras, and a record of what's done. |
 | `docs/replication/confirmatory_claims.md` | The 17 claims pre-registered before the fresh data was scored, and their outcome (D53). |

@@ -6,7 +6,7 @@ Every doc except `README.md`, `proposal.md` and this file lives under `docs/` (D
   (file tour);
 - `docs/results/`: `hypothesisanswers.md` and `interestingfindings.md` (the current results);
 - `docs/limitations/`: `shortfalls.md` and `shortfallfix.md`;
-- `docs/report/`: `reportplan.md` and `whatyouneedtodo.md`;
+- `docs/report/`: `report.md` (the report draft), `reportplan.md` and `whatyouneedtodo.md`;
 - `docs/replication/`: `confirmatory_claims.md`;
 - `docs/archive/`: the original build plans.
 

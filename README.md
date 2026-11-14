@@ -17,6 +17,9 @@ demo shows the shortcuts sentence by sentence.
 - [interestingfindings.md](docs/results/interestingfindings.md): 15 further findings, each tied to the
   hypothesis it explains or extends.
 
+The report draft, written around the Mirage Gap for the presentation, is
+[docs/report/report.md](docs/report/report.md).
+
 This section is the short version. Base variants; DistilBERT is the mean of 3 seeds; all
 tables are in `results/` and all figures in `figures/`.
 

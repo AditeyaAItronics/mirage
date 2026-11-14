@@ -61,9 +61,10 @@ What happens, in order. "You" steps need your judgment; Claude does the rest whe
 
 | Step | Who | What | Time |
 |---|---|---|---|
-| 4 | **You** | **Tell Claude the format rules:** page limit, required template (Word / LaTeX / course template), citation style, required sections (e.g. ethics statement, contribution statement), due date, and whether appendices count toward the limit. | 5 min |
-| 5 | **You** | **Approve the hypothesis verdicts.** Each hypothesis's "Verdict" section in [hypothesisanswers.md](../results/hypothesisanswers.md) is the proposed wording (summary table at the top). How strongly to word each verdict is your academic call. | 15 min |
-| 6 | **You** | **Decide what goes in the main text and what in an appendix:** which of the 13 findings, and the extras (the external models D46, the Mirage Gap D40, the name probe D45, the live demo D41). [reportplan.md](reportplan.md) §6 has a suggestion. | 10 min |
+| 4 | ✅ done | **Format:** none; the report prepares the class presentation (D57). | — |
+| 5 | ✅ done | **Verdicts approved** for H1, H2, H4, H5 and the Mirage Gap; H3 and H6 left out as side results (D57). | — |
+| 6 | ✅ done | **Contents:** the Mirage Gap in detail with figures and the demo; findings 2, 5, 8, 9, 10, 15 briefly (D57). The draft is [report.md](report.md). | — |
+| 6b | **You** | **Read [report.md](report.md)** and decide which supporting findings need a figure; mark anything unclear, overstated or not in your voice. | 1 h |
 | 7 | Claude | Shortlist about 20 failure-example candidates in `report/failure_candidates.md`. For each: the sentence, what each model said, and which shortcut it shows. Sources include `results/explain/ig_failures.csv`, `top_features.csv`, `tree_depth4.txt` and the behavioral predictions. | — |
 | 8 | **You** | **Pick 8–10 of them** and approve (or rewrite) the one-line explanation of each. Choosing the examples that tell the story, and explaining the shortcut in plain words, is the core of the report; you'll be asked about them. | 30 min |
 | 9 | Claude | Draft the report section by section, following [reportplan.md](reportplan.md), in the agreed format, with every figure and table and captions that state the result. | — |
