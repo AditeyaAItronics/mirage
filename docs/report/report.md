@@ -484,7 +484,33 @@ the solid ones. It is also why one pre-registered claim (H2) failed.
 The full list, with what each means for the results, is in
 [shortfalls.md](../limitations/shortfalls.md).
 
-## 7. Conclusion: answers to the research questions
+## 7. Future work
+
+**Fixing DistilBERT's negation blind spot with training data (the proposal's stretch goal).**
+Fine-tune DistilBERT again with added negated training examples ("The acting was superb." →
+"The acting was not superb.", with the opposite label) and measure whether its negation failures
+drop. This is *data augmentation*: fixing a shortcut by changing what the model learns from, the
+counterpart of H3, where negation marking fixed the classical models by changing their features.
+
+There is now a concrete target. DistilBERT already makes no errors on the original negation
+templates, but it still errs on 10% of real negated sentences and reads "I would never call the
+movie great." as positive 96% of the time (finding 15). Two cautions for the design:
+- **Negation doesn't always flip the label**: "not terrible" isn't positive, so automatically
+  negated examples need careful rules or a manual check.
+- **The test wording must stay unseen**: the added examples must not use the "would never call"
+  construction, or fixing it would prove nothing.
+
+The cost is small (about 10 minutes of free GPU per seed, plus building and checking the extra
+examples), and the new model would be reported beside the current one without changing any
+existing number.
+
+**Other directions from the proposal:** a second task, toxicity detection (Jigsaw Civil
+Comments), to measure identity-term shortcuts; newer models (DeBERTa-v3 and a small instruction-
+tuned language model, zero-shot) to see whether they still take shortcuts; Hindi or Hinglish
+reviews, for a more realistic domain shift; and, from this project's own results, more sentence
+frames per template test so no single wording dominates (finding 15).
+
+## 8. Conclusion: answers to the research questions
 
 1. **Hidden failures.** Yes: every model fails tests that accuracy doesn't show. Typos break every
    model that reads sentiment words, transformers included; negation breaks the word-counting
