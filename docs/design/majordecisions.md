@@ -1907,3 +1907,33 @@ DistilBERT 66,955,010.
 - The two problems found are the bug and the figure fixes above.
 
 **Not done:** replying on the GitHub issue (no `gh` here, and posting is the author's call).
+
+## D59 — The presentation plan (documentation)
+
+**Request:** a plan for a 15-minute presentation with the professor's follow-up questions, built
+from report.md, interesting rather than "only numbers and graphs", with real-world applications.
+
+**Built:** `docs/report/presentationplan.md`. Thirteen minutes of content, which leaves about two
+for questions asked along the way. It is built around one payoff: the opening asks the room
+which of two models with the same score they would deploy (logistic regression and Multinomial
+NB, unnamed), and the Mirage Gap chart reveals them.
+
+Engagement is by design:
+- the room predicts before three reveals (the twins, the name swap, the typo);
+- the live demo sits in the middle;
+- Clever Hans introduces shortcut learning;
+- each idea gets at most one chart.
+
+Real-world cases:
+- review and support-ticket routing (typos);
+- name-based bias in hiring and lending (the name-swap test as an audit);
+- negation in clinical notes;
+- choosing between leaderboard twins;
+- confidence as a monitoring alarm.
+
+Plus a question bank (method, models, results, next steps, each linked to its source), backup
+slides and a pre-talk checklist.
+
+**Check:** every number is from report.md (verified against `results/*.csv` in D57); internal
+links resolve. H3 and H6 stay out of the talk, as the author chose for the report (D57), with a
+ready answer if asked.

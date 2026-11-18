@@ -227,7 +227,7 @@ for why each choice was made.
 | `docs/results/` | the results in full: `hypothesisanswers.md` (the Mirage Gap, H1–H6) and `interestingfindings.md` |
 | `docs/design/` | `ARCHITECTURE.md`, `majordecisions.md` (every decision and why), `codeexplanations.md` (file tour) |
 | `docs/limitations/` | `shortfalls.md` (known limitations) and `shortfallfix.md` (the fix plan and its status) |
-| `docs/report/` | `reportplan.md` (the report's skeleton) and `whatyouneedtodo.md` (your steps) |
+| `docs/report/` | `report.md` (the report draft), `presentationplan.md` (the 15-minute talk), `reportplan.md` (the report's skeleton) and `whatyouneedtodo.md` (your steps) |
 | `docs/data/` | `datasets.md`: sources, splits, cleaning rules, SST-2 vs IMDb |
 | `docs/models/` | `README.md` (hyperparameters, training curves, sizes, how models are tested and deployed) and `cards/` (one model card per model) |
 | `docs/replication/` | `confirmatory_claims.md`: the 17 claims pre-registered before the fresh data was scored (D53) |

@@ -77,8 +77,10 @@ What happens, in order. "You" steps need your judgment; Claude does the rest whe
 **To start, send Claude one message with steps 4–6:** the format rules, "verdicts approved" (or
 your changes), and your main-text / appendix choice. Steps 7 and 9 can then run straight away.
 
-**Presentation slides** are a separate deliverable. They can reuse the report's figures; ask when
-the report draft is done.
+**The presentation (15 minutes):** the plan is [presentationplan.md](presentationplan.md): the
+run of show, what to say on each slide, the demo, real-world applications and a question bank.
+**You:** rehearse it twice with a timer, find a Clever Hans picture you may use, and tell Claude if
+you want the slides built (e.g. as a deck).
 
 ### 15. Final checks before submission
 - `python -m pytest`: all green.
